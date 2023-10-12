@@ -1,1 +1,6 @@
-<p>coding-guideline-search works!</p>
+<input type="text" [(ngModel)]="searchValue">
+<ul>
+    <li *ngFor="let codingGuidelineItem of codingGuidelinesItems">
+        {{codingGuidelineItem.name}}
+    </li>
+</ul>
