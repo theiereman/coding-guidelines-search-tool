@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ICodingGuidelineItem } from '../icoding-guideline-item';
+import { GUIDELINES } from '../coding-guidelines.mock';
 
 @Component({
   selector: 'app-coding-guideline-search',
@@ -6,5 +8,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./coding-guideline-search.component.css']
 })
 export class CodingGuidelineSearchComponent {
+  searchValue:string = ""
+  codingGuidelinesItems: ICodingGuidelineItem[] = []
 
+  ngOnInit(): void {
+    this.codingGuidelinesItems = GUIDELINES;
+  }
 }
