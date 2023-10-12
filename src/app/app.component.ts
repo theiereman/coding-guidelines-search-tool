@@ -11,6 +11,6 @@ export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
 
   ngOnInit(): void {
-    Providers.globalProvider = new Msal2Provider({clientId: `[${environment.clientId}]`})
+    Providers.globalProvider = new Msal2Provider({clientId: `${environment.clientId}`})
   }
 }
