@@ -1,5 +1,5 @@
-<nav>
-  <mgt-login></mgt-login>
-</nav>
-<mgt-agenda></mgt-agenda>
+<button *ngIf="!loginDisplay" (click)="login()">Login</button>
+<button *ngIf="loginDisplay" (click)="logout()">Logout</button>
+
+
 <!-- <app-coding-guideline-search></app-coding-guideline-search> -->
