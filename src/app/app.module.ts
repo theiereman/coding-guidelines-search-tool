@@ -4,11 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { CodingGuidelineSearchComponent } from './coding-guideline-search/coding-guideline-search.component';
 import { FormsModule } from '@angular/forms';
+import { AlertsComponent } from './alerts/alerts.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CodingGuidelineSearchComponent
+    CodingGuidelineSearchComponent,
+    AlertsComponent
   ],
   imports: [
     BrowserModule,
