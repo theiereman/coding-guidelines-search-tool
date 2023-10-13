@@ -25,33 +25,33 @@ const isIE =
     BrowserModule,
     FormsModule,
     MsalModule.forRoot( new PublicClientApplication({ // MSAL Configuration
-      auth: {
-          clientId: environment.clientId,
-          authority: `https://login.microsoftonline.com/${environment.tenantId}`,
-          redirectUri: "http://localhost:4200",
-      },
-      cache: {
-          cacheLocation : BrowserCacheLocation.LocalStorage,
-          storeAuthStateInCookie: true, // set to true for IE 11
-      },
-      system: {
-          loggerOptions: {
-              loggerCallback: () => {},
-              piiLoggingEnabled: isIE
-          }
-      }
-  }), {
-      interactionType: InteractionType.Redirect, // MSAL Guard Configuration
-  }, {
-      interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
-      protectedResourceMap: new Map([
-          ['https://graph.microsoft.com/v1.0/me', ['user.read']],
-          ['https://api.myapplication.com/users/*', ['customscope.read']],
-          ['http://localhost:4200/about/', null] 
-      ])
-  })
+        auth: {
+            clientId: environment.clientId,
+            authority: `https://login.microsoftonline.com/${environment.tenantId}`,
+            redirectUri: "http://localhost:4200",
+        },
+        cache: {
+            cacheLocation : BrowserCacheLocation.LocalStorage,
+            storeAuthStateInCookie: true, // set to true for IE 11
+        },
+        system: {
+            loggerOptions: {
+                loggerCallback: () => {},
+                piiLoggingEnabled: isIE
+            }
+        }
+    }), {
+        interactionType: InteractionType.Redirect, // MSAL Guard Configuration
+    }, {
+        interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
+        protectedResourceMap: new Map([
+            ['https://graph.microsoft.com/v1.0/me', ['user.read']],
+            ['https://api.myapplication.com/users/*', ['customscope.read']],
+            ['http://localhost:4200/about/', null] 
+        ])
+    })
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
