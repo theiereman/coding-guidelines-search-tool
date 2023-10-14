@@ -1,5 +1,4 @@
-<nav>
-  <mgt-login></mgt-login>
-</nav>
-<mgt-agenda></mgt-agenda>
-<!-- <app-coding-guideline-search></app-coding-guideline-search> -->
+<span *ngIf="user">Utilisateur connecté : {{user.displayName}}</span>
+<button *ngIf="!loginDisplay" (click)="login()">Login</button>
+<button *ngIf="loginDisplay" (click)="logout()">Logout</button>
+<!-- <app-coding-guideline-search *ngIf="loginDisplay"></app-coding-guideline-search> -->
