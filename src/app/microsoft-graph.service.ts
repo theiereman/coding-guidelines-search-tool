@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { AuthService } from './auth.service';
-import { Observable, catchError, from, map, of } from 'rxjs';
+import { EMPTY, Observable, catchError, from, map, of } from 'rxjs';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { GRAPH_API_IDS } from './constants/graph-api.constants';
@@ -35,9 +35,9 @@ export class MicrosoftGraphService {
             return worksheet.name as string;
           })
         }),
-        catchError((err, caught) => {
+        catchError((err) => {
           console.error(err);
-          return caught;
+          return EMPTY;
         })
       );
 

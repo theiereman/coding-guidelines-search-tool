@@ -47,9 +47,7 @@ const isIE =
     }, {
         interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
         protectedResourceMap: new Map([
-            ['https://graph.microsoft.com/v1.0/me', ['user.read']],
-            ['https://api.myapplication.com/users/*', ['customscope.read']],
-            ['http://localhost:4200/about/', null] 
+            ['https://graph.microsoft.com/*', ['User.Read', 'Sites.Read.All', 'Files.Read.All']],
         ])
     })
   ],
