@@ -14,33 +14,37 @@ export class MicrosoftGraphService {
     private authService: AuthService
   ) {}
 
-    //TODO : trouver comment ne pas faire requête en boucle quand erreur
-
-  getWorksheets():Observable<string[] | undefined> {
+  getWorksheets():Observable<MicrosoftGraph.WorkbookWorksheet[]> {
     if (!this.authService.graphClient) {
       console.error('Graph service uninitialized')
-      return of(undefined);
+      return of([]);
     }
 
     //GET /sites/custyburrus.sharepoint.com,63756e78-963f-4d88-b223-d59fbe37f706,071b9c7a-e181-4a2e-a512-0a1fa7611824
     //      /drives/b!eG51Yz-WiE2yI9Wfvjf3BnqcGweB4S5KpRIKH6dhGCQ-kgyuDTQLQry6tNoAkiUJ
     //        /items/01LP6ZGN6CGSAE7KWF65FYPI5BL5VIK472/workbook/worksheets
 
-    let worksheetNames:Observable<string[]> = from(this.authService.graphClient
+    let worksheetNames:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
-        map((res) => {
-          //collection de MicrosoftGraph.WorkbookWorksheet
-          return res.value.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => {
-            return worksheet.name as string;
-          })
-        }),
         catchError((err) => {
           console.error(err);
-          return EMPTY;
+          return of([]);
         })
       );
 
     return worksheetNames;
-  } 
+  }
+
+  getWorksheetsNames():Observable<string[]> {
+    return this.getWorksheets().pipe(
+      map((res) => {
+        return res.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => { return worksheet.name as string; })
+      }),
+      catchError((err) => {
+        console.error(err);
+        return of([]);
+      })
+    );
+  }
 }
