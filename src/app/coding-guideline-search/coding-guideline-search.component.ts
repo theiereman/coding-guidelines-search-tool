@@ -19,10 +19,13 @@ export class CodingGuidelineSearchComponent {
   ) { }
 
   getWorksheets() {
-    this.graphService.getWorksheets().subscribe((names:string[] | undefined) => {
-      if(!names) return;
+    this.graphService.getWorksheetsNames().subscribe((names:string[]) => {
       this.worksheetNames = names;
     });
+  }
+
+  resetWorksheets() {
+    this.worksheetNames = []
   }
 
   ngOnInit(): void {

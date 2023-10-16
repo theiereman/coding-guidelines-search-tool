@@ -24,9 +24,38 @@ export class MicrosoftGraphService {
     //      /drives/ms_drive_id
     //        /items/ms_workbook_id/workbook/worksheets
 
-    let worksheetNames:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
+    let worksheets:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
+        catchError((err) => {
+          console.error(err);
+          return of([]);
+        })
+      );
+
+    return worksheets;
+  }
+
+  //TODO: refaire en réutilisant la procédure au dessus
+  getWorksheetsNames():Observable<string[]> {
+    if (!this.authService.graphClient) {
+      console.error('Graph service uninitialized')
+      return of([]);
+    }
+
+    //GET /sites/ms_site_id
+    //      /drives/ms_drive_id
+    //        /items/ms_workbook_id/workbook/worksheets
+
+    let worksheetNames:Observable<string[]> = from(this.authService.graphClient
+      .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
+      .get()).pipe(
+        map((res) => {
+          //collection de MicrosoftGraph.WorkbookWorksheet
+          return res.value.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => {
+            return worksheet.name as string;
+          })
+        }),
         catchError((err) => {
           console.error(err);
           return of([]);
@@ -36,15 +65,13 @@ export class MicrosoftGraphService {
     return worksheetNames;
   }
 
-  getWorksheetsNames():Observable<string[]> {
-    return this.getWorksheets().pipe(
-      map((res) => {
-        return res.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => { return worksheet.name as string; })
-      }),
-      catchError((err) => {
-        console.error(err);
-        return of([]);
-      })
-    );
-  }
+  // getWorksheetsNames():Observable<string[]> {
+  //   return this.getWorksheets().pipe(
+  //     map(worksheetsArray => worksheetsArray.map(res => res.name)),
+  //     catchError((err) => {
+  //       console.error(err);
+  //       return of([]);
+  //     })
+  //   );
+  // }
 }
