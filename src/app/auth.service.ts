@@ -86,8 +86,6 @@ export class AuthService {
       authProvider: authProvider,
     });
 
-    console.log("debug")
-
     // Get the user from Graph (GET /me)
     let res:Observable<User> = from(this.graphClient.api('/me').select('displayName,mail,mailboxSettings,userPrincipalName').get())
                     .pipe(map((res) => {

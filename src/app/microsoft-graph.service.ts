@@ -14,33 +14,37 @@ export class MicrosoftGraphService {
     private authService: AuthService
   ) {}
 
-    //TODO : trouver comment ne pas faire requête en boucle quand erreur
-
-  getWorksheets():Observable<string[] | undefined> {
+  getWorksheets():Observable<MicrosoftGraph.WorkbookWorksheet[]> {
     if (!this.authService.graphClient) {
       console.error('Graph service uninitialized')
-      return of(undefined);
+      return of([]);
     }
 
     //GET /sites/ms_site_id
     //      /drives/ms_drive_id
     //        /items/ms_workbook_id/workbook/worksheets
 
-    let worksheetNames:Observable<string[]> = from(this.authService.graphClient
+    let worksheetNames:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
-        map((res) => {
-          //collection de MicrosoftGraph.WorkbookWorksheet
-          return res.value.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => {
-            return worksheet.name as string;
-          })
-        }),
         catchError((err) => {
           console.error(err);
-          return EMPTY;
+          return of([]);
         })
       );
 
     return worksheetNames;
-  } 
+  }
+
+  getWorksheetsNames():Observable<string[]> {
+    return this.getWorksheets().pipe(
+      map((res) => {
+        return res.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => { return worksheet.name as string; })
+      }),
+      catchError((err) => {
+        console.error(err);
+        return of([]);
+      })
+    );
+  }
 }
