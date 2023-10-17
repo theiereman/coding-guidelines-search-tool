@@ -27,6 +27,7 @@ export class MicrosoftGraphService {
     let worksheets:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
+        map(res => res.value),
         catchError((err) => {
           console.error(err);
           return of([]);
@@ -36,42 +37,13 @@ export class MicrosoftGraphService {
     return worksheets;
   }
 
-  //TODO: refaire en réutilisant la procédure au dessus
   getWorksheetsNames():Observable<string[]> {
-    if (!this.authService.graphClient) {
-      console.error('Graph service uninitialized')
-      return of([]);
-    }
-
-    //GET /sites/custyburrus.sharepoint.com,63756e78-963f-4d88-b223-d59fbe37f706,071b9c7a-e181-4a2e-a512-0a1fa7611824
-    //      /drives/b!eG51Yz-WiE2yI9Wfvjf3BnqcGweB4S5KpRIKH6dhGCQ-kgyuDTQLQry6tNoAkiUJ
-    //        /items/01LP6ZGN6CGSAE7KWF65FYPI5BL5VIK472/workbook/worksheets
-
-    let worksheetNames:Observable<string[]> = from(this.authService.graphClient
-      .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
-      .get()).pipe(
-        map((res) => {
-          //collection de MicrosoftGraph.WorkbookWorksheet
-          return res.value.map((worksheet:MicrosoftGraph.WorkbookWorksheet) => {
-            return worksheet.name as string;
-          })
-        }),
-        catchError((err) => {
-          console.error(err);
-          return of([]);
-        })
-      );
-
-    return worksheetNames;
+    return this.getWorksheets().pipe(
+      map(worksheetsArray => worksheetsArray.map(res => res.name!)),
+      catchError((err) => {
+        console.error(err);
+        return of([]);
+      })
+    );
   }
-
-  // getWorksheetsNames():Observable<string[]> {
-  //   return this.getWorksheets().pipe(
-  //     map(worksheetsArray => worksheetsArray.map(res => res.name)),
-  //     catchError((err) => {
-  //       console.error(err);
-  //       return of([]);
-  //     })
-  //   );
-  // }
 }
