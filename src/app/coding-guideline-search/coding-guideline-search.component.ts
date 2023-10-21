@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ICodingGuidelineItem } from '../icoding-guideline-item';
 import { GUIDELINES } from '../coding-guidelines.mock';
 import { MicrosoftGraphService } from '../microsoft-graph.service';
+import { mergeMap } from 'rxjs';
 
 
 @Component({
@@ -19,8 +20,12 @@ export class CodingGuidelineSearchComponent {
   ) { }
 
   getWorksheets() {
-    this.graphService.getWorksheetsNames().subscribe((names:string[]) => {
+    this.graphService.getWorksheetsNames()
+    .subscribe((names:string[]) => {
       this.worksheetNames = names;
+      names.forEach(name => {
+        this.graphService.getCodingGuidelinesFromWorksheet(name).subscribe(codingGuideline => console.log(codingGuideline));
+      })
     });
   }
 
