@@ -1,12 +1,9 @@
 <input type="text" [(ngModel)]="searchValue">
+
+<div>Number of items : {{numberOfItems}}</div>
+
 <ul>
     <li *ngFor="let codingGuidelineItem of codingGuidelinesItems">
-        {{codingGuidelineItem.name}}
+        {{codingGuidelineItem.name}} - {{codingGuidelineItem.prefix}} - {{codingGuidelineItem.case}} - {{codingGuidelineItem.sheetName}} - {{codingGuidelineItem.example}} 
     </li>
 </ul>
-
-<div>
-    {{worksheetNames}}
-</div>
-<button (click)="getWorksheets()">Récupérer noms feuilles</button>
-<button (click)="resetWorksheets()">Reset noms feuilles</button>

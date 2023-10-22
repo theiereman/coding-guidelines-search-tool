@@ -3,5 +3,5 @@ export interface ICodingGuidelineItem {
     prefix:string,
     case:string,
     sheetName:string,
-    exemple?:string,
+    example?:string,
 }
