@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { AuthService } from './auth.service';
-import { EMPTY, Observable, catchError, from, map, merge, mergeMap, of, tap } from 'rxjs';
+import { EMPTY, Observable, catchError, combineLatest, combineLatestAll, concat, concatMap, filter, forkJoin, from, map, merge, mergeAll, mergeMap, of, reduce, switchMap, tap, toArray } from 'rxjs';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { GRAPH_API_IDS } from './constants/graph-api.constants';
@@ -39,48 +39,24 @@ export class MicrosoftGraphService {
     return worksheets;
   }
 
-  //renvoie toutes les cellules d'une feuille Excel
-  getWorksheetCompleteRange(worksheetName: string):Observable<MicrosoftGraph.WorkbookRange | undefined> {
-    if (!this.authService.graphClient) {
-      console.error('Graph service uninitialized')
-      return of(undefined);
-    }
-
-    console.log(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets/${worksheetName}/usedRange?$select=values`)
-
-    return from(this.authService.graphClient
-      .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets/${worksheetName}/usedRange?$select=values`)
-      .get())
-      .pipe(
-        tap(res => console.log(res)),
-        catchError((err) => {
-          console.error(err);
-          return of(undefined);
-        })
-      );
-  }
-
-  getCodingGuidelinesFromWorksheet(worksheetName:string) : Observable<ICodingGuidelineItem[]> {
+  private getCodingGuidelinesFromWorksheet(worksheetName:string) : Observable<ICodingGuidelineItem[]> {
     if (!this.authService.graphClient) {
       console.error('Graph service uninitialized')
       return of([]);
     }
-
-    console.log(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets/${worksheetName}/usedRange?$select=values`)
 
     return from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets/${worksheetName}/usedRange?$select=values`)
       .get())
       .pipe(
         map((range:MicrosoftGraph.WorkbookRange) => {
-          console.log(range)
           //ignore la première ligne des entêtes
           return range.values.slice(1).map((row:string[]) => {
             let codingGuidelineValue:ICodingGuidelineItem = {
               name:row[0],
               prefix:row[1],
               case:row[2],
-              exemple:row[3],
+              example:row[3],
               sheetName:worksheetName
             }
             return codingGuidelineValue
@@ -93,6 +69,7 @@ export class MicrosoftGraphService {
       );
   }
 
+
   //renvoie le nom de toutes les feuilles du document
   getWorksheetsNames():Observable<string[]> {
     return this.getWorksheets().pipe(
@@ -101,6 +78,20 @@ export class MicrosoftGraphService {
         console.error(err);
         return of([]);
       })
+    );
+  }
+
+  getAllCodingGuidelines() : Observable<ICodingGuidelineItem[]> {
+    return this.getWorksheetsNames().pipe(
+      mergeMap((worksheetsNames) => {
+        return from(worksheetsNames).pipe(
+          filter(name => name !== 'WIP'),
+          mergeMap((name) => {
+            return this.getCodingGuidelinesFromWorksheet(name);
+          })
+        );
+      }),
+      reduce((res, one) => [...res, ...one])
     );
   }
 }
