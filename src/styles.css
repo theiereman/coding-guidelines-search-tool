@@ -1,1 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    font-family: Roboto, Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.background {
+    background-color: #e8e8e8;
+}
+
+.main-app-div {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* --- Neumorphism search bar --- */
+
+.full-height {
+    height: 100vh;
+    flex-grow: 1;
+}
+
+input::placeholder {
+    color: gray;
+}
+
+input {
+    width: 100%;
+    padding: 0;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+
+    background: #ecf0f3;
+    padding: 1em;
+    padding-left: 1.5em;
+    height: 3em;
+    font-size: 12px;
+    border-radius: 20px;
+    box-shadow: inset 6px 6px 6px #cbced1, inset -6px -6px 6px white;
+}
+
+.neu_button {
+    width: fit-content;
+    height: 3em;
+    white-space: nowrap;
+    text-align: center;
+    display: inline-block;
+    transition: all 0.2s ease-in;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    color: #090909;
+    padding: 0.7em 1.7em;
+    font-size: 12px;
+    border-radius: 20px;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    box-shadow: -5px -5px 9px rgba(255,255,255,0.45), 5px 5px 9px rgba(94,104,121,0.3);
+  }
+  
+  .neu_button:active {
+    color: #666;
+    box-shadow: inset -5px -5px 9px rgba(255,255,255,0.45), inset 5px 5px 9px rgba(94,104,121,0.3);
+  }

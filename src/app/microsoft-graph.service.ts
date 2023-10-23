@@ -22,10 +22,6 @@ export class MicrosoftGraphService {
       return of([]);
     }
 
-    //GET /sites/custyburrus.sharepoint.com,63756e78-963f-4d88-b223-d59fbe37f706,071b9c7a-e181-4a2e-a512-0a1fa7611824
-    //      /drives/b!eG51Yz-WiE2yI9Wfvjf3BnqcGweB4S5KpRIKH6dhGCQ-kgyuDTQLQry6tNoAkiUJ
-    //        /items/01LP6ZGN6CGSAE7KWF65FYPI5BL5VIK472/workbook/worksheets
-
     let worksheets:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
@@ -68,7 +64,6 @@ export class MicrosoftGraphService {
         })
       );
   }
-
 
   //renvoie le nom de toutes les feuilles du document
   getWorksheetsNames():Observable<string[]> {
