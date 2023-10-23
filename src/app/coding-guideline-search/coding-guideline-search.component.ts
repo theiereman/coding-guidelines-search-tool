@@ -11,6 +11,7 @@ import { mergeMap } from 'rxjs';
 })
 export class CodingGuidelineSearchComponent {
   searchValue:string = ""
+  valuesInitialized:boolean = false
   codingGuidelinesItems: ICodingGuidelineItem[] = []
   numberOfItems: number = 0;
 
@@ -23,6 +24,7 @@ export class CodingGuidelineSearchComponent {
       .subscribe(res => {
         this.codingGuidelinesItems = res
         this.numberOfItems = res.length;
+        this.valuesInitialized = true;
       });
   }
 }

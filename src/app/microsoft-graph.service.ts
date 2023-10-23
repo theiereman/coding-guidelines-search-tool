@@ -22,10 +22,6 @@ export class MicrosoftGraphService {
       return of([]);
     }
 
-    //GET /sites/ms_site_id
-    //      /drives/ms_drive_id
-    //        /items/ms_workbook_id/workbook/worksheets
-
     let worksheets:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
       .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
@@ -68,7 +64,6 @@ export class MicrosoftGraphService {
         })
       );
   }
-
 
   //renvoie le nom de toutes les feuilles du document
   getWorksheetsNames():Observable<string[]> {
