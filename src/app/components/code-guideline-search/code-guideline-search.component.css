@@ -1,0 +1,7 @@
+.top-search-component {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: auto;
+    width: 80%;
+}

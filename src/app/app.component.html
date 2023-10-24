@@ -1,5 +1,6 @@
 <div class="main-app-div">
-    <div class="nav-bar">
+    <app-navbar/>
+    <!-- <div class="nav-bar">
         <div class="title">
             <div style="width: 35px; height: 35px; background: #9A9A9A"></div>
             <div>Charte de programmation Windev</div>
@@ -12,7 +13,11 @@
             </div>
             <div style="width: 35px; height: 35px; background: #9A9A9A; border-radius: 9999px"></div>
         </div>
-    </div>
+    </div> -->
     
-    <app-coding-guideline-search class="full-height" *ngIf="user"></app-coding-guideline-search>
+    <div *ngIf="user">
+        <app-code-guideline-search/>
+        <app-code-guideline-list/>
+    </div>
+
 </div>

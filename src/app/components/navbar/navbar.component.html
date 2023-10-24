@@ -1,0 +1,14 @@
+<div class="nav-bar">
+    <div class="title">
+        <div style="width: 35px; height: 35px; background: #9A9A9A"></div>
+        <div>Charte de programmation Windev</div>
+    </div>
+    <div class="user-information">
+        <div class="username">
+            <div *ngIf="user">{{user.displayName}}</div>
+            <button *ngIf="!loginDisplay" (click)="login()" class="authentication-status-btn">Se connecter</button>
+            <button *ngIf="loginDisplay" (click)="logout()" class="authentication-status-btn">Se déconnecter</button>
+        </div>
+        <div style="width: 35px; height: 35px; background: #9A9A9A; border-radius: 9999px"></div>
+    </div>
+</div>

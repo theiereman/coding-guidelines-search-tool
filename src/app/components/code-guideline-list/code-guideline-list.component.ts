@@ -1,16 +1,13 @@
 import { Component } from '@angular/core';
-import { ICodingGuidelineItem } from '../icoding-guideline-item';
-import { MicrosoftGraphService } from '../microsoft-graph.service';
-import { mergeMap } from 'rxjs';
-
+import { ICodingGuidelineItem } from '../../icoding-guideline-item';
+import { MicrosoftGraphService } from '../../microsoft-graph.service';
 
 @Component({
-  selector: 'app-coding-guideline-search',
-  templateUrl: './coding-guideline-search.component.html',
-  styleUrls: ['./coding-guideline-search.component.css']
+  selector: 'app-code-guideline-list',
+  templateUrl: './code-guideline-list.component.html',
+  styleUrls: ['./code-guideline-list.component.css']
 })
-export class CodingGuidelineSearchComponent {
-  searchValue:string = ""
+export class CodeGuidelineListComponent {
   valuesInitialized:boolean = false
   codingGuidelinesItems: ICodingGuidelineItem[] = []
   numberOfItems: number = 0;
