@@ -10,9 +10,22 @@
 <div *ngIf="valuesInitialized">
     <div>Nombre d'éléments : {{numberOfItems}}</div>
 
-    <ul>
-        <li *ngFor="let codingGuidelineItem of codingGuidelinesItems">
-            {{codingGuidelineItem.name}} - {{codingGuidelineItem.prefix}} - {{codingGuidelineItem.case}} - {{codingGuidelineItem.sheetName}} - {{codingGuidelineItem.example}} 
-        </li>
-    </ul>
+    <table>
+        <tr>
+            <th>Nom de l'élément</th>
+            <th>Préfixe</th>
+            <th>Format / Casse</th>
+            <th>Exemple</th>
+            <th>Catégorie</th>
+        </tr>
+        <ng-container *ngFor="let codingGuidelineItem of codingGuidelinesItems">
+            <tr>
+                <td>{{codingGuidelineItem.name}}</td>
+                <td>{{codingGuidelineItem.prefix}}</td>
+                <td>{{codingGuidelineItem.case}}</td>
+                <td>{{codingGuidelineItem.example}}</td>
+                <td>{{codingGuidelineItem.sheetName}}</td>
+            </tr>
+        </ng-container>
+    </table>
 </div>
