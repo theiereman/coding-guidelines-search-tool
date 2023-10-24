@@ -13,48 +13,84 @@ body, html {
     padding:0;
 }
 
-/* --- Neumorphism search bar --- */
+/* --- Neumorphism --- */
 
-input::placeholder {
-    color: gray;
-}
+/* --- Loader --- */
 
-input {
-    width: 100%;
-    padding: 0;
-    border: none;
-    outline: none;
-    box-sizing: border-box;
-
-    background: #ecf0f3;
-    padding: 1em;
-    padding-left: 1.5em;
-    height: 3em;
-    font-size: 12px;
-    border-radius: 20px;
-    box-shadow: inset 6px 6px 6px #cbced1, inset -6px -6px 6px white;
-}
-
-.neu_button {
-    width: fit-content;
-    height: 3em;
-    white-space: nowrap;
-    text-align: center;
-    display: inline-block;
-    transition: all 0.2s ease-in;
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
     position: relative;
-    overflow: hidden;
-    z-index: 1;
-    color: #090909;
-    padding: 0.7em 1.7em;
-    font-size: 12px;
-    border-radius: 20px;
-    background: #e8e8e8;
-    border: 1px solid #e8e8e8;
-    box-shadow: -5px -5px 9px rgba(255,255,255,0.45), 5px 5px 9px rgba(94,104,121,0.3);
+    flex-grow: 1;
+}
+
+.loader {
+    margin: 50px;
+}
+
+.item1, .item2, .item3 {
+    position: absolute;
+    background-color: transparent;
+    left: calc(50% - (var(--size) / 2));
+    top: calc(50% - (var(--size) / 2));
+    height: var(--size);
+    width: var(--size);
+    border-radius: 50%;
   }
   
-  .neu_button:active {
-    color: #666;
-    box-shadow: inset -5px -5px 9px rgba(255,255,255,0.45), inset 5px 5px 9px rgba(94,104,121,0.3);
+  .loader .item1 {
+    --size: 90px;
+    animation: size1_1 2.5s infinite alternate;
+    z-index: 1;
+  }
+  
+  .loader .item2 {
+    --size: 60px;
+    animation: size1_2 2.5s infinite alternate;
+    z-index: 2;
+  }
+  
+  .loader .item3 {
+    --size: 30px;
+    animation: size1_3 2.5s infinite alternate;
+    z-index: 3;
+  }
+  
+  @keyframes size1_1 {
+    0%,
+    10% {
+      transform: scale(0);
+    }
+  
+    100% {
+      transform: scale(1);
+      box-shadow: 8px 8px 14px #c5c5c5, -8px -8px 14px #ffffff;
+    }
+  }
+  
+  @keyframes size1_2 {
+    0%,
+    40% {
+      transform: scale(0);
+    }
+  
+    100% {
+      transform: scale(1);
+      box-shadow: 8px 8px 14px #c5c5c5, -8px -8px 14px #ffffff;
+    }
+  }
+  
+  @keyframes size1_3 {
+    0%,
+    70% {
+      transform: scale(0);
+    }
+  
+    100% {
+      transform: scale(1);
+      box-shadow: 8px 8px 14px #c5c5c5, -8px -8px 14px #ffffff;
+    }
   }
