@@ -17,11 +17,11 @@ export class CodeGuidelineListComponent {
   ) { }
 
   ngOnInit(): void {
-    // this.graphService.getAllCodingGuidelines()
-    //   .subscribe(res => {
-    //     this.codingGuidelinesItems = res
-    //     this.numberOfItems = res.length;
-    //     this.valuesInitialized = true;
-    //   });
+    this.graphService.getAllCodingGuidelines()
+      .subscribe(res => {
+        this.codingGuidelinesItems = res
+        this.numberOfItems = res.length;
+        this.valuesInitialized = true;
+      });
   }
 }
