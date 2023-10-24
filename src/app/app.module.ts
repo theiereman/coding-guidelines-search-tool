@@ -2,15 +2,18 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { CodingGuidelineSearchComponent } from './coding-guideline-search/coding-guideline-search.component';
 import { FormsModule } from '@angular/forms';
-import { AlertsComponent } from './alerts/alerts.component';
+import { AlertsComponent } from './components/alerts/alerts.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MsalModule, MsalService, MsalGuard, MsalInterceptor, MsalBroadcastService, MsalRedirectComponent } from "@azure/msal-angular";
 import { PublicClientApplication, InteractionType, BrowserCacheLocation } from "@azure/msal-browser";
 
 import { environment } from 'src/environments/environment';
+import { FunctionalityUnavailableComponent } from './components/functionality-unavailable/functionality-unavailable.component';
+import { CodeGuidelineListComponent } from './components/code-guideline-list/code-guideline-list.component';
+import { CodeGuidelineSearchComponent } from './components/code-guideline-search/code-guideline-search.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 const isIE =
   window.navigator.userAgent.indexOf("MSIE ") > -1 ||
@@ -20,8 +23,11 @@ const isIE =
 @NgModule({
   declarations: [
     AppComponent,
-    CodingGuidelineSearchComponent,
-    AlertsComponent
+    AlertsComponent,
+    FunctionalityUnavailableComponent,
+    CodeGuidelineListComponent,
+    CodeGuidelineSearchComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

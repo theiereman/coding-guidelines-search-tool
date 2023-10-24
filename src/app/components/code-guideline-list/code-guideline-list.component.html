@@ -1,0 +1,18 @@
+<div class="loading" *ngIf="!valuesInitialized">
+    <span>Récupération des valeurs depuis Sharepoint...</span>
+    <div class="loader">
+        <div class="item1"></div>
+        <div class="item2"></div>
+        <div class="item3"></div>
+    </div>
+</div>
+
+<div *ngIf="valuesInitialized">
+    <div>Nombre d'éléments : {{numberOfItems}}</div>
+
+    <ul>
+        <li *ngFor="let codingGuidelineItem of codingGuidelinesItems">
+            {{codingGuidelineItem.name}} - {{codingGuidelineItem.prefix}} - {{codingGuidelineItem.case}} - {{codingGuidelineItem.sheetName}} - {{codingGuidelineItem.example}} 
+        </li>
+    </ul>
+</div>

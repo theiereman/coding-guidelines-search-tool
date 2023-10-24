@@ -1,27 +1,3 @@
-:host {
-    display: flex;
-    flex-direction: column;
-}
-
-.main-div {
-    width: 80%;
-    margin: auto;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-
-    flex-grow: 1;
-}
-
-.top-search-component {
-    display: flex;
-    align-items: flex-start;
-    gap: 11px;
-    margin: auto;
-    width: 80%;
-}
-
 .loading {
     display: flex;
     flex-direction: column;
