@@ -15,6 +15,24 @@ body, html {
 
 /* --- Neumorphism --- */
 
+.neuphormism-out {
+  background: #e8e8e8;
+  padding: 1em;
+  padding-left: 1.5em;
+  height: 3em;
+  border-radius: 20px;
+  box-shadow: 8px 8px 14px #c5c5c5, -8px -8px 14px #ffffff;
+}
+
+.neuphormism-in {
+  background: #e8e8e8;
+  padding: 1em;
+  padding-left: 1.5em;
+  height: 3em;
+  border-radius: 20px;
+  box-shadow: inset 6px 6px 6px #c5c5c5, inset -6px -6px 6px #ffffff;
+}
+
 /* --- Loader --- */
 
 .loading {
