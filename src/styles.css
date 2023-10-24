@@ -1,23 +1,19 @@
-body {
+* {
     font-family: Roboto, Calibri, 'Trebuchet MS', sans-serif;
+    box-sizing: border-box;
 }
 
-.background {
+html {
     background-color: #e8e8e8;
 }
 
-.main-app-div {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+body, html {
+    height: 100%;
+    margin: 0;
+    padding:0;
 }
 
 /* --- Neumorphism search bar --- */
-
-.full-height {
-    height: 100vh;
-    flex-grow: 1;
-}
 
 input::placeholder {
     color: gray;
