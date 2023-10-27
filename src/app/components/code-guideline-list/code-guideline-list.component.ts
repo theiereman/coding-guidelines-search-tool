@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component,  } from '@angular/core';
 import { ICodingGuidelineItem } from '../../icoding-guideline-item';
 import { MicrosoftGraphService } from '../../microsoft-graph.service';
+import { Subject, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-code-guideline-list',
@@ -13,19 +14,27 @@ export class CodeGuidelineListComponent {
   filteredCodingGuidelinesItems: ICodingGuidelineItem[] = []
   numberOfItems: number = 0;
 
+  private searchValueChangedSubject: Subject<string> = new Subject<string>();
+
   constructor(
     private graphService: MicrosoftGraphService
-  ) { }
+  ) {
+    this.searchValueChangedSubject.pipe(
+      debounceTime(500)
+    ).subscribe((searchValue) => {
+      this.filteredCodingGuidelinesItems = this.codingGuidelinesItems.filter(codingGuideline => {
+        searchValue = searchValue.toLowerCase();
+        return codingGuideline.name.toLowerCase().includes(searchValue) 
+          || codingGuideline.prefix.toLowerCase().includes(searchValue) 
+          || codingGuideline.case.toLowerCase().includes(searchValue) 
+          || codingGuideline.example?.toLowerCase().includes(searchValue) 
+          || codingGuideline.sheetName.toLowerCase().includes(searchValue);
+      });
+    });
+   }
 
   onSearchValueUpdated(searchValue: string) {
-    this.filteredCodingGuidelinesItems = this.codingGuidelinesItems.filter(codingGuideline => {
-      searchValue = searchValue.toLowerCase();
-      return codingGuideline.name.toLowerCase().includes(searchValue) 
-        || codingGuideline.prefix.toLowerCase().includes(searchValue) 
-        || codingGuideline.case.toLowerCase().includes(searchValue) 
-        || codingGuideline.example?.toLowerCase().includes(searchValue) 
-        || codingGuideline.sheetName.toLowerCase().includes(searchValue)
-    })
+    this.searchValueChangedSubject.next(searchValue);
   }
 
   ngOnInit(): void {
