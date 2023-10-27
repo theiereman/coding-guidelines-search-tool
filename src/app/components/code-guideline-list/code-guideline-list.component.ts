@@ -12,7 +12,6 @@ export class CodeGuidelineListComponent {
   valuesInitialized:boolean = false
   codingGuidelinesItems: ICodingGuidelineItem[] = []
   filteredCodingGuidelinesItems: ICodingGuidelineItem[] = []
-  numberOfItems: number = 0;
 
   private searchValueChangedSubject: Subject<string> = new Subject<string>();
 
@@ -22,14 +21,7 @@ export class CodeGuidelineListComponent {
     this.searchValueChangedSubject.pipe(
       debounceTime(500)
     ).subscribe((searchValue) => {
-      this.filteredCodingGuidelinesItems = this.codingGuidelinesItems.filter(codingGuideline => {
-        searchValue = searchValue.toLowerCase();
-        return codingGuideline.name.toLowerCase().includes(searchValue) 
-          || codingGuideline.prefix.toLowerCase().includes(searchValue) 
-          || codingGuideline.case.toLowerCase().includes(searchValue) 
-          || codingGuideline.example?.toLowerCase().includes(searchValue) 
-          || codingGuideline.sheetName.toLowerCase().includes(searchValue);
-      });
+      this.filterCodingGuidelines(searchValue);
     });
    }
 
@@ -37,12 +29,37 @@ export class CodeGuidelineListComponent {
     this.searchValueChangedSubject.next(searchValue);
   }
 
+  private filterCodingGuidelines(searchValue:string) {
+    if(searchValue.trim() === '') { this.filteredCodingGuidelinesItems = this.codingGuidelinesItems; return; }
+      
+    this.filteredCodingGuidelinesItems = this.codingGuidelinesItems.filter(codingGuideline => {
+      //formattage de la recherche
+      searchValue.replace(/\s+/g, ' ');
+      searchValue = searchValue.toLowerCase();
+      
+      let containsSearchedTerms = true;
+
+      //possibilité de chercher plusieurs termes séparés par un espace
+      let i = 0;
+      let termsArray = searchValue.split(' ').filter(value => value.length > 0)
+      while(containsSearchedTerms === true && i<termsArray.length) {
+        containsSearchedTerms = codingGuideline.name.toLowerCase().includes(termsArray[i])
+                                  || codingGuideline.prefix.toLowerCase().includes(termsArray[i]) 
+                                  || codingGuideline.case.toLowerCase().includes(termsArray[i]) 
+                                  || codingGuideline.example?.toLowerCase().includes(termsArray[i]) 
+                                  || codingGuideline.sheetName.toLowerCase().includes(termsArray[i]);
+        i++;
+      }
+      
+      return containsSearchedTerms;
+    });
+  }
+
   ngOnInit(): void {
     this.graphService.getAllCodingGuidelines()
       .subscribe(res => {
         this.codingGuidelinesItems = res
         this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
-        this.numberOfItems = res.length;
         this.valuesInitialized = true;
       });
   }

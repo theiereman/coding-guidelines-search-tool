@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Client } from '@microsoft/microsoft-graph-client';
 import { AuthService } from './auth.service';
-import { EMPTY, Observable, catchError, combineLatest, combineLatestAll, concat, concatMap, filter, forkJoin, from, map, merge, mergeAll, mergeMap, of, reduce, switchMap, tap, toArray } from 'rxjs';
+import { Observable, catchError, filter, from, map, mergeMap, of, reduce } from 'rxjs';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
 import { GRAPH_API_IDS } from './constants/graph-api.constants';
 import { ICodingGuidelineItem } from './icoding-guideline-item';
 
