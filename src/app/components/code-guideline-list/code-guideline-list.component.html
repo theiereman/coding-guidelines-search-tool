@@ -1,3 +1,5 @@
+<app-code-guideline-search class="search-input"/>
+
 <div class="loading" *ngIf="!valuesInitialized">
     <span>Récupération des valeurs depuis Sharepoint...</span>
     <div class="loader">
@@ -7,22 +9,22 @@
     </div>
 </div>
 
-<div *ngIf="valuesInitialized">
+<div class="table-container" *ngIf="valuesInitialized">
     <table class="neuphormism-in">
-        <tr>
-            <th>Nom de l'élément</th>
-            <th>Préfixe</th>
-            <th>Format / Casse</th>
-            <th>Exemple</th>
-            <th>Catégorie</th>
+        <tr class="table-header-container">
+            <th class="table-header">Nom de l'élément</th>
+            <th class="table-header">Préfixe</th>
+            <th class="table-header">Format / Casse</th>
+            <th class="table-header">Exemple</th>
+            <th class="table-header">Catégorie</th>
         </tr>
         <ng-container *ngFor="let codingGuidelineItem of codingGuidelinesItems">
             <tr>
-                <td>{{codingGuidelineItem.name}}</td>
-                <td>{{codingGuidelineItem.prefix}}</td>
-                <td>{{codingGuidelineItem.case}}</td>
-                <td>{{codingGuidelineItem.example}}</td>
-                <td>{{codingGuidelineItem.sheetName}}</td>
+                <td class="table-cell">{{codingGuidelineItem.name}}</td>
+                <td class="table-cell">{{codingGuidelineItem.prefix}}</td>
+                <td class="table-cell">{{codingGuidelineItem.case}}</td>
+                <td class="table-cell">{{codingGuidelineItem.example}}</td>
+                <td class="table-cell">{{codingGuidelineItem.sheetName}}</td>
             </tr>
         </ng-container>
     </table>

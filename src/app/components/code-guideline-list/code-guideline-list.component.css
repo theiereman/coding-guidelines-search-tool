@@ -5,6 +5,44 @@
   flex-direction: column;
 }
 
+.search-input {
+  width: 70%;
+  margin: auto;
+}
+
 table {
   width: 100%;
+  table-layout: fixed;
+}
+
+.table-container {
+  margin: 20px;
+  display: table;
+  border: #dddddd;
+  border-radius: 20px;
+}
+
+.table-header-container {
+  table-layout: fixed;
+  font-size: large;
+}
+
+.table-header {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.table-cell {
+  text-align: center;
+  overflow: hidden;
+}
+
+tr {
+  height: 30px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }
