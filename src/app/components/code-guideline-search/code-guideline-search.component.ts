@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-code-guideline-search',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./code-guideline-search.component.css']
 })
 export class CodeGuidelineSearchComponent {
-  searchValue:string = ""
+  @Output() onSearchValueChanged: EventEmitter<string> = new EventEmitter();
+
+  onInputChanged(searchTerm:string) {
+    this.onSearchValueChanged.emit(searchTerm)
+  }
 }

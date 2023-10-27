@@ -1,4 +1,4 @@
-<app-code-guideline-search class="search-input"/>
+<app-code-guideline-search class="search-input" (onSearchValueChanged)="onSearchValueUpdated($event)"/>
 
 <div class="loading" *ngIf="!valuesInitialized">
     <span>Récupération des valeurs depuis Sharepoint...</span>
@@ -18,7 +18,7 @@
             <th class="table-header">Exemple</th>
             <th class="table-header">Catégorie</th>
         </tr>
-        <ng-container *ngFor="let codingGuidelineItem of codingGuidelinesItems">
+        <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
             <tr>
                 <td class="table-cell">{{codingGuidelineItem.name}}</td>
                 <td class="table-cell">{{codingGuidelineItem.prefix}}</td>
