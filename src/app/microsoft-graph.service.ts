@@ -4,19 +4,24 @@ import { Observable, catchError, filter, from, map, mergeMap, of, reduce } from 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { GRAPH_API_IDS } from './constants/graph-api.constants';
 import { ICodingGuidelineItem } from './icoding-guideline-item';
+import { AlertsService } from './alerts.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MicrosoftGraphService {
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private alertsService: AlertsService
   ) {}
 
-  //renvoie toutes les feuilles du document Excel
   private getWorksheets():Observable<MicrosoftGraph.WorkbookWorksheet[]> {
+    this.alertsService.addError('Graph service uninitialized 1 ')
+    this.alertsService.addError('Graph service uninitialized 2')
+    this.alertsService.addError('Graph service uninitialized 3')
     if (!this.authService.graphClient) {
       console.error('Graph service uninitialized')
+      this.alertsService.addError('Graph service uninitialized')
       return of([]);
     }
 
@@ -26,6 +31,7 @@ export class MicrosoftGraphService {
         map(res => res.value),
         catchError((err) => {
           console.error(err);
+          this.alertsService.addError(err);
           return of([]);
         })
       );
@@ -36,6 +42,7 @@ export class MicrosoftGraphService {
   private getCodingGuidelinesFromWorksheet(worksheetName:string) : Observable<ICodingGuidelineItem[]> {
     if (!this.authService.graphClient) {
       console.error('Graph service uninitialized')
+      this.alertsService.addError('Graph service uninitialized');
       return of([]);
     }
 
@@ -58,22 +65,24 @@ export class MicrosoftGraphService {
         }),
         catchError((err) => {
           console.error(err);
+          this.alertsService.addError(err);
           return of([]);
         })
       );
   }
 
-  //renvoie le nom de toutes les feuilles du document
   getWorksheetsNames():Observable<string[]> {
     return this.getWorksheets().pipe(
       map(worksheetsArray => worksheetsArray.map(res => res.name!)),
       catchError((err) => {
         console.error(err);
+        this.alertsService.addError(err);
         return of([]);
       })
     );
   }
 
+  //renvoie toutes les valeurs de toutes les feuilles excel du document sharepoint
   getAllCodingGuidelines() : Observable<ICodingGuidelineItem[]> {
     return this.getWorksheetsNames().pipe(
       mergeMap((worksheetsNames) => {

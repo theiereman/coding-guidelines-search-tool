@@ -1,5 +1,8 @@
 export interface Alert {
-    type?: string,
-    message: string,
-    debug: string
+    message: string
+    type: AlertType,
+}
+
+export enum AlertType {
+    Error
 }

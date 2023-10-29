@@ -14,6 +14,8 @@ import { FunctionalityUnavailableComponent } from './components/functionality-un
 import { CodeGuidelineListComponent } from './components/code-guideline-list/code-guideline-list.component';
 import { CodeGuidelineSearchComponent } from './components/code-guideline-search/code-guideline-search.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { AlertsModule } from './alerts/alerts.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const isIE =
   window.navigator.userAgent.indexOf("MSIE ") > -1 ||
@@ -23,7 +25,6 @@ const isIE =
 @NgModule({
   declarations: [
     AppComponent,
-    AlertsComponent,
     FunctionalityUnavailableComponent,
     CodeGuidelineListComponent,
     CodeGuidelineSearchComponent,
@@ -32,6 +33,8 @@ const isIE =
   imports: [
     BrowserModule,
     FormsModule,
+    AlertsModule,
+    BrowserAnimationsModule,
     MsalModule.forRoot( new PublicClientApplication({ // MSAL Configuration
         auth: {
             clientId: environment.clientId,

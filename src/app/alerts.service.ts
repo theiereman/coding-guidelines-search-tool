@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Alert } from './alert';
+import { Alert, AlertType } from './alert';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +9,11 @@ export class AlertsService {
   alerts: Alert[] = [];
 
   addError(message: string, debug?: string) {
-    this.alerts.push({message: message, debug: debug ?? '', type: 'danger'});
-  }
-
-  addSuccess(message: string, debug?: string) {
-    this.alerts.push({message: message, debug: debug ?? '', type: 'success'});
+    let newAlert = {message: message, type: AlertType.Error};
+    this.alerts.push(newAlert);
+    setTimeout(() => {
+      this.remove(newAlert);
+    }, 3000);
   }
 
   remove(alert: Alert) {
