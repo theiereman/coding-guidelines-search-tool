@@ -1,7 +1,8 @@
-<!-- <div *ngFor="let alert of alertsService.alerts">
-    <ngb-alert type="{{alert.type}}" (close)="close(alert)">
-      {{alert.message}}
-      <pre *ngIf="alert.debug" class="alert-pre border bg-light p-2 mt-2"><code>{{alert.debug}}</code></pre>
-    </ngb-alert>
+<div class="container">
+  <div id="error-list" @listInOut *ngFor="let alert of alertsService.alerts">
+    <div class="alert alert-danger">
+      <a class="close" (click)="close(alert)">&times;</a>
+      <span [innerHTML]="alert.message"></span>
+    </div>
   </div>
-   -->
+</div>
