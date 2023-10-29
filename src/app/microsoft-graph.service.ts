@@ -16,9 +16,6 @@ export class MicrosoftGraphService {
   ) {}
 
   private getWorksheets():Observable<MicrosoftGraph.WorkbookWorksheet[]> {
-    this.alertsService.addError('Graph service uninitialized 1 ')
-    this.alertsService.addError('Graph service uninitialized 2')
-    this.alertsService.addError('Graph service uninitialized 3')
     if (!this.authService.graphClient) {
       console.error('Graph service uninitialized')
       this.alertsService.addError('Graph service uninitialized')
