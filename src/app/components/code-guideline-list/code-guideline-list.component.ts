@@ -19,7 +19,7 @@ export class CodeGuidelineListComponent {
     private graphService: MicrosoftGraphService
   ) {
     this.searchValueChangedSubject.pipe(
-      debounceTime(500)
+      debounceTime(300)
     ).subscribe((searchValue) => {
       this.filterCodingGuidelines(searchValue);
     });
