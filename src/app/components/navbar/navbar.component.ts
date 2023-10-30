@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { AuthService } from 'src/app/auth.service';
-import { User } from 'src/app/user';
+import { AuthService } from 'src/app/services/auth.service';
+import { IUser } from 'src/app/interfaces/iuser';
 
 @Component({
   selector: 'app-navbar',
@@ -8,7 +8,7 @@ import { User } from 'src/app/user';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-  user?:User;
+  user?:IUser;
   loginDisplay = false;
   
   constructor(private authService: AuthService) {}

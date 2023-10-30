@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Alert, AlertType } from './alert';
+import { IAlert, AlertType } from '../interfaces/ialert';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AlertsService {
-  alerts: Alert[] = [];
+  alerts: IAlert[] = [];
 
   addError(message: string, debug?: string) {
     let newAlert = {message: message, type: AlertType.Error};
@@ -16,7 +16,7 @@ export class AlertsService {
     }, 3000);
   }
 
-  remove(alert: Alert) {
+  remove(alert: IAlert) {
     this.alerts.splice(this.alerts.indexOf(alert), 1);
   }
 }

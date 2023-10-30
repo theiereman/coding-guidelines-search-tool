@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthService } from './auth.service';
-import { User } from './user';
+import { AuthService } from './services/auth.service';
+import { IUser } from './interfaces/iuser';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
-  user?:User;
+  user?:IUser;
 
   constructor(private authService: AuthService) {}
 

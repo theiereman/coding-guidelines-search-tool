@@ -5,14 +5,14 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { Observable,Subject, tap, filter, takeUntil, of, from, map} from 'rxjs';
-import { User } from './user';
+import { IUser } from '../interfaces/iuser';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public graphClient?: Client;
-  private userSubject = new Subject<User | undefined>();
+  private userSubject = new Subject<IUser | undefined>();
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -27,13 +27,13 @@ export class AuthService {
       )
       .subscribe(() => {
         this.checkAndSetActiveAccount();
-        this.getUser().subscribe((user:User | undefined) => {
+        this.getUser().subscribe((user:IUser | undefined) => {
           console.log(JSON.stringify(user));
         });
       })
   }
 
-  getUserObservable(): Observable<User | undefined> {
+  getUserObservable(): Observable<IUser | undefined> {
     return this.userSubject.asObservable();
   }
 
@@ -68,7 +68,7 @@ export class AuthService {
     }
   }
   
-  private getUser(): Observable<User | undefined> {
+  private getUser(): Observable<IUser | undefined> {
     if (!this.isAuthenticated()) return of(undefined);
 
     // Create an authentication provider for the current user
@@ -87,10 +87,10 @@ export class AuthService {
     });
 
     // Get the user from Graph (GET /me)
-    let res:Observable<User> = from(this.graphClient.api('/me').select('displayName,mail,mailboxSettings,userPrincipalName').get())
+    let res:Observable<IUser> = from(this.graphClient.api('/me').select('displayName,mail,mailboxSettings,userPrincipalName').get())
                     .pipe(map((res) => {
                       console.log(res);
-                      const resUser:User = {
+                      const resUser:IUser = {
                         displayName: res.displayName ?? '',
                         email: res.mail ?? res.userPrincipalName ?? ''
                       }
