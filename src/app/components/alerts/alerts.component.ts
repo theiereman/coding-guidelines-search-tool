@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertsService } from '../../alerts.service';
-import { Alert } from '../../alert';
+import { AlertsService } from '../../services/alerts.service';
+import { IAlert } from '../../interfaces/ialert';
 import { trigger,query, transition, style, stagger, animate } from '@angular/animations';
 
 @Component({
@@ -34,7 +34,7 @@ export class AlertsComponent implements OnInit {
   ngOnInit() {
   }
 
-  close(alert: Alert) {
+  close(alert: IAlert) {
     this.alertsService.remove(alert);
   }
 }

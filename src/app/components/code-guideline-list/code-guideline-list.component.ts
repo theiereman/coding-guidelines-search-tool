@@ -1,6 +1,6 @@
 import { Component,  } from '@angular/core';
-import { ICodingGuidelineItem } from '../../icoding-guideline-item';
-import { MicrosoftGraphService } from '../../microsoft-graph.service';
+import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
+import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
 import { Subject, debounceTime } from 'rxjs';
 
 @Component({

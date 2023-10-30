@@ -1,4 +1,4 @@
-export interface Alert {
+export interface IAlert {
     message: string
     type: AlertType,
 }

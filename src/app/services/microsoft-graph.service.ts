@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Observable, catchError, filter, from, map, mergeMap, of, reduce } from 'rxjs';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { GRAPH_API_IDS } from './constants/graph-api.constants';
-import { ICodingGuidelineItem } from './icoding-guideline-item';
+import { GRAPH_API_IDS } from '../constants/graph-api.constants';
+import { ICodingGuidelineItem } from '../interfaces/icoding-guideline-item';
 import { AlertsService } from './alerts.service';
 
 @Injectable({
