@@ -43,3 +43,5 @@ Thumbs.db
 
 # ignore les variables d'environnement
 src/environments/*
+
+/.firebase
