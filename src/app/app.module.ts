@@ -39,7 +39,6 @@ const isIE =
         auth: {
             clientId: environment.clientId,
             authority: `https://login.microsoftonline.com/${environment.tenantId}`,
-            redirectUri: "http://localhost:4200",
         },
         cache: {
             cacheLocation : BrowserCacheLocation.LocalStorage,
