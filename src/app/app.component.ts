@@ -11,12 +11,14 @@ import { Observable } from 'rxjs';
 export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
   user?:IUser;
+  contentLoaded:boolean = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     this.authService.handleRedirects().subscribe();
     this.authService.getUserObservable().subscribe(user => {
+      this.contentLoaded = true;
       this.user = user;
     })
   }
