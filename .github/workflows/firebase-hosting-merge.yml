@@ -7,11 +7,17 @@ name: Deploy to Firebase Hosting on merge
     branches:
       - main
 jobs:
+  - name : create env file
+    run: |
+
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm ci && npm run build
+      - run : touch .env
+      - run : echo CLIENT_ID=${{ secrets.CLIENT_ID }}
+      - run : echo TENANT_ID=${{ secrets.TENANT_ID }}
+      - run : npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
