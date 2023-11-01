@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   getUserObservable(): Observable<IUser | undefined> {
-    return this.user$.asObservable();
+    return this.user$;
   }
 
   login(): Observable<AuthenticationResult> {
@@ -69,8 +69,10 @@ export class AuthService {
   }
   
   private updateUser(): void {
-    if (!this.isAuthenticated()) return;
-
+    if (!this.isAuthenticated()) {
+      this.user$.next(undefined);
+      return;
+    }
     // Create an authentication provider for the current user
     const authProvider = new AuthCodeMSALBrowserAuthenticationProvider(
       this.msalService.instance as PublicClientApplication,
