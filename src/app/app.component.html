@@ -1,5 +1,8 @@
 <app-navbar/>
-
 <app-alerts></app-alerts>
 
-<app-code-guideline-list id="search-container" *ngIf="user"/>
+<div class="main-content">
+    <app-connection-required *ngIf="!user"></app-connection-required>
+    <app-code-guideline-list id="search-container" *ngIf="user"/>
+</div>
+
