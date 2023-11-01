@@ -14,7 +14,6 @@ export class NavbarComponent {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.authService.handleRedirects().subscribe();
     this.setLoginDisplay();
     this.authService.getUserObservable().subscribe(user => {
       this.user = user;
