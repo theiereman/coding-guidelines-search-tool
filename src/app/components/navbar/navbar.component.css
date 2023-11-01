@@ -34,3 +34,11 @@
     cursor: pointer;
     font-size: small;
 }
+
+.profile-picture {
+    width: 35px; height: 35px; border-radius: 9999px
+}
+
+.placeholder {
+    background: #9A9A9A;
+}
