@@ -17,6 +17,7 @@ export class NavbarComponent {
     this.setLoginDisplay();
     this.authService.getUserObservable().subscribe(user => {
       this.user = user;
+      this.setLoginDisplay()
     })
   }
 
