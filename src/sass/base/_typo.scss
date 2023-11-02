@@ -1,12 +1,9 @@
+html {
+    font-family: Roboto, Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 18px;
+}
+
 $text-color:#1d1d1d;
 
-$base-pixel-size:6px;
-
-$font-size-small:$base-pixel-size*2;
-$font-size-default:$base-pixel-size*3;
-$font-size-big:$base-pixel-size*4;
-
-* {
-    font-family: Roboto, Calibri, 'Trebuchet MS', sans-serif;
-    font-size: $font-size-default;
-}
+$font-size-small:0.5rem;
+$font-size-big:1.2rem;

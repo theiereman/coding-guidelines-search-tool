@@ -1,21 +1,19 @@
-* {
-    box-sizing: border-box;
+html {
+    background-color: $background-color;
+    height: 100vh;
 }
 
-@mixin reset-margins-and-paddings {
-    margin: 0;
-    padding:0;
-}
-
-@mixin full-height {
+body {
     height: 100%;
 }
 
-html {
-    background-color: $background-color;
-}
+.app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
-body, html {
-    @include reset-margins-and-paddings();
-    @include full-height()
+    #main-content {
+        height: 100%;
+        padding: 10px;
+    }
 }
