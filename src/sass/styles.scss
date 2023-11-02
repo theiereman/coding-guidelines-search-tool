@@ -1,17 +1,6 @@
-* {
-    font-family: Roboto, Calibri, 'Trebuchet MS', sans-serif;
-    box-sizing: border-box;
-}
-
-html {
-    background-color: #e8e8e8;
-}
-
-body, html {
-    height: 100%;
-    margin: 0;
-    padding:0;
-}
+@import './helpers/dir';
+@import './base/dir';
+@import './items/dir';
 
 /* --- Neumorphism --- */
 
