@@ -6,7 +6,7 @@ import { trigger,query, transition, style, stagger, animate } from '@angular/ani
 @Component({
   selector: 'app-alerts',
   templateUrl: './alerts.component.html',
-  styleUrls: ['./alerts.component.css'],
+  styleUrls: ['./alerts.component.scss'],
   animations: [
     trigger('listInOut', [
       transition(':enter', [
