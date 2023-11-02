@@ -37,12 +37,18 @@ export class AuthService {
     return this.user$;
   }
 
-  login(): Observable<AuthenticationResult> {
-    return this.msalService.loginPopup();
+  login(): Observable<void> {
+    return this.msalService.loginRedirect().pipe(
+      catchError((err) => {
+        console.error(err);
+        this.alertService.addError(err);
+        return of();
+      })
+    );
   }
 
   logout(): Observable<void> {
-    return this.msalService.logoutPopup()
+    return this.msalService.logoutRedirect()
     .pipe(
       tap(_ => {
         this.graphClient = undefined;
