@@ -9,13 +9,14 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MsalModule, MsalService, MsalGuard, MsalInterceptor, MsalBroadcastService, MsalRedirectComponent } from "@azure/msal-angular";
 import { PublicClientApplication, InteractionType, BrowserCacheLocation } from "@azure/msal-browser";
 
-import { environment } from 'src/environments/environment';
 import { CodeGuidelineListComponent } from './components/code-guideline-list/code-guideline-list.component';
 import { CodeGuidelineSearchComponent } from './components/code-guideline-search/code-guideline-search.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertsModule } from './components/alerts/alerts.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConnectionRequiredComponent } from './components/connection-required/connection-required.component';
+import { GRAPH_API_IDS } from './constants/graph-api.constants';
+
 
 const isIE =
   window.navigator.userAgent.indexOf("MSIE ") > -1 ||
@@ -37,8 +38,8 @@ const isIE =
     BrowserAnimationsModule,
     MsalModule.forRoot( new PublicClientApplication({ // MSAL Configuration
         auth: {
-            clientId: environment.clientId,
-            authority: `https://login.microsoftonline.com/${environment.tenantId}`,
+            clientId: GRAPH_API_IDS.clientId,
+            authority: `https://login.microsoftonline.com/${GRAPH_API_IDS.tenantId}`,
         },
         cache: {
             cacheLocation : BrowserCacheLocation.LocalStorage,
