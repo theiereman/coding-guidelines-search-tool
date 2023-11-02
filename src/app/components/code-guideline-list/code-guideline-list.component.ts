@@ -56,11 +56,11 @@ export class CodeGuidelineListComponent {
   }
 
   ngOnInit(): void {
-    // this.graphService.getAllCodingGuidelines()
-    //   .subscribe(res => {
-    //     this.codingGuidelinesItems = res
-    //     this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
-    //     this.valuesInitialized = true;
-    //   });
+    this.graphService.getAllCodingGuidelines()
+      .subscribe(res => {
+        this.codingGuidelinesItems = res
+        this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
+        this.valuesInitialized = true;
+      });
   }
 }
