@@ -1,0 +1,46 @@
+.animated-label-input {
+    @mixin label-decoration {
+        display: inline-block;
+        font-size: 18px;
+        min-width: 5px;
+        color: $border-color;
+        transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    position: relative;
+    margin: 20px 0 40px;
+
+    input {
+        padding-left: 20px;
+        background-color: transparent;
+        border: 0;
+        border-bottom: 2px $border-color solid;
+        display: block;
+        width: 100%;
+        padding: 5px 10px;
+        font-size: 18px;
+        color: $text-color;
+        caret-color: $primary-color;
+
+        &:focus {
+            outline: 0;
+            border-bottom-color: $primary-color;
+            &+label span{
+                color: $primary-color;
+                transform: translateY(-30px);
+            }
+        }
+    }
+
+    label {
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        pointer-events: none;
+        @include label-decoration();
+    }
+
+    span {
+        @include label-decoration();
+    }
+}
