@@ -1,0 +1,43 @@
+.navbar {
+    height: 2rem;
+    padding : 10px;
+    display: flex;
+    background-color: $background-color-alt;
+}
+
+.app-logo {
+    height: 100%;
+}
+
+.user-information {
+    float: right;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px; 
+}
+
+.username {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: medium;
+}
+
+.authentication-status-btn {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    color: #8E8E8E;
+    cursor: pointer;
+    font-size: small;
+}
+
+.profile-picture {
+    width: 35px; height: 35px; border-radius: 9999px
+}
+
+.placeholder {
+    background: #9A9A9A;
+}

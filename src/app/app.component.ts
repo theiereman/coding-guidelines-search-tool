@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: [],
+  host: {class: 'app'}
 })
 export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
