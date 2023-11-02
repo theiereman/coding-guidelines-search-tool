@@ -5,7 +5,7 @@ import { IUser } from 'src/app/interfaces/iuser';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: []
 })
 export class NavbarComponent {
   user?:IUser;
