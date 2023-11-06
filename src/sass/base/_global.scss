@@ -1,3 +1,11 @@
+@mixin border-radius-small {
+    border-radius: 10px;
+}
+
+@mixin border-radius-normal {
+    border-radius: 20px;
+}
+
 html {
     background-color: $background-color;
     height: 100vh;
