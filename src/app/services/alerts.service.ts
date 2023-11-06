@@ -8,12 +8,14 @@ import { IAlert, AlertType } from '../interfaces/ialert';
 export class AlertsService {
   alerts: IAlert[] = [];
 
-  addError(message: string, debug?: string) {
+  addError(message: string, autoRemove: boolean = true) {
     let newAlert = {message: message, type: AlertType.Error};
     this.alerts.push(newAlert);
-    setTimeout(() => {
-      this.remove(newAlert);
-    }, 3000);
+    if(autoRemove) {
+      setTimeout(() => {
+        this.remove(newAlert);
+      }, 3000);
+    }
   }
 
   remove(alert: IAlert) {
