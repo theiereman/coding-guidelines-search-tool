@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-code-guideline-search',
