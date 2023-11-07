@@ -6,7 +6,7 @@ import { Subject, debounceTime } from 'rxjs';
 @Component({
   selector: 'app-code-guideline-list',
   templateUrl: './code-guideline-list.component.html',
-  styleUrls: ['./code-guideline-list.component.scss']
+  styleUrls: []
 })
 export class CodeGuidelineListComponent {
   valuesInitialized:boolean = false
