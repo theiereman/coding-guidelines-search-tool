@@ -21,7 +21,31 @@ body {
     flex-direction: column;
 
     #main-content {
-        height: 100%;
-        padding: 10px;
+        flex: 1;
+        padding: 1rem;
     }
+}
+
+.flex {
+    display: flex;
+    &.column {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.flex-remaining-space {
+    flex: 999;
+}
+
+.max-height {
+    height: 100%;
+}
+
+.max-width {
+    width: 100%;
+}
+
+.half-width {
+    width:50%
 }
