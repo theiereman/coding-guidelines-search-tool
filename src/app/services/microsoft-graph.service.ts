@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { Observable, catchError, filter, from, map, mergeMap, of, reduce } from 'rxjs';
+import { Observable, catchError, filter, from, map, mergeMap, switchMap, of, reduce, concatMap } from 'rxjs';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { GRAPH_API_IDS } from '../constants/graph-api.constants';
 import { ICodingGuidelineItem } from '../interfaces/icoding-guideline-item';
@@ -85,7 +85,7 @@ export class MicrosoftGraphService {
       mergeMap((worksheetsNames) => {
         return from(worksheetsNames).pipe(
           filter(name => name !== 'WIP'),
-          mergeMap((name) => {
+          concatMap((name) => {
             return this.getCodingGuidelinesFromWorksheet(name);
           })
         );
