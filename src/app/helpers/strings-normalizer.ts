@@ -26,5 +26,5 @@ const reducer = (acc: string, [key]: [string, string[]]) => {
 
 const removeAccents = (text: string) => [...accentsMap].reduce(reducer, text);
 
-export const customNormalization = (text: string) => removeAccents(text.trim());
+export const customNormalization = (text: string) => removeAccents(text.trim().toLowerCase().replace(/\s+/g, ' '));
   
