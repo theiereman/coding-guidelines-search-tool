@@ -3,6 +3,6 @@
     
 <div id="main-content" *ngIf="contentLoaded">
     <app-connection-required *ngIf="!user"></app-connection-required>
-    <app-code-guideline-list id="search-container" *ngIf="user"/>
+    <app-code-guideline-list class="flex column max-height" *ngIf="user"/>
 </div>
 
