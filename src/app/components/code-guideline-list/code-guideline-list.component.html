@@ -13,24 +13,21 @@
     <p>Récupération des valeurs depuis Sharepoint...</p>
 </div>
 
-
-<div class="table-container" *ngIf="valuesInitialized">
-    <table>
-        <tr class="header">
-            <th>Nom de l'élément</th>
-            <th>Préfixe</th>
-            <th>Format / Casse</th>
-            <th>Exemple</th>
-            <th>Catégorie</th>
+<table *ngIf="valuesInitialized">
+    <tr class="header">
+        <th class="name">Nom de l'élément</th>
+        <th class="prefix">Préfixe</th>
+        <th class="format">Format / Casse</th>
+        <th class="exemple">Exemple</th>
+        <th class="category">Catégorie</th>
+    </tr>
+    <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
+        <tr class="content">
+            <td>{{codingGuidelineItem.name}}</td>
+            <td>{{codingGuidelineItem.prefix}}</td>
+            <td>{{codingGuidelineItem.case}}</td>
+            <td>{{codingGuidelineItem.example}}</td>
+            <td>{{codingGuidelineItem.sheetName}}</td>
         </tr>
-        <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
-            <tr class="content">
-                <td>{{codingGuidelineItem.name}}</td>
-                <td>{{codingGuidelineItem.prefix}}</td>
-                <td>{{codingGuidelineItem.case}}</td>
-                <td>{{codingGuidelineItem.example}}</td>
-                <td>{{codingGuidelineItem.sheetName}}</td>
-            </tr>
-        </ng-container>
-    </table>
-</div>
+    </ng-container>
+</table>
