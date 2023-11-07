@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 import { AlertsService } from '../../services/alerts.service';
 import { IAlert } from '../../interfaces/ialert';
 import { trigger,query, transition, style, stagger, animate, animateChild } from '@angular/animations';
@@ -9,7 +9,7 @@ import { trigger,query, transition, style, stagger, animate, animateChild } from
   styleUrls: [],
   animations: [
     trigger('list', [
-      transition("* => *", [query("@animate", stagger(100, animateChild()))]),
+      transition("* => *", [query("@animate", stagger(100, animateChild()), { optional: true })]),
     ]),
     trigger('animate', [
       transition(":enter", [
