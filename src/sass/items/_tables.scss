@@ -1,13 +1,9 @@
 
-.table-container {
-  margin-top: 1rem;
-  display: table;
-
-  table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
+table {
+  width: 100%;
+  margin: 1rem 0;
+  table-layout: fixed;
+  border-collapse: collapse;
 
   .header {
     height: 3rem;
@@ -18,6 +14,12 @@
       padding-right: 2em;
       border-bottom: 2px solid $inactive-color;
     }
+
+    .name     { width: 40%; }
+    .prefix   { width: 10%;  }
+    .format   { width: 20%; }
+    .exemple  { width: 10%;  }
+    .category { width: 20%; }
   }
 
   .content {
