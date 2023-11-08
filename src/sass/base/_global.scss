@@ -6,6 +6,10 @@
     border-radius: 20px;
 }
 
+* { 
+    box-sizing: border-box;
+}
+
 html {
     background-color: $background-color;
     height: 100vh;
@@ -28,9 +32,13 @@ body {
 
 .flex {
     display: flex;
+    gap: 12px;
     &.column {
         flex-direction: column;
         align-items: center;
+    }
+    &.items-baseline {
+        align-items: baseline;
     }
 }
 
