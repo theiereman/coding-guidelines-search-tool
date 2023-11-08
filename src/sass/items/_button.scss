@@ -1,0 +1,23 @@
+button {
+    @include border-radius-small;
+    height: 2em;
+    background-color: $background-color-alt;
+    border: 2px solid $inactive-color;
+    color: $text-color;
+    cursor: pointer;
+    text-align: center;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    padding: 0 .5em;
+}
+
+button:hover {
+    color: #fff;
+    background-color: $primary-color;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+}
+
+button:active {
+    box-shadow: none;
+    transform: translateY(0);
+}
