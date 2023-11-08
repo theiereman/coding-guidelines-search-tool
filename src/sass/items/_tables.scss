@@ -15,20 +15,18 @@ table {
       border-bottom: 2px solid $inactive-color;
     }
 
-    .name     { width: 40%; }
     .prefix   { width: 10%;  }
-    .format   { width: 20%; }
-    .exemple  { width: 10%;  }
-    .category { width: 20%; }
   }
 
   .content {
     height: 2rem;
     
     td {
-      text-align: center;
+      text-align: left;
       border-top: 2px solid $inactive-color;
       font-size:$font-size-small;
+      padding: 0 2em;
+      overflow: hidden;
     }
   }
 }
