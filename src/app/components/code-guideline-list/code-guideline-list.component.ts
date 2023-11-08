@@ -1,7 +1,7 @@
 import { Component,  } from '@angular/core';
 import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
 import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, switchMap } from 'rxjs';
 import { customNormalization } from '../../helpers/strings-normalizer';
 
 @Component({
@@ -14,20 +14,43 @@ export class CodeGuidelineListComponent {
   codingGuidelinesItems: ICodingGuidelineItem[] = []
   filteredCodingGuidelinesItems: ICodingGuidelineItem[] = []
 
+  private codeguidelinesListTrigger$ = new Subject<void>;
   private searchValueChangedSubject: Subject<string> = new Subject<string>();
 
   constructor(
     private graphService: MicrosoftGraphService
   ) {
+    //mise à jour de la recherche
     this.searchValueChangedSubject.pipe(
       debounceTime(300)
     ).subscribe((searchValue) => {
       this.filterCodingGuidelines(searchValue);
     });
+
+    //mise à jour de la liste
+    this.codeguidelinesListTrigger$.pipe(
+      debounceTime(2000),
+      switchMap(() => {
+        return this.graphService.getAllCodingGuidelines();
+      })
+    ).subscribe((res) => {
+      console.log("test")
+      this.codingGuidelinesItems = res
+      this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
+      this.valuesInitialized = true;
+    })
    }
 
   onSearchValueUpdated(searchValue: string) {
     this.searchValueChangedSubject.next(searchValue);
+  }
+
+  updateList() {
+    this.valuesInitialized = false;
+    this.codingGuidelinesItems = [];
+    this.filteredCodingGuidelinesItems = []
+
+    this.codeguidelinesListTrigger$.next();
   }
 
   private filterCodingGuidelines(searchValue:string) {
@@ -59,11 +82,6 @@ export class CodeGuidelineListComponent {
   }
 
   ngOnInit(): void {
-    this.graphService.getAllCodingGuidelines()
-      .subscribe(res => {
-        this.codingGuidelinesItems = res
-        this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
-        this.valuesInitialized = true;
-      });
+    this.codeguidelinesListTrigger$.next();
   }
 }

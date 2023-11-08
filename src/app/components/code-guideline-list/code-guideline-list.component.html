@@ -1,4 +1,8 @@
-<app-code-guideline-search class="half-width" (onSearchValueChanged)="onSearchValueUpdated($event)"/>
+
+<div class="search-container flex items-baseline half-width">
+    <app-code-guideline-search class="flex-remaining-space" (onSearchValueChanged)="onSearchValueUpdated($event)"/>
+    <button (click)="updateList()">⭯</button>
+</div>
 
 <div class="loader-container" *ngIf="!valuesInitialized">
     <div class="loader">
@@ -13,21 +17,23 @@
     <p>Récupération des valeurs depuis Sharepoint...</p>
 </div>
 
-<table *ngIf="valuesInitialized">
-    <tr class="header">
-        <th class="name">Nom de l'élément</th>
-        <th class="prefix">Préfixe</th>
-        <th class="format">Format / Casse</th>
-        <th class="exemple">Exemple</th>
-        <th class="category">Catégorie</th>
-    </tr>
-    <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
-        <tr class="content">
-            <td>{{codingGuidelineItem.name}}</td>
-            <td>{{codingGuidelineItem.prefix}}</td>
-            <td>{{codingGuidelineItem.case}}</td>
-            <td class="exemple">{{codingGuidelineItem.example}}</td>
-            <td class="category">{{codingGuidelineItem.sheetName}}</td>
+<div *ngIf="valuesInitialized">
+    <table>
+        <tr class="header">
+            <th class="name">Nom de l'élément</th>
+            <th class="prefix">Préfixe</th>
+            <th class="format">Format / Casse</th>
+            <th class="exemple">Exemple</th>
+            <th class="category">Catégorie</th>
         </tr>
-    </ng-container>
-</table>
+        <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
+            <tr class="content">
+                <td>{{codingGuidelineItem.name}}</td>
+                <td>{{codingGuidelineItem.prefix}}</td>
+                <td>{{codingGuidelineItem.case}}</td>
+                <td class="exemple">{{codingGuidelineItem.example}}</td>
+                <td class="category">{{codingGuidelineItem.sheetName}}</td>
+            </tr>
+        </ng-container>
+    </table>
+</div>
