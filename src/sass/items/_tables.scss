@@ -27,6 +27,9 @@ table {
       font-size:$font-size-small;
       padding: 0 2em;
       overflow: hidden;
+
+      &.category { text-align: center; }
+      &.exemple { text-align: center; }
     }
   }
 }
