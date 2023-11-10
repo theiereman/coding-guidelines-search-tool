@@ -34,7 +34,6 @@ export class CodeGuidelineListComponent {
         return this.graphService.getAllCodingGuidelines();
       })
     ).subscribe((res) => {
-      console.log("test")
       this.codingGuidelinesItems = res
       this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
       this.valuesInitialized = true;
