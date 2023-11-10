@@ -85,7 +85,7 @@ export class AuthService {
       {
         account: this.msalService.instance.getActiveAccount()!,
         scopes: ['user.read', 'mailboxsettings.read', 'calendars.readwrite','Sites.Read.All', 'Files.Read.All'],
-        interactionType: InteractionType.Popup,
+        interactionType: InteractionType.Redirect,
       },
     );
 
