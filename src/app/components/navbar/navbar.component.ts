@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from 'src/app/interfaces/iuser';
+import { GRAPH_API } from 'src/app/constants/graph-api.constants';
 
 @Component({
   selector: 'app-navbar',
@@ -19,6 +20,10 @@ export class NavbarComponent {
       this.user = user;
       this.setLoginDisplay()
     })
+  }
+
+  openSharepointWorksheet() {
+    window.open(GRAPH_API.worksheetLink)
   }
 
   login(): void {
