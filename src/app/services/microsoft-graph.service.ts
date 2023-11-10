@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Observable, catchError, filter, from, map, mergeMap, switchMap, of, reduce, concatMap } from 'rxjs';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { GRAPH_API_IDS } from '../constants/graph-api.constants';
+import { GRAPH_API } from '../constants/graph-api.constants';
 import { ICodingGuidelineItem } from '../interfaces/icoding-guideline-item';
 import { AlertsService } from './alerts.service';
+import { capitalizeFirstLetter } from '../helpers/strings-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class MicrosoftGraphService {
     }
 
     let worksheets:Observable<MicrosoftGraph.WorkbookWorksheet[]> = from(this.authService.graphClient
-      .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets`)
+      .api(`/sites/${GRAPH_API.siteId}/drives/${GRAPH_API.driveId}/items/${GRAPH_API.codingGuidelineWorkbookItemId}/workbook/worksheets`)
       .get()).pipe(
         map(res => res.value),
         catchError((err) => {
@@ -44,14 +45,14 @@ export class MicrosoftGraphService {
     }
 
     return from(this.authService.graphClient
-      .api(`/sites/${GRAPH_API_IDS.siteId}/drives/${GRAPH_API_IDS.driveId}/items/${GRAPH_API_IDS.codingGuidelineWorkbookItemId}/workbook/worksheets/${worksheetName}/usedRange?$select=values`)
+      .api(`/sites/${GRAPH_API.siteId}/drives/${GRAPH_API.driveId}/items/${GRAPH_API.codingGuidelineWorkbookItemId}/workbook/worksheets/${worksheetName}/usedRange?$select=values`)
       .get())
       .pipe(
         map((range:MicrosoftGraph.WorkbookRange) => {
           //ignore la première ligne des entêtes
           return range.values.slice(1).map((row:string[]) => {
             let codingGuidelineValue:ICodingGuidelineItem = {
-              name:row[0],
+              name:capitalizeFirstLetter(row[0]),
               prefix:row[1],
               case:row[2],
               example:row[3],
