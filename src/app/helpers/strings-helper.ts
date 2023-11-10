@@ -27,4 +27,6 @@ const reducer = (acc: string, [key]: [string, string[]]) => {
 const removeAccents = (text: string) => [...accentsMap].reduce(reducer, text);
 
 export const customNormalization = (text: string) => removeAccents(text.trim().toLowerCase().replace(/\s+/g, ' '));
+
+export const capitalizeFirstLetter = (text: string) => text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
   

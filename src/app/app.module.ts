@@ -15,7 +15,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertsModule } from './components/alerts/alerts.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConnectionRequiredComponent } from './components/connection-required/connection-required.component';
-import { GRAPH_API_IDS } from './constants/graph-api.constants';
+import { GRAPH_API } from './constants/graph-api.constants';
 
 
 const isIE =
@@ -38,8 +38,8 @@ const isIE =
     BrowserAnimationsModule,
     MsalModule.forRoot( new PublicClientApplication({ // MSAL Configuration
         auth: {
-            clientId: GRAPH_API_IDS.clientId,
-            authority: `https://login.microsoftonline.com/${GRAPH_API_IDS.tenantId}`,
+            clientId: GRAPH_API.clientId,
+            authority: `https://login.microsoftonline.com/${GRAPH_API.tenantId}`,
         },
         cache: {
             cacheLocation : BrowserCacheLocation.LocalStorage,

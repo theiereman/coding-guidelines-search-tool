@@ -1,8 +1,8 @@
 import { Component,  } from '@angular/core';
 import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
 import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
-import { Subject, debounceTime, switchMap } from 'rxjs';
-import { customNormalization } from '../../helpers/strings-normalizer';
+import { BehaviorSubject, Subject, debounceTime, switchMap } from 'rxjs';
+import { customNormalization } from '../../helpers/strings-helper';
 
 @Component({
   selector: 'app-code-guideline-list',
@@ -10,18 +10,19 @@ import { customNormalization } from '../../helpers/strings-normalizer';
   styleUrls: []
 })
 export class CodeGuidelineListComponent {
+  currentSearchValue:string = ""
   valuesInitialized:boolean = false
   codingGuidelinesItems: ICodingGuidelineItem[] = []
   filteredCodingGuidelinesItems: ICodingGuidelineItem[] = []
 
   private codeguidelinesListTrigger$ = new Subject<void>;
-  private searchValueChangedSubject: Subject<string> = new Subject<string>();
+  private searchValueChangedSubject$ = new BehaviorSubject<string>("");
 
   constructor(
     private graphService: MicrosoftGraphService
   ) {
     //mise à jour de la recherche
-    this.searchValueChangedSubject.pipe(
+    this.searchValueChangedSubject$.pipe(
       debounceTime(300)
     ).subscribe((searchValue) => {
       this.filterCodingGuidelines(searchValue);
@@ -37,11 +38,13 @@ export class CodeGuidelineListComponent {
       this.codingGuidelinesItems = res
       this.filteredCodingGuidelinesItems = this.codingGuidelinesItems;
       this.valuesInitialized = true;
+      this.filterCodingGuidelines(this.currentSearchValue);
     })
    }
 
   onSearchValueUpdated(searchValue: string) {
-    this.searchValueChangedSubject.next(searchValue);
+    this.currentSearchValue = searchValue
+    this.searchValueChangedSubject$.next(searchValue);
   }
 
   updateList() {
