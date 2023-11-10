@@ -1,23 +1,48 @@
 button {
     @include border-radius-small;
+    @include hover-transition;
+
     height: 2em;
     background-color: $background-color-alt;
     border: 2px solid $inactive-color;
     color: $text-color;
     cursor: pointer;
     text-align: center;
-    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
     padding: 0 .5em;
+
+    &:hover {
+        color: #fff;
+        background-color: $primary-color;
+        box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+        transform: translateY(-2px);
+    }
+    
+    &:active {
+        box-shadow: none;
+        transform: translateY(0);
+    }
 }
 
-button:hover {
-    color: #fff;
-    background-color: $primary-color;
-    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-    transform: translateY(-2px);
-}
+a{
+    @include hover-transition;
 
-button:active {
-    box-shadow: none;
-    transform: translateY(0);
+    color: #8E8E8E;
+    cursor: pointer;
+    
+    &.small-text {
+        font-size: $font-size-smallest;
+    }
+
+    &.underline {
+        text-decoration: underline;
+    }
+
+    &:hover {
+       font-weight: 700; 
+       transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
 }

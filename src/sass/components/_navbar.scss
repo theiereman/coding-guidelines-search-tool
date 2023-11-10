@@ -7,6 +7,7 @@
 
 .app-logo {
     height: 100%;
+    cursor: pointer;
 }
 
 .user-information {
@@ -22,16 +23,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    font-size: medium;
-}
-
-.authentication-status-btn {
-    background: none!important;
-    border: none;
-    padding: 0!important;
-    color: #8E8E8E;
-    cursor: pointer;
-    font-size: small;
 }
 
 .profile-picture {
