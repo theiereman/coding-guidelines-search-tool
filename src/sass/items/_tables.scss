@@ -22,14 +22,13 @@ table {
     height: 2rem;
     
     td {
-      text-align: left;
+      text-align: center;
       border-top: 2px solid $inactive-color;
       font-size:$font-size-small;
       padding: 0 2em;
       overflow: hidden;
 
-      &.category { text-align: center; }
-      &.exemple { text-align: center; }
+      &.name { text-align: left; }
     }
   }
 }
