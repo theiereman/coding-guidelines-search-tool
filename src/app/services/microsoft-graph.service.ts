@@ -86,7 +86,7 @@ export class MicrosoftGraphService {
       mergeMap((worksheetsNames) => {
         return from(worksheetsNames).pipe(
           filter(name => name !== 'WIP'),
-          concatMap((name) => {
+          mergeMap((name) => {
             return this.getCodingGuidelinesFromWorksheet(name);
           })
         );
