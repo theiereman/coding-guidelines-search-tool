@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "codingGuidelinesSearchTool:build:production"
+              "buildTarget": "codingGuidelinesSearchTool:build:production"
             },
             "development": {
-              "browserTarget": "codingGuidelinesSearchTool:build:development"
+              "buildTarget": "codingGuidelinesSearchTool:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "codingGuidelinesSearchTool:build"
+            "buildTarget": "codingGuidelinesSearchTool:build"
           }
         },
         "test": {
