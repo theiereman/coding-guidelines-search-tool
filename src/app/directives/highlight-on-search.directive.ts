@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input } from '@angular/core';
-import { customNormalization } from './helpers/strings-helper';
+import { customNormalization } from '../helpers/strings-helper';
 
 @Directive({
   selector: '[appHighlightOnSearch]'
