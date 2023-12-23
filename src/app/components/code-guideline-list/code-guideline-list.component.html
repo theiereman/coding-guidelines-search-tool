@@ -28,11 +28,11 @@
         </tr>
         <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
             <tr class="content">
-                <td class="name">{{codingGuidelineItem.name}}</td>
-                <td class="prefix">{{codingGuidelineItem.prefix}}</td>
-                <td class="format">{{codingGuidelineItem.case}}</td>
-                <td class="exemple">{{codingGuidelineItem.example}}</td>
-                <td class="category">{{codingGuidelineItem.sheetName}}</td>
+                <td class="name"> <span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.name}}</span></td>
+                <td class="prefix"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.prefix}}</span></td>
+                <td class="format"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.case}}</span></td>
+                <td class="exemple"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.example}}</span></td>
+                <td class="category"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.sheetName}}</span></td>
             </tr>
         </ng-container>
     </table>
