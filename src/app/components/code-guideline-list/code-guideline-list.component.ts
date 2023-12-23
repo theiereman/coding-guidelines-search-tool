@@ -30,7 +30,7 @@ export class CodeGuidelineListComponent {
 
     //mise à jour de la liste
     this.codeguidelinesListTrigger$.pipe(
-      debounceTime(2000),
+      debounceTime(1000),
       switchMap(() => {
         return this.graphService.getAllCodingGuidelines();
       })

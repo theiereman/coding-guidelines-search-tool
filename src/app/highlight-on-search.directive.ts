@@ -17,15 +17,19 @@ export class HighlightOnSearchDirective{
 
   constructor(private el: ElementRef) {  }
 
-  public ngAfterViewInit(): void { 
+  public ngAfterViewInit(): void {
     this.elementValue = customNormalization(this.el.nativeElement.innerText)
     this.highlight();
   }
 
   private highlight() {
-    this.el.nativeElement.style.backgroundColor = 'transparent'; //reset du highlihght
-    if(this.previousValue !== '' && this.elementValue.includes(this.previousValue)) {
-      this.el.nativeElement.style.backgroundColor  = 'yellow';
-    } 
+    let termsArray = this.previousValue.split(' ').filter(value => value.length > 0)
+
+    this.el.nativeElement.style.fontWeight = 400; //reset du highlihght
+    termsArray.forEach(term => {
+      if(this.previousValue !== '' && this.elementValue.includes(term)) {
+        this.el.nativeElement.style.fontWeight = 900;
+      } 
+    });
   }
 }
