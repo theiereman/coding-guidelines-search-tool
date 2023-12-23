@@ -16,6 +16,7 @@ import { AlertsModule } from './components/alerts/alerts.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConnectionRequiredComponent } from './components/connection-required/connection-required.component';
 import { GRAPH_API } from './constants/graph-api.constants';
+import { HighlightOnSearchDirective } from './highlight-on-search.directive';
 
 
 const isIE =
@@ -29,7 +30,8 @@ const isIE =
     CodeGuidelineListComponent,
     CodeGuidelineSearchComponent,
     ConnectionRequiredComponent,
-    NavbarComponent
+    NavbarComponent,
+    HighlightOnSearchDirective
   ],
   imports: [
     BrowserModule,
