@@ -23,6 +23,13 @@ body {
     height: 100%;
 }
 
+footer {
+    position: fixed;
+    bottom: 0px;
+    background-color: $background-color;
+    width: 100%;
+}
+
 .app {
     height: 100%;
     display: flex;
@@ -31,6 +38,7 @@ body {
     #main-content {
         flex: 1;
         padding: 1rem;
+        padding-bottom: 2rem;
     }
 }
 
