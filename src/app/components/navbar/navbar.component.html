@@ -1,4 +1,10 @@
-<img title="Ouvrir le fichier Excel de la charte de programmation" (click)="openSharepointWorksheet()" class="app-logo" src="assets/custy_logo_titre.svg" alt="Icone Custy">
+<img title="Ouvrir le fichier Excel de la charte de programmation" class="app-logo" src="assets/custy_logo_titre.svg" alt="Icone Custy">
+
+<div class="nav-links-container">
+    <a class="small-text" (click)="openSharepointWorksheet()">Charte de programmation</a>
+</div>
+
+
 <div class="user-information">
     <div class="username">
         <div *ngIf="user">{{user.displayName}}</div>
