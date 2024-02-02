@@ -1,17 +1,41 @@
-<img title="Ouvrir le fichier Excel de la charte de programmation" class="app-logo" src="assets/custy_logo_titre.svg" alt="Icone Custy">
+<img
+  title="Ouvrir le fichier Excel de la charte de programmation"
+  class="app-logo"
+  src="assets/custy_logo_titre.svg"
+  alt="Icone Custy"
+/>
 
 <div class="nav-links-container">
-    <a class="small-text" (click)="openSharepointWorksheet()">Charte de programmation</a>
+  <a class="small-text" (click)="openSharepointWorksheet()">
+    Charte de programmation
+  </a>
+  <a class="small-text" (click)="openRevolutionGuidelines()">
+    Charte IHM Révolution
+  </a>
+  <a class="small-text" (click)="openNewIssueTooltip()">
+    Création d'un issue de réintégration
+  </a>
 </div>
 
-
 <div class="user-information">
-    <div class="username">
-        <div *ngIf="user">{{user.displayName}}</div>
-        <a *ngIf="!loginDisplay" (click)="login()" class="small-text">Se connecter</a>
-        <a *ngIf="loginDisplay" (click)="logout()" class="small-text">Se déconnecter</a>
-    </div>
-    
-    <img *ngIf="user?.profilePictureBase64" class="profile-picture" src="{{user?.profilePictureBase64}}" alt="">
-    <div *ngIf="!user?.profilePictureBase64" class="profile-picture placeholder"></div>
+  <div class="username">
+    <div *ngIf="user">{{ user.displayName }}</div>
+    <a *ngIf="!loginDisplay" (click)="login()" class="small-text">
+      Se connecter
+    </a>
+    <a *ngIf="loginDisplay" (click)="logout()" class="small-text">
+      Se déconnecter
+    </a>
+  </div>
+
+  <img
+    *ngIf="user?.profilePictureBase64"
+    class="profile-picture"
+    src="{{ user?.profilePictureBase64 }}"
+    alt=""
+  />
+  <div
+    *ngIf="!user?.profilePictureBase64"
+    class="profile-picture placeholder"
+  ></div>
 </div>
