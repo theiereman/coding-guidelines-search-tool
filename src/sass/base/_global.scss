@@ -1,71 +1,71 @@
 @mixin border-radius-small {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 @mixin border-radius-normal {
-    border-radius: 20px;
+  border-radius: 20px;
 }
 
 @mixin hover-transition {
-    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+  transition: all 200ms;
 }
 
-* { 
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
 html {
-    background-color: $background-color;
-    height: 100vh;
+  background-color: $background-color;
+  height: 100vh;
 }
 
 body {
-    height: 100%;
+  height: 100%;
 }
 
 footer {
-    position: fixed;
-    bottom: 0px;
-    background-color: $background-color;
-    width: 100%;
+  position: fixed;
+  bottom: 0px;
+  background-color: $background-color;
+  width: 100%;
 }
 
 .app {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
-    #main-content {
-        flex: 1;
-        padding: 1rem;
-        padding-bottom: 2rem;
-    }
+  #main-content {
+    flex: 1;
+    padding: 1rem;
+    padding-bottom: 2rem;
+  }
 }
 
 .flex {
-    display: flex;
-    gap: 12px;
-    &.column {
-        flex-direction: column;
-        align-items: center;
-    }
-    &.items-baseline {
-        align-items: baseline;
-    }
+  display: flex;
+  gap: 12px;
+  &.column {
+    flex-direction: column;
+    align-items: center;
+  }
+  &.items-baseline {
+    align-items: baseline;
+  }
 }
 
 .flex-remaining-space {
-    flex: 999;
+  flex: 999;
 }
 
 .max-height {
-    height: 100%;
+  height: 100%;
 }
 
 .max-width {
-    width: 100%;
+  width: 100%;
 }
 
 .half-width {
-    width:50%
+  width: 50%;
 }
