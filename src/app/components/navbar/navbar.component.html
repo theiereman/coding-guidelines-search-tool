@@ -19,11 +19,25 @@
 
 <div class="user-information">
   <div class="username">
+    <div>
+      Gitlab :
+      {{ isAuthenticatedOnGitlab() ? "connecté" : "non connecté" }}
+    </div>
+    <a
+      class="small-text"
+      (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
+      >{{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}</a
+    >
+  </div>
+</div>
+
+<div class="user-information">
+  <div class="username">
     <div *ngIf="user">{{ user.displayName }}</div>
-    <a *ngIf="!loginDisplay" (click)="login()" class="small-text">
+    <a *ngIf="!loginDisplay" (click)="microsoftLogin()" class="small-text">
       Se connecter
     </a>
-    <a *ngIf="loginDisplay" (click)="logout()" class="small-text">
+    <a *ngIf="loginDisplay" (click)="microsoftLogout()" class="small-text">
       Se déconnecter
     </a>
   </div>
