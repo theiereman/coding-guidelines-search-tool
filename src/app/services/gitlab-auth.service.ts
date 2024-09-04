@@ -14,52 +14,59 @@ export class GitlabAuthService {
   private redirectUri = environment.gitlab_auth_redirect_uri;
   private authUrl = `${environment.gitlab_app_base_uri}/oauth/authorize`;
   private tokenUrl = `${environment.gitlab_app_base_uri}/oauth/token`;
-  private codeVerifier: string = '';
-  private state: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   //The CODE_VERIFIER is a random string, between 43 and 128 characters in length, which use the characters A-Z, a-z, 0-9, -, ., _, and ~.
   generateCodeVerifier() {
-    this.codeVerifier = uuidv4() + uuidv4() + uuidv4();
-    return this.codeVerifier;
+    return uuidv4() + uuidv4() + uuidv4();
+  }
+
+  bufferToBase64UrlEncoded(buffer: ArrayBuffer) {
+    const uint8Array = new Uint8Array(buffer);
+    const binaryString = Array.from(uint8Array)
+      .map((byte) => String.fromCharCode(byte))
+      .join('');
+    const base64String = btoa(binaryString);
+    return base64String
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
   }
 
   //The CODE_CHALLENGE is an URL-safe base64-encoded string of the SHA256 hash of the CODE_VERIFIER
-  generateCodeChallenge(codeVerifier: string) {
-    return this.sha256(codeVerifier).then((hash) => {
-      return Base64.encodeURI(hash);
-    });
-  }
-
-  sha256(plain: string) {
+  async generateCodeChallenge(codeVerifier: string): Promise<string> {
+    // Créer un TextEncoder pour convertir le code verifier en Uint8Array
     const encoder = new TextEncoder();
-    const data = encoder.encode(plain);
-    return crypto.subtle.digest('SHA-256', data).then((buffer) => {
-      return this.bufferToBase64UrlEncoded(buffer);
-    });
-  }
+    const data = encoder.encode(codeVerifier);
 
-  //The SHA256 hash must be in binary format before encoding
-  bufferToBase64UrlEncoded(buffer: ArrayBuffer) {
-    const bytes = new Uint8Array(buffer);
-    const binary = String.fromCharCode.apply(null, [...bytes]); //TODO : test it!
-    return Base64.encodeURI(binary);
+    // Calculer le hash SHA-256 du code verifier
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+    // Convertir le buffer en Base64 URL-safe
+    const codeChallenge = this.bufferToBase64UrlEncoded(hashBuffer);
+    return codeChallenge;
   }
 
   login() {
-    this.codeVerifier = this.generateCodeVerifier();
-    this.state = uuidv4();
+    const codeVerifier = this.generateCodeVerifier();
+    const state = uuidv4();
+    localStorage.setItem('gitlab_state', state);
+    localStorage.setItem('gitlab_code_verifier', codeVerifier);
 
-    this.generateCodeChallenge(this.codeVerifier).then((codeChallenge) => {
+    this.generateCodeChallenge(
+      'ks02i3jdikdo2k0dkfodf3m39rjfjsdk0wk349rj3jrhf'
+    ).then((c) => alert('gitlab test exeample codeChallenge = ' + c));
+
+    this.generateCodeChallenge(codeVerifier).then((codeChallenge) => {
       const params = new HttpParams()
         .set('client_id', this.clientId)
         .set('redirect_uri', this.redirectUri)
         .set('response_type', 'code')
-        .set('state', this.state)
+        .set('state', state)
         .set('code_challenge', codeChallenge)
         .set('code_challenge_method', 'S256')
-        .set('scope', 'read_user api');
+        .set('scope', 'api');
 
       const authUrlWithParams = `${this.authUrl}?${params.toString()}`;
       window.location.href = authUrlWithParams;
@@ -68,16 +75,20 @@ export class GitlabAuthService {
 
   handleRedirectCallback() {
     const params = new URLSearchParams(window.location.search);
+    const storedState = localStorage.getItem('gitlab_state');
+    const codeVerifier = localStorage.getItem('gitlab_code_verifier');
     const code = params.get('code');
     const returnedState = params.get('state');
 
-    if (code && returnedState === this.state) {
-      const body = new HttpParams()
-        .set('client_id', this.clientId)
-        .set('redirect_uri', this.redirectUri)
-        .set('grant_type', 'authorization_code')
-        .set('code', code)
-        .set('code_verifier', this.codeVerifier);
+    if (code && returnedState === storedState) {
+      const body = new URLSearchParams();
+      body.set('client_id', this.clientId);
+      body.set('redirect_uri', this.redirectUri);
+      body.set('grant_type', 'authorization_code');
+      body.set('code', code);
+      body.set('code_verifier', codeVerifier ?? '');
+
+      console.log(body.toString());
 
       this.http
         .post(this.tokenUrl, body.toString(), {
@@ -95,6 +106,7 @@ export class GitlabAuthService {
 
   logout() {
     localStorage.removeItem('gitlab_access_token');
+    localStorage.removeItem('gitlab_state');
     this.router.navigate(['/']);
   }
 
