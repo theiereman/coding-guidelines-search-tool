@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
 import { Base64 } from 'js-base64';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,8 @@ export class GitlabAuthService {
   private authUrl = `${environment.gitlab_app_base_uri}/oauth/authorize`;
   private tokenUrl = `${environment.gitlab_app_base_uri}/oauth/token`;
 
+  private isAuthenticated$: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(this.isAuthenticated());
   constructor(private http: HttpClient, private router: Router) {}
 
   //The CODE_VERIFIER is a random string, between 43 and 128 characters in length, which use the characters A-Z, a-z, 0-9, -, ., _, and ~.
@@ -54,10 +57,6 @@ export class GitlabAuthService {
     localStorage.setItem('gitlab_state', state);
     localStorage.setItem('gitlab_code_verifier', codeVerifier);
 
-    this.generateCodeChallenge(
-      'ks02i3jdikdo2k0dkfodf3m39rjfjsdk0wk349rj3jrhf'
-    ).then((c) => alert('gitlab test exeample codeChallenge = ' + c));
-
     this.generateCodeChallenge(codeVerifier).then((codeChallenge) => {
       const params = new HttpParams()
         .set('client_id', this.clientId)
@@ -88,8 +87,6 @@ export class GitlabAuthService {
       body.set('code', code);
       body.set('code_verifier', codeVerifier ?? '');
 
-      console.log(body.toString());
-
       this.http
         .post(this.tokenUrl, body.toString(), {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -100,17 +97,30 @@ export class GitlabAuthService {
           this.router.navigate(['/']);
         });
     } else {
+      this.clearLocalStorage();
       console.error('State mismatch or code missing in the callback');
     }
+
+    this.isAuthenticated$.next(this.isAuthenticated());
   }
 
   logout() {
-    localStorage.removeItem('gitlab_access_token');
-    localStorage.removeItem('gitlab_state');
+    this.clearLocalStorage();
+    this.isAuthenticated$.next(false);
     this.router.navigate(['/']);
   }
 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('gitlab_access_token');
+  }
+
+  getAccessToken(): string {
+    return localStorage.getItem('gitlab_access_token') ?? '';
+  }
+
+  private clearLocalStorage() {
+    localStorage.removeItem('gitlab_access_token');
+    localStorage.removeItem('gitlab_state');
+    localStorage.removeItem('gitlab_code_verifier');
   }
 }
