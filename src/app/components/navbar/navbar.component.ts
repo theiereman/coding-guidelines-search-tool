@@ -4,6 +4,8 @@ import { IUser } from 'src/app/interfaces/iuser';
 import { GRAPH_API } from 'src/app/constants/graph-api.constants';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ActivatedRoute } from '@angular/router';
+import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlabuser';
+import { GitlabService } from 'src/app/services/gitlab.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,23 +14,30 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class NavbarComponent {
   user?: IUser;
+  gitlabUser?: IGitlabUser;
   loginDisplay = false;
 
   constructor(
     private microsoftAuthService: AuthService,
     private gitlabAuthService: GitlabAuthService,
+    private gitlabService: GitlabService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.setLoginDisplay();
+
+    //TODO : use gitlabauthservice authentication subject to check before making user info request
+    // this.gitlabService.getAuthenticatedUser().subscribe((user) => {
+    //   this.gitlabUser = user;
+    // });
+
     this.microsoftAuthService.getUserObservable().subscribe((user) => {
       this.user = user;
       this.setLoginDisplay();
     });
+
     this.route.queryParams.subscribe((params) => {
-      console.log('redirected from gitlab');
-      console.log(params);
       if (params['code']) {
         this.gitlabAuthService.handleRedirectCallback();
       }
