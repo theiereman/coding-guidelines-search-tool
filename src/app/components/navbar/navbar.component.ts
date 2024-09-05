@@ -42,10 +42,9 @@ export class NavbarComponent {
     //si connecté sur Gitlab, récupérer l'utilisateur courant
     this.gitlabAuthService.isAuthenticated$.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        //TODO : résoudre le problème CORS
-        // this.gitlabService.getAuthenticatedUser().subscribe((user) => {
-        //   this.gitlabUser = user;
-        // });
+        this.gitlabService.getAuthenticatedUser().subscribe((user) => {
+          this.gitlabUser = user;
+        });
       }
     });
   }
@@ -88,5 +87,9 @@ export class NavbarComponent {
 
   isAuthenticatedOnGitlab(): boolean {
     return this.gitlabAuthService.isAuthenticated();
+  }
+
+  getGitlabUserProfilePicture() {
+    return this.gitlabUser?.avatar_url;
   }
 }
