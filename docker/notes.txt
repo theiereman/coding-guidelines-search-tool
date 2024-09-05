@@ -1,0 +1,2 @@
+commande pour réinitialiser le mot de passe root : gitlab-rake "gitlab:password:reset[root]"
+le mot de passe doit être assez complexe et ne doit pas être une combinaison commune de mots 
