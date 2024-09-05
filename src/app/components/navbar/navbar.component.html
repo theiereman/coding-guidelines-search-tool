@@ -33,12 +33,6 @@
       >{{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}</a
     >
   </div>
-  <img
-    *ngIf="user?.profilePictureBase64"
-    class="profile-picture"
-    src="{{ gitlabUser?.avatar_url }}"
-    alt=""
-  />
 </div>
 
 <div class="user-information">
