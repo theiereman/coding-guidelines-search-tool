@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { AlertsService } from './alerts.service';
+import { IGitlabUser } from '../interfaces/gitlab/igitlabuser';
 
 @Injectable({
   providedIn: 'root',
@@ -131,6 +132,41 @@ export class GitlabAuthService {
 
   getAccessToken(): string {
     return localStorage.getItem('gitlab_access_token') ?? '';
+  }
+
+  getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
+    if (!this.isAuthenticated()) return of(undefined);
+
+    const userInfoUrl = `${environment.gitlab_api_base_uri}/user`;
+    return this.http
+      .get(userInfoUrl, {
+        headers: {
+          Authorization: `Bearer ${this.getAccessToken()}`,
+        },
+      })
+      .pipe(
+        map((res: any) => {
+          console.log(res);
+          const userInfo: IGitlabUser = {
+            id: res.id,
+            username: res.username,
+            name: res.name,
+            state: res.state,
+            locked: res.locked,
+            avatar_url: res.avatar_url,
+            web_url: res.web_url,
+          };
+          return userInfo;
+        }),
+        tap({
+          error: (err) => {
+            this.alertService.addError(err.message);
+          },
+        }),
+        catchError(() => {
+          return of(undefined);
+        })
+      );
   }
 
   private clearLocalStorage() {

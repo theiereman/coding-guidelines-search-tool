@@ -42,7 +42,7 @@ export class NavbarComponent {
     //si connecté sur Gitlab, récupérer l'utilisateur courant
     this.gitlabAuthService.isAuthenticated$.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        this.gitlabService.getAuthenticatedUser().subscribe((user) => {
+        this.gitlabAuthService.getAuthenticatedUser().subscribe((user) => {
           this.gitlabUser = user;
         });
       }
