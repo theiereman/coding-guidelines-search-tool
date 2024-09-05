@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
+import { AlertsService } from './alerts.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,11 @@ export class GitlabAuthService {
 
   public isAuthenticated$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(this.isAuthenticated());
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private alertService: AlertsService
+  ) {}
 
   //The CODE_VERIFIER is a random string, between 43 and 128 characters in length, which use the characters A-Z, a-z, 0-9, -, ., _, and ~.
   generateCodeVerifier() {
@@ -90,6 +95,16 @@ export class GitlabAuthService {
         .post(this.tokenUrl, body.toString(), {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
+        .pipe(
+          tap({
+            error: (err) => {
+              this.alertService.addError(
+                'Erreur authentification Gitlab : ' +
+                  err.error.error_description
+              );
+            },
+          })
+        )
         .subscribe((response: any) => {
           console.log('Access Token:', response.access_token);
           localStorage.setItem('gitlab_access_token', response.access_token);
