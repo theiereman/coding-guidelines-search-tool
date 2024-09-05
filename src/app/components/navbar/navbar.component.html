@@ -1,41 +1,41 @@
-<img
-  title="Ouvrir le fichier Excel de la charte de programmation"
-  class="app-logo"
-  src="assets/custy_logo_titre.svg"
-  alt="Icone Custy"
-/>
+<div class="h-14 px-4 bg-gray-100 flex items-center gap-8">
+  <img
+    title="Ouvrir le fichier Excel de la charte de programmation"
+    class="h-8"
+    src="assets/custy_logo_titre.svg"
+    alt="Icone Custy"
+  />
 
-<div class="nav-links-container">
-  <a class="small-text" (click)="openSharepointWorksheet()">
-    Charte de programmation
-  </a>
-  <a class="small-text" (click)="openRevolutionGuidelines()">
-    Charte IHM Révolution
-  </a>
-  <a class="small-text" (click)="openNewIssueTooltip()">
-    Création d'une issue de réintégration
-  </a>
-</div>
-
-<div class="user-information">
-  <div class="username">
-    <div *ngIf="user">{{ user.displayName }}</div>
-    <a *ngIf="!loginDisplay" (click)="login()" class="small-text">
-      Se connecter
+  <div class="flex flex-1">
+    <a class="small-text" (click)="openSharepointWorksheet()">
+      Charte de programmation
     </a>
-    <a *ngIf="loginDisplay" (click)="logout()" class="small-text">
-      Se déconnecter
+    <a class="small-text" (click)="openRevolutionGuidelines()">
+      Charte IHM Révolution
+    </a>
+    <a class="small-text" (click)="openNewIssueTooltip()">
+      Création d'une issue de réintégration
     </a>
   </div>
 
-  <img
-    *ngIf="user?.profilePictureBase64"
-    class="profile-picture"
-    src="{{ user?.profilePictureBase64 }}"
-    alt=""
-  />
-  <div
-    *ngIf="!user?.profilePictureBase64"
-    class="profile-picture placeholder"
-  ></div>
+  <div class="flex items-center">
+    <div class="flex flex-col gap-0 items-end">
+      <div class="text-sm" *ngIf="user">{{ user.displayName }}</div>
+      <a (click)="loginDisplay ? logout() : login()" class="text-xs">{{
+        loginDisplay ? "Se déconnecter" : "Se connecter"
+      }}</a>
+    </div>
+
+    <img
+      *ngIf="user?.profilePictureBase64"
+      class="w-[35px] h-[35px] rounded-full bg-gray-400"
+      src="{{ user?.profilePictureBase64 }}"
+      alt=""
+    />
+
+    <div
+      *ngIf="!user?.profilePictureBase64"
+      class="w-[35px] h-[35px] rounded-full bg-gray-400"
+    ></div>
+  </div>
 </div>
