@@ -16,7 +16,7 @@ export class GitlabAuthService {
   private authUrl = `${environment.gitlab_app_base_uri}/oauth/authorize`;
   private tokenUrl = `${environment.gitlab_app_base_uri}/oauth/token`;
 
-  private isAuthenticated$: BehaviorSubject<boolean> =
+  public isAuthenticated$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(this.isAuthenticated());
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -94,6 +94,7 @@ export class GitlabAuthService {
         .subscribe((response: any) => {
           console.log('Access Token:', response.access_token);
           localStorage.setItem('gitlab_access_token', response.access_token);
+          this.isAuthenticated$.next(true);
           this.router.navigate(['/']);
         });
     } else {
