@@ -21,7 +21,7 @@ export class GitlabService {
 
     //TODO : resolve CORS issue
 
-    const userInfoUrl = `${environment.gitlab_app_base_uri}/user`;
+    const userInfoUrl = `${environment.gitlab_api_base_uri}/user`;
     return this.httpClient
       .get(userInfoUrl, {
         headers: {
@@ -30,6 +30,7 @@ export class GitlabService {
       })
       .pipe(
         map((res: any) => {
+          console.log(res);
           const userInfo: IGitlabUser = {
             id: res.id,
             username: res.username,

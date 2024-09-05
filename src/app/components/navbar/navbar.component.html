@@ -21,7 +21,11 @@
   <div class="username">
     <div>
       Gitlab :
-      {{ isAuthenticatedOnGitlab() ? "connecté" : "non connecté" }}
+      {{
+        isAuthenticatedOnGitlab()
+          ? gitlabUser?.name + " (" + gitlabUser?.username + ")"
+          : "non connecté"
+      }}
     </div>
     <a
       class="small-text"
@@ -29,6 +33,12 @@
       >{{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}</a
     >
   </div>
+  <img
+    *ngIf="user?.profilePictureBase64"
+    class="profile-picture"
+    src="{{ gitlabUser?.avatar_url }}"
+    alt=""
+  />
 </div>
 
 <div class="user-information">
