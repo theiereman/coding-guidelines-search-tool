@@ -27,19 +27,25 @@ export class NavbarComponent {
   ngOnInit(): void {
     this.setLoginDisplay();
 
-    //TODO : use gitlabauthservice authentication subject to check before making user info request
-    // this.gitlabService.getAuthenticatedUser().subscribe((user) => {
-    //   this.gitlabUser = user;
-    // });
-
     this.microsoftAuthService.getUserObservable().subscribe((user) => {
       this.user = user;
       this.setLoginDisplay();
     });
 
+    //getsion de la redirection de Gitlab
     this.route.queryParams.subscribe((params) => {
       if (params['code']) {
         this.gitlabAuthService.handleRedirectCallback();
+      }
+    });
+
+    //si connecté sur Gitlab, récupérer l'utilisateur courant
+    this.gitlabAuthService.isAuthenticated$.subscribe((isAuthenticated) => {
+      if (isAuthenticated) {
+        //TODO : résoudre le problème CORS
+        // this.gitlabService.getAuthenticatedUser().subscribe((user) => {
+        //   this.gitlabUser = user;
+        // });
       }
     });
   }
