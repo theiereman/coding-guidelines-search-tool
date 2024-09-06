@@ -2,7 +2,7 @@
   <div @animate *ngFor="let alert of alertsService.alerts">
     <div
       (click)="close(alert)"
-      class="text-center text-red-600 bg-red-100 hover:bg-red-200 transition-colors cursor-pointer border-4 rounded-xl border-red-500 p-4"
+      class="text-center m-2 text-red-600 bg-red-100 hover:bg-red-200 transition-colors cursor-pointer border-2 rounded-xl border-red-500 p-4"
       @animate
     >
       <span class="flex-1" [innerHTML]="alert.message"></span>
