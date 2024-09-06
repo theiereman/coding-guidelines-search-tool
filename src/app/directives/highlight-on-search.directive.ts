@@ -2,7 +2,8 @@ import { Directive, ElementRef, Input } from '@angular/core';
 import { customNormalization } from '../helpers/strings-helper';
 
 @Directive({
-  selector: '[appHighlightOnSearch]'
+    selector: '[appHighlightOnSearch]',
+    standalone: true
 })
 
 export class HighlightOnSearchDirective{
