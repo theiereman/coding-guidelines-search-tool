@@ -1,12 +1,14 @@
-<app-navbar />
-<app-alerts></app-alerts>
+<div class="p-3">
+  <app-navbar />
+  <app-alerts></app-alerts>
 
-<div class="flex-1 p-3 pb-8" *ngIf="contentLoaded">
-  <app-connection-required *ngIf="!user"></app-connection-required>
-  <app-code-guideline-list
-    class="flex flex-col items-center h-full"
-    *ngIf="user"
-  />
+  <div class="flex-1 py-8" *ngIf="contentLoaded">
+    <app-connection-required *ngIf="!user"></app-connection-required>
+    <app-code-guideline-list
+      class="flex flex-col items-center h-full"
+      *ngIf="user"
+    />
+  </div>
 </div>
 
 <footer class="text-sm p-1 text-gray-400">

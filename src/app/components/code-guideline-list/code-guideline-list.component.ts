@@ -78,7 +78,6 @@ export class CodeGuidelineListComponent {
             normalize(codingGuideline.name).includes(termsArray[i]) ||
             normalize(codingGuideline.prefix).includes(termsArray[i]) ||
             normalize(codingGuideline.case).includes(termsArray[i]) ||
-            normalize(codingGuideline.example ?? '').includes(termsArray[i]) ||
             normalize(codingGuideline.sheetName).includes(termsArray[i]);
           i++;
         }
