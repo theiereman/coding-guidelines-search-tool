@@ -7,15 +7,21 @@
   />
 
   <div class="flex flex-1 gap-4">
-    <a class="text-xs" (click)="openSharepointWorksheet()">
+    <button
+      class="text-xs hover:font-semibold"
+      (click)="openSharepointWorksheet()"
+    >
       Charte de programmation
-    </a>
-    <a class="text-xs" (click)="openRevolutionGuidelines()">
+    </button>
+    <button
+      class="text-xs hover:font-semibold"
+      (click)="openRevolutionGuidelines()"
+    >
       Charte IHM Révolution
-    </a>
-    <a class="text-xs" (click)="openNewIssueTooltip()">
+    </button>
+    <button class="text-xs hover:font-semibold" (click)="openNewIssueTooltip()">
       Création d'une issue de réintégration
-    </a>
+    </button>
   </div>
 
   <div class="flex items-center gap-2">
