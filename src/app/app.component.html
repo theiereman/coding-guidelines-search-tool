@@ -1,10 +1,7 @@
 <app-navbar class="navbar" />
 <app-alerts></app-alerts>
 
-<div id="main-content" *ngIf="contentLoaded">
-  <app-connection-required *ngIf="!user"></app-connection-required>
-  <app-code-guideline-list class="flex column max-height" *ngIf="user" />
-</div>
+<router-outlet></router-outlet>
 
 <footer>
   <span>Custy 2024 - v1.12.4 - 19/06/2024</span>

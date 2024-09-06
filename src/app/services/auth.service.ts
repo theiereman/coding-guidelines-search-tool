@@ -128,12 +128,6 @@ export class AuthService {
         .get()
     )
       .pipe(
-        tap((res) => {
-          this.user$.next({
-            displayName: res.displayName ?? '',
-            email: res.mail ?? res.userPrincipalName ?? '',
-          });
-        }),
         tap((user) => {
           //récupération de l'image de profil au passage
           from(this.graphClient!.api('/me/photo/$value').get())

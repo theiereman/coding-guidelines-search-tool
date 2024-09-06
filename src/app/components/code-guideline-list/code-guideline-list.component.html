@@ -1,39 +1,68 @@
-
-<div class="search-container flex items-baseline half-width">
-    <app-code-guideline-search class="flex-remaining-space" (onSearchValueChanged)="onSearchValueUpdated($event)"/>
-    <button (click)="updateList()">⭯</button>
-</div>
-
-<div class="loader-container" *ngIf="!valuesInitialized">
-    <div class="loader">
-        <div class="loader-square"></div>
-        <div class="loader-square"></div>
-        <div class="loader-square"></div>
-        <div class="loader-square"></div>
-        <div class="loader-square"></div>
-        <div class="loader-square"></div>
-        <div class="loader-square"></div>
+<div class="main-content max-height" *ngIf="contentLoaded">
+  <app-connection-required *ngIf="!user"></app-connection-required>
+  <div *ngIf="user" class="flex column max-height">
+    <div class="search-container flex items-baseline half-width">
+      <app-code-guideline-search
+        class="flex-remaining-space"
+        (onSearchValueChanged)="onSearchValueUpdated($event)"
+      />
+      <button (click)="updateList()">⭯</button>
     </div>
-    <p>Récupération des valeurs depuis Sharepoint...</p>
-</div>
 
-<div *ngIf="valuesInitialized">
-    <table>
+    <div class="loader-container" *ngIf="!valuesInitialized">
+      <div class="loader">
+        <div class="loader-square"></div>
+        <div class="loader-square"></div>
+        <div class="loader-square"></div>
+        <div class="loader-square"></div>
+        <div class="loader-square"></div>
+        <div class="loader-square"></div>
+        <div class="loader-square"></div>
+      </div>
+      <p>Récupération des valeurs depuis Sharepoint...</p>
+    </div>
+
+    <div *ngIf="valuesInitialized">
+      <table>
         <tr class="header">
-            <th class="name">Nom de l'élément</th>
-            <th class="prefix">Préfixe</th>
-            <th class="format">Format / Casse</th>
-            <th class="exemple">Exemple</th>
-            <th class="category">Catégorie</th>
+          <th class="name">Nom de l'élément</th>
+          <th class="prefix">Préfixe</th>
+          <th class="format">Format / Casse</th>
+          <th class="exemple">Exemple</th>
+          <th class="category">Catégorie</th>
         </tr>
-        <ng-container *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems">
-            <tr class="content">
-                <td class="name"> <span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.name}}</span></td>
-                <td class="prefix"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.prefix}}</span></td>
-                <td class="format"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.case}}</span></td>
-                <td class="exemple"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.example}}</span></td>
-                <td class="category"><span [appHighlightOnSearch]="currentSearchValue">{{codingGuidelineItem.sheetName}}</span></td>
-            </tr>
+        <ng-container
+          *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems"
+        >
+          <tr class="content">
+            <td class="name">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.name
+              }}</span>
+            </td>
+            <td class="prefix">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.prefix
+              }}</span>
+            </td>
+            <td class="format">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.case
+              }}</span>
+            </td>
+            <td class="exemple">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.example
+              }}</span>
+            </td>
+            <td class="category">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.sheetName
+              }}</span>
+            </td>
+          </tr>
         </ng-container>
-    </table>
+      </table>
+    </div>
+  </div>
 </div>
