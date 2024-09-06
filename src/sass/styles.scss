@@ -5,8 +5,12 @@
 @import "~normalize.css";
 @import "./components/loader";
 
+* {
+  box-sizing: border-box;
+}
+
 html {
-  height: 100vh;
+  height: 100%;
   font-size: 16px;
 }
 

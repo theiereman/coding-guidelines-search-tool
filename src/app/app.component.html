@@ -1,8 +1,8 @@
-<div class="p-3">
+<div class="m-3 flex flex-1 flex-col">
   <app-navbar />
   <app-alerts></app-alerts>
 
-  <div class="flex-1 py-8" *ngIf="contentLoaded">
+  <div class="my-6 flex-1" *ngIf="contentLoaded">
     <app-connection-required *ngIf="!user"></app-connection-required>
     <app-code-guideline-list
       class="flex flex-col items-center h-full"
