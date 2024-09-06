@@ -29,10 +29,6 @@ a {
   color: $link-color;
   cursor: pointer;
 
-  &.small-text {
-    font-size: $font-size-smallest;
-  }
-
   &.underline {
     text-decoration: underline;
   }
