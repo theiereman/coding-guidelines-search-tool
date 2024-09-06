@@ -1,9 +1,12 @@
 <app-navbar />
 <app-alerts></app-alerts>
 
-<div id="main-content" *ngIf="contentLoaded">
+<div class="flex-1 p-3 pb-8" *ngIf="contentLoaded">
   <app-connection-required *ngIf="!user"></app-connection-required>
-  <app-code-guideline-list class="flex column max-height" *ngIf="user" />
+  <app-code-guideline-list
+    class="flex flex-col items-center h-full"
+    *ngIf="user"
+  />
 </div>
 
 <footer>
