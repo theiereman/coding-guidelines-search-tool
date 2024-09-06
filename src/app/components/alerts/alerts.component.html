@@ -1,8 +1,11 @@
-<div class="alert-container" @list>
+<div class="absolute inset-x-0 mx-auto mt-2 w-2/3" @list>
   <div @animate *ngFor="let alert of alertsService.alerts">
-    <div class="alert-danger" @animate>
-      <span [innerHTML]="alert.message"></span>
-      <a class="close" (click)="close(alert)">&times;</a>
+    <div
+      (click)="close(alert)"
+      class="text-center m-2 text-red-600 bg-red-100 hover:bg-red-200 transition-colors cursor-pointer border-2 rounded-xl border-red-500 p-4"
+      @animate
+    >
+      <span class="flex-1" [innerHTML]="alert.message"></span>
     </div>
   </div>
 </div>
