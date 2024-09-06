@@ -13,56 +13,57 @@
 
 <div class="loader-container" *ngIf="!valuesInitialized">
   <div class="loader">
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
+    <div class="loader-square bg-purple-700"></div>
+    <div class="loader-square bg-purple-700"></div>
+    <div class="loader-square bg-purple-700"></div>
+    <div class="loader-square bg-purple-700"></div>
+    <div class="loader-square bg-purple-700"></div>
+    <div class="loader-square bg-purple-700"></div>
+    <div class="loader-square bg-purple-700"></div>
   </div>
   <p>Récupération des valeurs depuis Sharepoint...</p>
 </div>
 
-<div *ngIf="valuesInitialized">
-  <table>
-    <tr class="header">
-      <th class="name">Nom de l'élément</th>
-      <th class="prefix">Préfixe</th>
-      <th class="format">Format / Casse</th>
-      <th class="exemple">Exemple</th>
-      <th class="category">Catégorie</th>
-    </tr>
+<div
+  class="border overflow-x-auto my-4 rounded-xl w-full"
+  *ngIf="valuesInitialized"
+>
+  <table class="w-full text-sm text-left text-gray-700">
+    <thead class="text-xs uppercase bg-gray-200 text-left text-gray-600">
+      <tr>
+        <th class="px-6 py-3">Nom de l'élément</th>
+        <th class="px-6 py-3">Préfixe</th>
+        <th class="px-6 py-3">Format / Casse</th>
+        <th class="px-6 py-3">Catégorie</th>
+      </tr>
+    </thead>
     <ng-container
       *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems"
     >
-      <tr class="content">
-        <td class="name">
-          <span [appHighlightOnSearch]="currentSearchValue">{{
-            codingGuidelineItem.name
-          }}</span>
-        </td>
-        <td class="prefix">
-          <span [appHighlightOnSearch]="currentSearchValue">{{
-            codingGuidelineItem.prefix
-          }}</span>
-        </td>
-        <td class="format">
-          <span [appHighlightOnSearch]="currentSearchValue">{{
-            codingGuidelineItem.case
-          }}</span>
-        </td>
-        <td class="exemple">
-          <span [appHighlightOnSearch]="currentSearchValue">{{
-            codingGuidelineItem.example
-          }}</span>
-        </td>
-        <td class="category">
-          <span [appHighlightOnSearch]="currentSearchValue">{{
-            codingGuidelineItem.sheetName
-          }}</span>
-        </td>
-      </tr>
+      <tbody class="odd:bg-white even:bg-gray-100 border-b border-gray-300">
+        <tr>
+          <td class="px-6 py-4">
+            <span [appHighlightOnSearch]="currentSearchValue">{{
+              codingGuidelineItem.name
+            }}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span [appHighlightOnSearch]="currentSearchValue">{{
+              codingGuidelineItem.prefix
+            }}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span [appHighlightOnSearch]="currentSearchValue">{{
+              codingGuidelineItem.case
+            }}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span [appHighlightOnSearch]="currentSearchValue">{{
+              codingGuidelineItem.sheetName
+            }}</span>
+          </td>
+        </tr>
+      </tbody>
     </ng-container>
   </table>
 </div>
