@@ -6,11 +6,14 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlabuser';
 import { GitlabService } from 'src/app/services/gitlab.service';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: [],
+    selector: 'app-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrls: [],
+    standalone: true,
+    imports: [NgIf],
 })
 export class NavbarComponent {
   user?: IUser;
