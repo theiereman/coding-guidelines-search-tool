@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
 import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
 import { BehaviorSubject, Subject, debounceTime, switchMap } from 'rxjs';
-import { customNormalization } from '../../helpers/strings-helper';
+import { normalize } from '../../helpers/strings-helper';
 
 @Component({
   selector: 'app-code-guideline-list',
@@ -56,7 +56,7 @@ export class CodeGuidelineListComponent {
   }
 
   private filterCodingGuidelines(searchValue: string) {
-    searchValue = customNormalization(searchValue);
+    searchValue = normalize(searchValue);
 
     //liste par défaut si recherche vide
     if (searchValue === '') {
@@ -75,17 +75,10 @@ export class CodeGuidelineListComponent {
           .filter((value) => value.length > 0);
         while (containsSearchedTerms === true && i < termsArray.length) {
           containsSearchedTerms =
-            customNormalization(codingGuideline.name).includes(termsArray[i]) ||
-            customNormalization(codingGuideline.prefix).includes(
-              termsArray[i]
-            ) ||
-            customNormalization(codingGuideline.case).includes(termsArray[i]) ||
-            customNormalization(codingGuideline.example ?? '').includes(
-              termsArray[i]
-            ) ||
-            customNormalization(codingGuideline.sheetName).includes(
-              termsArray[i]
-            );
+            normalize(codingGuideline.name).includes(termsArray[i]) ||
+            normalize(codingGuideline.prefix).includes(termsArray[i]) ||
+            normalize(codingGuideline.case).includes(termsArray[i]) ||
+            normalize(codingGuideline.sheetName).includes(termsArray[i]);
           i++;
         }
 

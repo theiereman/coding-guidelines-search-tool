@@ -1,15 +1,6 @@
-<div class="animated-label-input">
-    <input required="required" #searchInput (input)="onInputChanged(searchInput.value)">
-    <label>
-        <span style="transition-delay:0ms">R</span>
-        <span style="transition-delay:20ms">e</span>
-        <span style="transition-delay:40ms">c</span>
-        <span style="transition-delay:60ms">h</span>
-        <span style="transition-delay:80ms">e</span>
-        <span style="transition-delay:100ms">r</span>
-        <span style="transition-delay:120ms">c</span>
-        <span style="transition-delay:140ms">h</span>
-        <span style="transition-delay:160ms">e</span>
-        <span style="transition-delay:180ms">r</span>
-    </label>
-</div>
+<input
+  #searchInput
+  (input)="onInputChanged(searchInput.value)"
+  class="w-full bg-transparent placeholder:text-gray-400 text-gray-700 text-sm border border-gray-400 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-purple-700 hover:border-purple-600 shadow-sm focus:shadow"
+  placeholder="Rechercher..."
+/>
