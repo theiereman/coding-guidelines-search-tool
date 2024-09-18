@@ -19,8 +19,6 @@ export class GitlabService {
   getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
     if (!this.authService.isAuthenticated()) return of(undefined);
 
-    //TODO : resolve CORS issue
-
     const userInfoUrl = `${environment.gitlab_api_base_uri}/user`;
     return this.httpClient
       .get(userInfoUrl, {
