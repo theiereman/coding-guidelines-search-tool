@@ -6,29 +6,38 @@ import { normalize } from '../../helpers/strings-helper';
 import { HighlightOnSearchDirective } from '../../directives/highlight-on-search.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guideline-search.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { IUser } from '@microsoft/mgt';
+import { ConnectionRequiredComponent } from '../connection-required/connection-required.component';
 
 @Component({
-    selector: 'app-code-guideline-list',
-    templateUrl: './code-guideline-list.component.html',
-    styleUrls: [],
-    standalone: true,
-    imports: [
-        CodeGuidelineSearchComponent,
-        NgIf,
-        NgFor,
-        HighlightOnSearchDirective,
-    ],
+  selector: 'app-code-guideline-list',
+  templateUrl: './code-guideline-list.component.html',
+  styleUrls: [],
+  standalone: true,
+  imports: [
+    CodeGuidelineSearchComponent,
+    NgIf,
+    NgFor,
+    HighlightOnSearchDirective,
+    ConnectionRequiredComponent,
+  ],
 })
 export class CodeGuidelineListComponent {
   currentSearchValue: string = '';
   valuesInitialized: boolean = false;
   codingGuidelinesItems: ICodingGuidelineItem[] = [];
   filteredCodingGuidelinesItems: ICodingGuidelineItem[] = [];
+  user?: IUser;
+  contentLoaded: boolean = false;
 
   private codeguidelinesListTrigger$ = new Subject<void>();
   private searchValueChangedSubject$ = new BehaviorSubject<string>('');
 
-  constructor(private graphService: MicrosoftGraphService) {
+  constructor(
+    private graphService: MicrosoftGraphService,
+    private authService: AuthService
+  ) {
     //mise à jour de la recherche
     this.searchValueChangedSubject$
       .pipe(debounceTime(300))
@@ -98,6 +107,14 @@ export class CodeGuidelineListComponent {
   }
 
   ngOnInit(): void {
-    this.codeguidelinesListTrigger$.next();
+    this.authService.handleRedirects().subscribe();
+    this.authService.getUserObservable().subscribe((user) => {
+      this.contentLoaded = true;
+      this.user = user;
+
+      if (this.user) {
+        this.codeguidelinesListTrigger$.next();
+      }
+    });
   }
 }
