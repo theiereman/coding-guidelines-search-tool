@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
-import { Base64 } from 'js-base64';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
