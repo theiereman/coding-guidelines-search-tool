@@ -26,10 +26,27 @@
     </button>
   </div>
 
+  <div class="user-information">
+    <div class="username">
+      <div>
+        Gitlab :
+        {{ isAuthenticatedOnGitlab() ? "connecté" : "non connecté" }}
+      </div>
+      <a
+        class="small-text"
+        (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
+        >{{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}</a
+      >
+    </div>
+  </div>
+
   <div class="flex items-center gap-2">
     <div class="flex flex-col gap-0 items-end">
       <div class="text-sm" *ngIf="user">{{ user.displayName }}</div>
-      <button (click)="loginDisplay ? logout() : login()" class="text-xs">
+      <button
+        (click)="loginDisplay ? microsoftLogout() : microsoftLogin()"
+        class="text-xs"
+      >
         {{ loginDisplay ? "Se déconnecter" : "Se connecter" }}
       </button>
     </div>
