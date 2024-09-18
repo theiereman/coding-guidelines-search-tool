@@ -3,6 +3,7 @@ import { normalize } from '../helpers/strings-helper';
 
 @Directive({
   selector: '[appHighlightOnSearch]',
+  standalone: true,
 })
 export class HighlightOnSearchDirective {
   private elementValue: string = '';

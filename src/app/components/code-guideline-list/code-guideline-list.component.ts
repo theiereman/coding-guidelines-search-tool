@@ -3,11 +3,21 @@ import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
 import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
 import { BehaviorSubject, Subject, debounceTime, switchMap } from 'rxjs';
 import { normalize } from '../../helpers/strings-helper';
+import { HighlightOnSearchDirective } from '../../directives/highlight-on-search.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guideline-search.component';
 
 @Component({
-  selector: 'app-code-guideline-list',
-  templateUrl: './code-guideline-list.component.html',
-  styleUrls: [],
+    selector: 'app-code-guideline-list',
+    templateUrl: './code-guideline-list.component.html',
+    styleUrls: [],
+    standalone: true,
+    imports: [
+        CodeGuidelineSearchComponent,
+        NgIf,
+        NgFor,
+        HighlightOnSearchDirective,
+    ],
 })
 export class CodeGuidelineListComponent {
   currentSearchValue: string = '';
