@@ -26,7 +26,7 @@ import { RouterOutlet } from '@angular/router';
 export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
 
-  constructor(private authService: AuthService) {}
+  constructor() {}
 
   ngOnInit(): void {}
 }

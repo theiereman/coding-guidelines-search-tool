@@ -26,18 +26,21 @@
     </button>
   </div>
 
-  <div class="user-information">
-    <div class="username">
-      <div>
-        Gitlab :
-        {{ isAuthenticatedOnGitlab() ? "connecté" : "non connecté" }}
-      </div>
-      <a
-        class="small-text"
-        (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
-        >{{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}</a
-      >
+  <div class="flex flex-col gap-0 items-end">
+    <div class="text-sm">
+      Gitlab :
+      {{
+        isAuthenticatedOnGitlab()
+          ? gitlabUser?.name + " (" + gitlabUser?.username + ")"
+          : "non connecté"
+      }}
     </div>
+    <button
+      class="text-xs"
+      (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
+    >
+      {{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}
+    </button>
   </div>
 
   <div class="flex items-center gap-2">
