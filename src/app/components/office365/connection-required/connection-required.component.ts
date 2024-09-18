@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
-    selector: 'app-connection-required',
-    templateUrl: './connection-required.component.html',
-    styleUrls: [],
-    standalone: true
+  selector: 'app-connection-required',
+  templateUrl: './connection-required.component.html',
+  styleUrls: [],
+  standalone: true,
 })
 export class ConnectionRequiredComponent {
   constructor(private authService: AuthService) {}
