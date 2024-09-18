@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { IUser } from './interfaces/iuser';
-import { CodeGuidelineListComponent } from './components/code-guideline-list/code-guideline-list.component';
-import { ConnectionRequiredComponent } from './components/connection-required/connection-required.component';
+import { CodeGuidelineListComponent } from './components/office365/code-guideline-list/code-guideline-list.component';
+import { ConnectionRequiredComponent } from './components/office365/connection-required/connection-required.component';
 import { NgIf } from '@angular/common';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertsComponent } from './components/alerts/alerts.component';

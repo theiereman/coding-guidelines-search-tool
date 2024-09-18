@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
-import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
+import { ICodingGuidelineItem } from '../../../interfaces/icoding-guideline-item';
+import { MicrosoftGraphService } from '../../../services/microsoft-graph.service';
 import { BehaviorSubject, Subject, debounceTime, switchMap } from 'rxjs';
-import { normalize } from '../../helpers/strings-helper';
-import { HighlightOnSearchDirective } from '../../directives/highlight-on-search.directive';
+import { normalize } from '../../../helpers/strings-helper';
+import { HighlightOnSearchDirective } from '../../../directives/highlight-on-search.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guideline-search.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from '@microsoft/mgt';
 import { ConnectionRequiredComponent } from '../connection-required/connection-required.component';
+import { ProjectLabelsListComponent } from "../../gitlab/project-labels-list/project-labels-list.component";
 
 @Component({
   selector: 'app-code-guideline-list',
@@ -21,7 +22,8 @@ import { ConnectionRequiredComponent } from '../connection-required/connection-r
     NgFor,
     HighlightOnSearchDirective,
     ConnectionRequiredComponent,
-  ],
+    ProjectLabelsListComponent
+],
 })
 export class CodeGuidelineListComponent {
   currentSearchValue: string = '';
