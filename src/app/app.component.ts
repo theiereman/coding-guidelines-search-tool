@@ -6,6 +6,7 @@ import { ConnectionRequiredComponent } from './components/connection-required/co
 import { NgIf } from '@angular/common';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -19,20 +20,13 @@ import { AlertsComponent } from './components/alerts/alerts.component';
     ConnectionRequiredComponent,
     CodeGuidelineListComponent,
     AlertsComponent,
+    RouterOutlet,
   ],
 })
 export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
-  user?: IUser;
-  contentLoaded: boolean = false;
 
   constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.authService.handleRedirects().subscribe();
-    this.authService.getUserObservable().subscribe((user) => {
-      this.contentLoaded = true;
-      this.user = user;
-    });
-  }
+  ngOnInit(): void {}
 }
