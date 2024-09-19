@@ -9,20 +9,15 @@
   />
 
   <div class="flex flex-1 gap-4">
-    <button
-      class="text-xs hover:font-semibold"
-      (click)="openSharepointWorksheet()"
-    >
+    <button class="text-xs hover:font-semibold" routerLink="/">
       Charte de programmation
     </button>
+
     <button
       class="text-xs hover:font-semibold"
-      (click)="openRevolutionGuidelines()"
+      routerLink="/issue-reintegration"
     >
-      Charte IHM Révolution
-    </button>
-    <button class="text-xs hover:font-semibold" (click)="openNewIssueTooltip()">
-      Création d'une issue de réintégration
+      Issue de réintégration
     </button>
   </div>
 
