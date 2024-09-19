@@ -9,7 +9,8 @@ import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guid
 import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from '@microsoft/mgt';
 import { ConnectionRequiredComponent } from '../connection-required/connection-required.component';
-import { ProjectLabelsListComponent } from "../../gitlab/project-labels-list/project-labels-list.component";
+import { ProjectLabelsListComponent } from '../../gitlab/project-labels-list/project-labels-list.component';
+import { GRAPH_API } from 'src/app/constants/graph-api.constants';
 
 @Component({
   selector: 'app-code-guideline-list',
@@ -22,8 +23,8 @@ import { ProjectLabelsListComponent } from "../../gitlab/project-labels-list/pro
     NgFor,
     HighlightOnSearchDirective,
     ConnectionRequiredComponent,
-    ProjectLabelsListComponent
-],
+    ProjectLabelsListComponent,
+  ],
 })
 export class CodeGuidelineListComponent {
   currentSearchValue: string = '';
@@ -61,6 +62,10 @@ export class CodeGuidelineListComponent {
         this.valuesInitialized = true;
         this.filterCodingGuidelines(this.currentSearchValue);
       });
+  }
+
+  openSharepointWorksheet() {
+    window.open(GRAPH_API.worksheetLink);
   }
 
   onSearchValueUpdated(searchValue: string) {
@@ -109,9 +114,13 @@ export class CodeGuidelineListComponent {
   }
 
   ngOnInit(): void {
+    //permet de ne pas afficher le 'connection-required' component pendant le chargement de l'utilisateur
+    this.authService.loading$.subscribe((loading) => {
+      this.contentLoaded = !loading;
+    });
+
     this.authService.handleRedirects().subscribe();
-    this.authService.getUserObservable().subscribe((user) => {
-      this.contentLoaded = true;
+    this.authService.user$.subscribe((user) => {
       this.user = user;
 
       if (this.user) {
