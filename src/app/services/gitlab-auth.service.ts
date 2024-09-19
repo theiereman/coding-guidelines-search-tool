@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { AlertsService } from './alerts.service';
-import { IGitlabUser } from '../interfaces/gitlab/igitlabuser';
+import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
 
 @Injectable({
   providedIn: 'root',
