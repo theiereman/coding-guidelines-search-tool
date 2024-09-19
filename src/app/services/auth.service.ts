@@ -20,6 +20,7 @@ import {
   map,
   switchMap,
   catchError,
+  BehaviorSubject,
 } from 'rxjs';
 import { IUser } from '../interfaces/iuser';
 import { AlertsService } from './alerts.service';
@@ -29,8 +30,13 @@ import { AlertsService } from './alerts.service';
 })
 export class AuthService {
   public graphClient?: Client;
-  private user$ = new Subject<IUser | undefined>();
   private readonly _destroying$ = new Subject<void>();
+
+  private userSubject = new BehaviorSubject<IUser | undefined>(undefined);
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+
+  user$ = this.userSubject.asObservable();
+  loading$ = this.loadingSubject.asObservable();
 
   constructor(
     private msalService: MsalService,
@@ -51,10 +57,6 @@ export class AuthService {
       });
   }
 
-  getUserObservable(): Observable<IUser | undefined> {
-    return this.user$;
-  }
-
   login(): Observable<void> {
     return this.msalService.loginRedirect().pipe(
       catchError((err) => {
@@ -69,7 +71,7 @@ export class AuthService {
     return this.msalService.logoutRedirect().pipe(
       tap((_) => {
         this.graphClient = undefined;
-        this.user$.next(undefined);
+        this.userSubject.next(undefined);
       })
     );
   }
@@ -96,7 +98,8 @@ export class AuthService {
 
   private updateUser(): void {
     if (!this.isAuthenticated()) {
-      this.user$.next(undefined);
+      this.loadingSubject.next(false);
+      this.userSubject.next(undefined);
       return;
     }
     // Create an authentication provider for the current user
@@ -137,10 +140,11 @@ export class AuthService {
                 reader.readAsDataURL(blob);
                 reader.onloadend = () => {
                   user.profilePictureBase64 = reader.result;
-                  this.user$.next({
+                  this.userSubject.next({
                     ...user,
                     profilePictureBase64: reader.result,
                   });
+                  this.loadingSubject.next(false);
                 };
               })
             )
