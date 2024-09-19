@@ -3,17 +3,17 @@ import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from 'src/app/interfaces/iuser';
 import { GRAPH_API } from 'src/app/constants/graph-api.constants';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlabuser';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-navbar',
-    templateUrl: './navbar.component.html',
-    styleUrls: [],
-    standalone: true,
-    imports: [NgIf],
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: [],
+  standalone: true,
+  imports: [NgIf, RouterLink],
 })
 export class NavbarComponent {
   user?: IUser;
@@ -30,7 +30,7 @@ export class NavbarComponent {
   ngOnInit(): void {
     this.setLoginDisplay();
 
-    this.microsoftAuthService.getUserObservable().subscribe((user) => {
+    this.microsoftAuthService.user$.subscribe((user) => {
       this.user = user;
       this.setLoginDisplay();
     });
@@ -50,18 +50,6 @@ export class NavbarComponent {
         });
       }
     });
-  }
-
-  openSharepointWorksheet() {
-    window.open(GRAPH_API.worksheetLink);
-  }
-
-  openRevolutionGuidelines() {
-    window.open(GRAPH_API.revolutionGuidelinesLink);
-  }
-
-  openNewIssueTooltip() {
-    window.open(GRAPH_API.newIssueTooltipLink);
   }
 
   microsoftLogin(): void {
