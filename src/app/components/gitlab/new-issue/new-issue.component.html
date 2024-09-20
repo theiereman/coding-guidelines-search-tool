@@ -1,1 +1,88 @@
-<p>new-issue works!</p>
+<div class="lg:w-1/2 mx-auto">
+  <div
+    class="mb-6 font-bold border-2 rounded-xl border-red-500 p-4 text-red-500"
+  >
+    <p>Attention : ce formulaire est une béta !</p>
+    <p>
+      Le formulaire officiel pour faire des issues de réintégration est
+      <a
+        class="underline text-blue-500"
+        href="http://10.128.88.23:6969/reintegration/reintegration.html"
+        >ici</a
+      >
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label for="developmentType">Type de développement</label>
+    <select
+      class="p-1 border border-gray-400 rounded-md bg-transparent"
+      id="developmentType"
+      [formControl]="developmentType"
+    >
+      <option *ngFor="let label of labels" [value]="label.id">
+        {{ label.name }}
+      </option>
+    </select>
+
+    <label for="title">Titre</label>
+    <input
+      class="p-1 border border-gray-400 rounded-md"
+      type="text"
+      id="title"
+      [formControl]="title"
+    />
+
+    <label for="description">Description (optionnel)</label>
+    <textarea
+      class="p-1 border border-gray-400 rounded-md"
+      id="description"
+      [formControl]="description"
+    ></textarea>
+
+    <label for="bug">Est une correction de bug ?</label>
+    <select
+      class="p-1 border border-gray-400 rounded-md bg-transparent"
+      id="bug"
+      [formControl]="isBugCorrection"
+    >
+      <option value="false">Non</option>
+      <option value="true">Oui</option>
+    </select>
+
+    <label for="quoiDeNeuf">Doit être mentionné dans le 'quoi de neuf' ?</label>
+    <select
+      class="p-1 border border-gray-400 rounded-md bg-transparent"
+      id="quoiDeNeuf"
+      [formControl]="isQuoiDeNeuf"
+    >
+      <option value="false">Non</option>
+      <option value="true">Oui</option>
+    </select>
+
+    <label for="milestone">Milestone</label>
+    <select
+      class="p-1 border border-gray-400 rounded-md bg-transparent"
+      id="milestone"
+      [formControl]="milestone"
+    >
+      <option *ngFor="let milestone of milestones" [value]="milestone.title">
+        {{ milestone.title }}
+      </option>
+    </select>
+  </div>
+
+  <br class="h-6" />
+
+  <div id="preview">
+    <div>{{ title.value }}</div>
+    <div>{{ description.value }}</div>
+    <div>{{ milestone.value }}</div>
+  </div>
+
+  <button
+    class="p-2 float-end border-gray-400 rounded-md bg-purple-700 text-white"
+  >
+    Créer une issue de réintégration
+  </button>
+</div>
