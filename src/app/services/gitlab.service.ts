@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { GitlabAuthService } from './gitlab-auth.service';
 import { AlertsService } from './alerts.service';
 import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
 import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
 import { IGitlabMilestone } from '../interfaces/gitlab/igitlab-milestone';
+import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
 
 @Injectable({
   providedIn: 'root',
@@ -29,9 +30,7 @@ export class GitlabService {
       .get<IGitlabLabel[]>(
         `${environment.gitlab_api_base_uri}/projects/${projectId}/labels`,
         {
-          headers: {
-            Authorization: `Bearer ${this.authService.getAccessToken()}`,
-          },
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
       )
       .pipe(
@@ -60,9 +59,7 @@ export class GitlabService {
           openOnly ? '?state=opened' : ''
         }`,
         {
-          headers: {
-            Authorization: `Bearer ${this.authService.getAccessToken()}`,
-          },
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
       )
       .pipe(
@@ -88,9 +85,7 @@ export class GitlabService {
       .get<IGitlabMilestone[]>(
         `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones`,
         {
-          headers: {
-            Authorization: `Bearer ${this.authService.getAccessToken()}`,
-          },
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
       )
       .pipe(
