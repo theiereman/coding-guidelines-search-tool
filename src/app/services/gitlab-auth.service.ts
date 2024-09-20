@@ -1,12 +1,26 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import { AlertsService } from './alerts.service';
 import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
+import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
+
+const ACCESS_TOKEN = 'gitlab_access_token';
+const REFRESH_TOKEN = 'gitlab_refresh_token';
+const GITLAB_STATE = 'gitlab_state';
+const GITLAB_CODE_VERIFIER = 'gitlab_code_verifier';
 
 @Injectable({
   providedIn: 'root',
@@ -59,8 +73,8 @@ export class GitlabAuthService {
   login() {
     const codeVerifier = this.generateCodeVerifier();
     const state = uuidv4();
-    localStorage.setItem('gitlab_state', state);
-    localStorage.setItem('gitlab_code_verifier', codeVerifier);
+    localStorage.setItem(GITLAB_STATE, state);
+    localStorage.setItem(GITLAB_CODE_VERIFIER, codeVerifier);
 
     this.generateCodeChallenge(codeVerifier).then((codeChallenge) => {
       const params = new HttpParams()
@@ -79,8 +93,8 @@ export class GitlabAuthService {
 
   handleRedirectCallback() {
     const params = new URLSearchParams(window.location.search);
-    const storedState = localStorage.getItem('gitlab_state');
-    const codeVerifier = localStorage.getItem('gitlab_code_verifier');
+    const storedState = localStorage.getItem(GITLAB_STATE);
+    const codeVerifier = localStorage.getItem(GITLAB_CODE_VERIFIER);
     const code = params.get('code');
     const returnedState = params.get('state');
 
@@ -107,8 +121,8 @@ export class GitlabAuthService {
           })
         )
         .subscribe((response: any) => {
-          console.log('Access Token:', response.access_token);
-          localStorage.setItem('gitlab_access_token', response.access_token);
+          this.setAccessToken(response.access_token);
+          this.setRefreshToken(response.refresh_token);
           this.isAuthenticated$.next(true);
           this.router.navigate(['/']);
         });
@@ -127,11 +141,47 @@ export class GitlabAuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('gitlab_access_token');
+    return !!localStorage.getItem(ACCESS_TOKEN);
   }
 
   getAccessToken(): string {
-    return localStorage.getItem('gitlab_access_token') ?? '';
+    return localStorage.getItem(ACCESS_TOKEN) ?? '';
+  }
+
+  getRefreshToken(): string {
+    return localStorage.getItem(REFRESH_TOKEN) ?? '';
+  }
+
+  setAccessToken(accessToken: string) {
+    localStorage.setItem(ACCESS_TOKEN, accessToken);
+  }
+
+  setRefreshToken(refreshToken: string) {
+    localStorage.setItem(REFRESH_TOKEN, refreshToken);
+  }
+
+  refreshAccessToken(): Observable<string> {
+    const refreshToken = this.getRefreshToken();
+
+    const body = new URLSearchParams();
+    body.set('grant_type', 'refresh_token');
+    body.set('client_id', this.clientId);
+    body.set('refresh_token', refreshToken);
+
+    return this.http
+      .post(this.tokenUrl, body.toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      })
+      .pipe(
+        tap((response: any) => {
+          this.setAccessToken(response.access_token);
+          this.setRefreshToken(response.refresh_token);
+        }),
+        catchError((error) => {
+          this.logout();
+          return throwError(() => new Error(error));
+        })
+      );
   }
 
   getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
@@ -140,13 +190,10 @@ export class GitlabAuthService {
     const userInfoUrl = `${environment.gitlab_api_base_uri}/user`;
     return this.http
       .get(userInfoUrl, {
-        headers: {
-          Authorization: `Bearer ${this.getAccessToken()}`,
-        },
+        context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
       })
       .pipe(
         map((res: any) => {
-          console.log(res);
           const userInfo: IGitlabUser = {
             id: res.id,
             username: res.username,
@@ -170,8 +217,9 @@ export class GitlabAuthService {
   }
 
   private clearLocalStorage() {
-    localStorage.removeItem('gitlab_access_token');
-    localStorage.removeItem('gitlab_state');
-    localStorage.removeItem('gitlab_code_verifier');
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+    localStorage.removeItem(GITLAB_STATE);
+    localStorage.removeItem(GITLAB_CODE_VERIFIER);
   }
 }
