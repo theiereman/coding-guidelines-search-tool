@@ -29,6 +29,7 @@ export class NavbarComponent {
 
   ngOnInit(): void {
     this.setLoginDisplay();
+    this.microsoftAuthService.handleRedirects().subscribe();
 
     this.microsoftAuthService.user$.subscribe((user) => {
       this.user = user;

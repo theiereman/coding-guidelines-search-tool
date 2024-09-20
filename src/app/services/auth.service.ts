@@ -6,7 +6,6 @@ import {
   PublicClientApplication,
   InteractionType,
 } from '@azure/msal-browser';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';
 import { Client } from '@microsoft/microsoft-graph-client';
 import {
