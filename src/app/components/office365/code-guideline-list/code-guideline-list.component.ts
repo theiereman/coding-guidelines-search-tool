@@ -119,7 +119,6 @@ export class CodeGuidelineListComponent {
       this.contentLoaded = !loading;
     });
 
-    this.authService.handleRedirects().subscribe();
     this.authService.user$.subscribe((user) => {
       this.user = user;
 
