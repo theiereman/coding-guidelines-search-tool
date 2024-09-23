@@ -37,7 +37,7 @@ export const gitlabAuthInterceptor: HttpInterceptorFn = (req, next) => {
           }),
           catchError((refreshError) => {
             authService.logout();
-            return throwError(() => new Error(refreshError));
+            return throwError(() => new Error(refreshError.message));
           })
         );
       }
