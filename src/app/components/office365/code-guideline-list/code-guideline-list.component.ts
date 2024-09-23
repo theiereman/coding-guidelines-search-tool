@@ -9,7 +9,6 @@ import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guid
 import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from '@microsoft/mgt';
 import { ConnectionRequiredComponent } from '../connection-required/connection-required.component';
-import { ProjectLabelsListComponent } from '../../gitlab/project-labels-list/project-labels-list.component';
 import { GRAPH_API } from 'src/app/constants/graph-api.constants';
 
 @Component({
@@ -23,7 +22,6 @@ import { GRAPH_API } from 'src/app/constants/graph-api.constants';
     NgFor,
     HighlightOnSearchDirective,
     ConnectionRequiredComponent,
-    ProjectLabelsListComponent,
   ],
 })
 export class CodeGuidelineListComponent {
