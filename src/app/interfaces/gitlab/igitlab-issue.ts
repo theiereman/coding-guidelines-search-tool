@@ -13,5 +13,4 @@ export interface IGitlabIssue {
   created_at: string;
   closed_at: string;
   web_url: string;
-  display_name: string;
 }

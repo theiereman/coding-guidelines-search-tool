@@ -50,6 +50,8 @@ export class ProjectListComponent {
   }
 
   setSelectedProject(project: IGitlabIssue) {
+    console.log(project);
+
     this.gitlabService.addIssueToLocalStorage(project);
     this.selectedProject = project;
   }
@@ -69,13 +71,6 @@ export class ProjectListComponent {
   }
 
   updateIssuesList(issues: IGitlabIssue[]) {
-    for (const issue of issues) {
-      issue.display_name = truncateMiddle(
-        `${issue.title} (#${issue.iid})`,
-        25,
-        issue.iid.toString.length + 3
-      );
-    }
     this.issues = issues;
     if (!this.issues.some((issue) => issue.iid === this.selectedProject?.iid)) {
       this.selectedProject = undefined;
