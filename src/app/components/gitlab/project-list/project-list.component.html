@@ -30,12 +30,12 @@
     </p>
     <div
       *ngIf="!loadingIssuesList"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+      class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
     >
       <div
         (click)="setSelectedProject(issue)"
         *ngFor="let issue of issues"
-        class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border border-gray-200"
+        class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border"
         [ngClass]="{ 'border-blue-500': selectedProject?.iid === issue.iid }"
       >
         <div
@@ -46,9 +46,16 @@
           }"
         ></div>
         <div class="mb-2">
-          <h1 class="text-md font-bold line-clamp-1 truncate">
-            {{ issue.display_name }}
-          </h1>
+          <div class="flex">
+            <h1
+              class="text-md font-bold line-clamp-2 text-ellipsis overflow-hidden"
+            >
+              {{ issue.title }}
+            </h1>
+            <h1 class="text-md font-bold line-clamp-1 shrink-0">
+              &nbsp;(#{{ issue.iid }})
+            </h1>
+          </div>
           <p class="text-xs italic text-gray-600">
             Assignee : {{ issue.assignee?.name ?? "Aucun" }}
           </p>
@@ -70,11 +77,11 @@
   <div class="bg-gray-50 rounded-lg p-3" *ngIf="recentIssues.length > 0">
     <details open>
       <summary class="cursor-pointer mb-2">Issues récentes</summary>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         <div
           (click)="setSelectedProject(issue)"
           *ngFor="let issue of recentIssues"
-          class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border border-gray-200"
+          class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border"
           [ngClass]="{ 'border-blue-500': selectedProject?.iid === issue.iid }"
         >
           <div
@@ -84,9 +91,16 @@
               'bg-red-500': issue.state === 'closed'
             }"
           ></div>
-          <h1 class="text-md font-bold line-clamp-1 truncate">
-            {{ issue.display_name }}
-          </h1>
+          <div class="flex">
+            <h1
+              class="text-md font-bold line-clamp-2 text-ellipsis overflow-hidden"
+            >
+              {{ issue.title }}
+            </h1>
+            <h1 class="text-md font-bold line-clamp-1 shrink-0">
+              &nbsp;(#{{ issue.iid }})
+            </h1>
+          </div>
         </div>
       </div>
     </details>
