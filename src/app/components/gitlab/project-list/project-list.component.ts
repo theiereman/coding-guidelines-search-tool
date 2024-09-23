@@ -1,8 +1,7 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounce, debounceTime, map, switchMap, tap } from 'rxjs';
-import { truncateMiddle } from 'src/app/helpers/strings-helper';
+import { debounceTime, switchMap, tap } from 'rxjs';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';

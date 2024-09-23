@@ -26,20 +26,6 @@ const reducer = (acc: string, [key]: [string, string[]]) => {
 
 const removeAccents = (text: string) => [...accentsMap].reduce(reducer, text);
 
-export const truncateMiddle = (
-  text: string,
-  totalLength: number,
-  endPartMaxLength: number
-) => {
-  if (text.length <= totalLength) return text;
-
-  const stringLength = totalLength - 3 - endPartMaxLength;
-  const startPart = text.substring(0, stringLength);
-  const endPart = text.substring(text.length - endPartMaxLength, text.length);
-
-  return `${startPart}...${endPart}`;
-};
-
 export const normalize = (text: string) =>
   removeAccents(text.trim().toLowerCase().replace(/\s+/g, ' '));
 
