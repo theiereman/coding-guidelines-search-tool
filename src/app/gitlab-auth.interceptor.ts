@@ -41,7 +41,7 @@ export const gitlabAuthInterceptor: HttpInterceptorFn = (req, next) => {
           })
         );
       }
-      return throwError(() => new Error(error));
+      return throwError(() => new Error(error.message));
     })
   );
 };
