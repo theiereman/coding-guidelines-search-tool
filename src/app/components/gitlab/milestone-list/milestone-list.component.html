@@ -1,0 +1,31 @@
+<div class="border rounded-lg border-gray-400 p-4">
+  <!-- Champ de recherche -->
+  <!-- <input
+    type="text"
+    class="border border-gray-300 p-2 rounded-lg w-full mb-4"
+    placeholder="Rechercher des milestones"
+    [(ngModel)]="searchQuery"
+    (input)="searchMilestones()"
+  /> -->
+
+  <div class="mb-4">
+    <button class="text-blue-500" (click)="toggleSelectAll()">
+      Tout cocher
+    </button>
+  </div>
+
+  <!-- Liste des milestones avec des cases à cocher -->
+  <ul class="list-none">
+    <li *ngFor="let milestone of milestones" class="mb-2">
+      <label class="flex items-center">
+        <input
+          type="checkbox"
+          class="mr-2"
+          [checked]="isSelected(milestone.id)"
+          (change)="toggleMilestone(milestone.id)"
+        />
+        <span>{{ milestone.title }}</span>
+      </label>
+    </li>
+  </ul>
+</div>

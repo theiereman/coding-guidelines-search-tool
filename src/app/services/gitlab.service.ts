@@ -139,17 +139,18 @@ export class GitlabService {
     return uniqueIssues.slice(0, size);
   }
 
-  public getMilestonesFromProject(
-    projectId: number
+  public getLastMilestonesFromProject(
+    projectId: number,
+    maxResults: number = 2
   ): Observable<IGitlabMilestone[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of();
+      return of([]);
     }
 
     return this.httpClient
       .get<IGitlabMilestone[]>(
-        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones`,
+        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?per_page=${maxResults}&order_by=title`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
@@ -160,7 +161,7 @@ export class GitlabService {
           this.alertsService.addError(
             'Impossible de récupérer les milestones du projet'
           );
-          return of();
+          return of([]);
         })
       );
   }

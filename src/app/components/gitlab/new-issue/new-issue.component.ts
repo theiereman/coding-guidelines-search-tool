@@ -6,12 +6,19 @@ import { IGitlabLabel } from 'src/app/interfaces/gitlab/igitlab-label';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
-import { ProjectListComponent } from "../project-list/project-list.component";
+import { ProjectListComponent } from '../project-list/project-list.component';
+import { MilestoneListComponent } from '../milestone-list/milestone-list.component';
 
 @Component({
   selector: 'app-new-issue',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, NgFor, ProjectListComponent],
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    NgFor,
+    ProjectListComponent,
+    MilestoneListComponent,
+  ],
   templateUrl: './new-issue.component.html',
 })
 export class NewIssueComponent {
@@ -28,7 +35,7 @@ export class NewIssueComponent {
   constructor(private gitlabService: GitlabService) {}
 
   ngOnInit(): void {
-    this.updateMilestoneList();
+    // this.updateMilestoneList();
     this.updateLabelList();
   }
 
@@ -45,21 +52,6 @@ export class NewIssueComponent {
       )
       .subscribe((labels) => {
         this.labels = labels;
-      });
-  }
-
-  private updateMilestoneList() {
-    this.gitlabService
-      .getMilestonesFromProject(environment.gitlab_id_projet_reintegration)
-      .subscribe((milestones) => {
-        this.milestones = milestones;
-        if (this.milestones.length === 0) {
-          this.milestones.push({
-            id: 0,
-            title: 'Aucune milestone',
-            description: '',
-          });
-        }
       });
   }
 }
