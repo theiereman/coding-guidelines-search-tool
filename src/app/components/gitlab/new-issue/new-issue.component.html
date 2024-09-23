@@ -79,15 +79,7 @@
 
     <div class="flex flex-col gap-2">
       <label for="milestone">Milestone</label>
-      <select
-        class="p-1 border border-gray-400 rounded-md bg-transparent"
-        id="milestone"
-        [formControl]="milestone"
-      >
-        <option *ngFor="let milestone of milestones" [value]="milestone.title">
-          {{ milestone.title }}
-        </option>
-      </select>
+      <app-milestone-list></app-milestone-list>
     </div>
   </div>
 
