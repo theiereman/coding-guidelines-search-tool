@@ -6,11 +6,12 @@ import { IGitlabLabel } from 'src/app/interfaces/gitlab/igitlab-label';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
+import { ProjectListComponent } from "../project-list/project-list.component";
 
 @Component({
   selector: 'app-new-issue',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, NgFor],
+  imports: [ReactiveFormsModule, NgClass, NgFor, ProjectListComponent],
   templateUrl: './new-issue.component.html',
 })
 export class NewIssueComponent {

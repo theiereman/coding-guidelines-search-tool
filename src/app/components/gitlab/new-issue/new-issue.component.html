@@ -1,4 +1,4 @@
-<div class="lg:w-1/2 mx-auto">
+<div class="mx-auto">
   <div
     class="mb-6 font-bold border-2 rounded-xl border-red-500 p-4 text-red-500"
   >
@@ -13,63 +13,82 @@
     </p>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label for="developmentType">Type de développement</label>
-    <select
-      class="p-1 border border-gray-400 rounded-md bg-transparent"
-      id="developmentType"
-      [formControl]="developmentType"
-    >
-      <option *ngFor="let label of labels" [value]="label.id">
-        {{ label.name }}
-      </option>
-    </select>
+  <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-2">
+      <label for="developmentType">Type de développement</label>
+      <select
+        class="p-1 border border-gray-400 rounded-md bg-transparent"
+        id="developmentType"
+        [formControl]="developmentType"
+      >
+        <option *ngFor="let label of labels" [value]="label.id">
+          {{ label.name }}
+        </option>
+      </select>
+    </div>
 
-    <label for="title">Titre</label>
-    <input
-      class="p-1 border border-gray-400 rounded-md"
-      type="text"
-      id="title"
-      [formControl]="title"
-    />
+    <div class="flex flex-col gap-2">
+      <label for="title">Titre</label>
+      <input
+        class="p-1 border border-gray-400 rounded-md"
+        type="text"
+        id="title"
+        [formControl]="title"
+      />
+    </div>
 
-    <label for="description">Description (optionnel)</label>
-    <textarea
-      class="p-1 border border-gray-400 rounded-md"
-      id="description"
-      [formControl]="description"
-    ></textarea>
+    <div class="flex flex-col gap-2">
+      <label for="description">Description (optionnel)</label>
+      <textarea
+        class="p-1 border border-gray-400 rounded-md"
+        id="description"
+        [formControl]="description"
+      ></textarea>
+    </div>
 
-    <label for="bug">Est une correction de bug ?</label>
-    <select
-      class="p-1 border border-gray-400 rounded-md bg-transparent"
-      id="bug"
-      [formControl]="isBugCorrection"
-    >
-      <option value="false">Non</option>
-      <option value="true">Oui</option>
-    </select>
+    <div class="flex flex-col gap-2">
+      <label for="project-list">Projet</label>
+      <app-project-list id="project-list"></app-project-list>
+    </div>
 
-    <label for="quoiDeNeuf">Doit être mentionné dans le 'quoi de neuf' ?</label>
-    <select
-      class="p-1 border border-gray-400 rounded-md bg-transparent"
-      id="quoiDeNeuf"
-      [formControl]="isQuoiDeNeuf"
-    >
-      <option value="false">Non</option>
-      <option value="true">Oui</option>
-    </select>
+    <div class="flex flex-col gap-2">
+      <label for="bug">Est une correction de bug ?</label>
+      <select
+        class="p-1 border border-gray-400 rounded-md bg-transparent"
+        id="bug"
+        [formControl]="isBugCorrection"
+      >
+        <option value="false">Non</option>
+        <option value="true">Oui</option>
+      </select>
+    </div>
 
-    <label for="milestone">Milestone</label>
-    <select
-      class="p-1 border border-gray-400 rounded-md bg-transparent"
-      id="milestone"
-      [formControl]="milestone"
-    >
-      <option *ngFor="let milestone of milestones" [value]="milestone.title">
-        {{ milestone.title }}
-      </option>
-    </select>
+    <div class="flex flex-col gap-2">
+      <label for="quoiDeNeuf"
+        >Doit être mentionné dans le 'quoi de neuf' ?</label
+      >
+      <select
+        class="p-1 border border-gray-400 rounded-md bg-transparent"
+        id="quoiDeNeuf"
+        [formControl]="isQuoiDeNeuf"
+      >
+        <option value="false">Non</option>
+        <option value="true">Oui</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="milestone">Milestone</label>
+      <select
+        class="p-1 border border-gray-400 rounded-md bg-transparent"
+        id="milestone"
+        [formControl]="milestone"
+      >
+        <option *ngFor="let milestone of milestones" [value]="milestone.title">
+          {{ milestone.title }}
+        </option>
+      </select>
+    </div>
   </div>
 
   <br class="h-6" />
