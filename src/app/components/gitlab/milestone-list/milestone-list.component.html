@@ -15,6 +15,9 @@
   </div>
 
   <!-- Liste des milestones avec des cases à cocher -->
+  <p class="text-center text-gray-500" *ngIf="milestones.length === 0">
+    Aucune milestone trouvée
+  </p>
   <ul class="list-none">
     <li *ngFor="let milestone of milestones" class="mb-2">
       <label class="flex items-center">
