@@ -1,3 +1,4 @@
+import { IGitlabLabel } from './igitlab-label';
 import { IGitlabUser } from './igitlab-user';
 
 export interface IGitlabIssue {
@@ -5,7 +6,7 @@ export interface IGitlabIssue {
   description: string;
   state: string;
   assignee?: IGitlabUser;
-  labels: string[];
+  labels: IGitlabLabel[];
   id: number;
   iid: number;
   title: string;

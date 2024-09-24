@@ -44,37 +44,6 @@ export class GitlabService {
       );
   }
 
-  public getIssuesFromProject(
-    projectId: number,
-    openOnly: boolean
-  ): Observable<IGitlabIssue[]> {
-    if (!this.authService.isAuthenticated()) {
-      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of();
-    }
-
-    return this.httpClient
-      .get<IGitlabIssue[]>(
-        `${
-          environment.gitlab_api_base_uri
-        }/projects/${projectId}/issues?per_page=100&sort=asc${
-          openOnly ? '&state=opened' : ''
-        }`,
-        {
-          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
-        }
-      )
-      .pipe(
-        catchError((err) => {
-          console.error(err);
-          this.alertsService.addError(
-            'Impossible de récupérer les issues du projet'
-          );
-          return of();
-        })
-      );
-  }
-
   public searchIssuesFromProject(
     projectId: number,
     query: string,
@@ -108,6 +77,8 @@ export class GitlabService {
     url = `${url}&per_page=${maxResults}&${
       openOnly === true ? 'state=opened' : ''
     }`;
+
+    //note : ajout '&with_labels_details=true' dans l'url pour récupérer les labels en détail
 
     return this.httpClient
       .get<IGitlabIssue[]>(url, {
