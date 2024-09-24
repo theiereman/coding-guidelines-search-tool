@@ -1,11 +1,11 @@
-<ul aria-label="Activity feed" role="feed" class="flex flex-col gap-8 py-6">
+<ul aria-label="Activity feed" role="feed" class="flex flex-col gap-4">
   <li role="article" class="flex items-start">
     <span
       class="flex items-center justify-center size-7 text-white rounded-full bg-orange-500"
     >
       <i class="material-icons text-[1.2rem]">comment</i>
     </span>
-    <div class="ml-4 flex flex-col w-full">
+    <div class="ml-4 flex flex-col w-full gap-1">
       <h4 class="text-sm text-gray-700">Aperçu du commentaire</h4>
       <app-comment-preview [issue]="issue"></app-comment-preview>
     </div>
@@ -16,7 +16,7 @@
     >
       <i class="material-icons text-[1.2rem]">stars</i>
     </span>
-    <div class="ml-4 flex flex-col w-full">
+    <div class="ml-4 flex flex-col w-full gap-1">
       <h4 class="text-sm text-gray-700">Milestones selectionnées</h4>
       <app-milestone-list
         [milestones]="selectedMilestones"
@@ -30,7 +30,7 @@
     >
       <i class="material-icons text-[1.2rem]">folder</i>
     </span>
-    <div class="ml-4 flex flex-col w-full">
+    <div class="ml-4 flex flex-col w-full gap-1">
       <h4 class="text-sm text-gray-700">Projet concerné</h4>
       <app-project-issue-card
         [issue]="project"
