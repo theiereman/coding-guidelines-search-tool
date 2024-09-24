@@ -21,7 +21,7 @@
         id="developmentType"
         formControlName="developmentType"
       >
-        <option *ngFor="let label of labels" [value]="label.id">
+        <option *ngFor="let label of developmentTypeLabels" [value]="label.id">
           {{ label.name }}
         </option>
       </select>
