@@ -8,7 +8,7 @@
     (input)="searchMilestones()"
   /> -->
 
-  <div class="mb-4">
+  <div *ngIf="!disableInteraction" class="mb-4">
     <button class="text-blue-500" (click)="toggleSelectAll()">
       Tout cocher
     </button>
@@ -22,10 +22,11 @@
     <li *ngFor="let milestone of milestones" class="mb-2">
       <label class="flex items-center">
         <input
+          *ngIf="!disableInteraction"
           type="checkbox"
           class="mr-2"
-          [checked]="isSelected(milestone.id)"
-          (change)="toggleMilestone(milestone.id)"
+          [checked]="isSelected(milestone)"
+          (change)="toggleMilestone(milestone)"
         />
         <span>{{ milestone.title }}</span>
       </label>

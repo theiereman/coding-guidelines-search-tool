@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
@@ -11,43 +11,42 @@ import { environment } from 'src/environments/environment';
   templateUrl: './milestone-list.component.html',
 })
 export class MilestoneListComponent {
-  milestones: IGitlabMilestone[] = [];
-  selectedMilestones: Set<number> = new Set();
+  @Input() milestones: IGitlabMilestone[] = [];
+  selectedMilestones: IGitlabMilestone[] = [];
   selectAll: boolean = false;
+  @Input() disableInteraction: boolean = false;
+  @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
 
-  constructor(private gitlabService: GitlabService) {
-    this.gitlabService
-      .getLastMilestonesFromProject(environment.gitlab_id_projet_reintegration)
-      .subscribe((milestones: IGitlabMilestone[]) => {
-        this.milestones = milestones;
-      });
-  }
+  constructor() {}
 
   // Gère la sélection des milestones
-  toggleMilestone(id: number) {
-    if (this.selectedMilestones.has(id)) {
-      this.selectedMilestones.delete(id);
+  toggleMilestone(milestone: IGitlabMilestone) {
+    const milestoneIndex = this.selectedMilestones.findIndex(
+      (m) => m.id === milestone.id
+    );
+    if (milestoneIndex === -1) {
+      this.selectedMilestones.push(milestone);
     } else {
-      this.selectedMilestones.add(id);
+      this.selectedMilestones.splice(milestoneIndex, 1);
     }
+    this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
   }
 
   // Tout cocher ou décocher
   toggleSelectAll() {
     this.selectAll = !this.selectAll;
     if (this.selectAll) {
-      this.milestones.forEach((milestone) =>
-        this.selectedMilestones.add(milestone.id)
-      );
+      this.selectedMilestones = [...this.milestones];
     } else {
-      this.milestones.forEach((milestone) =>
-        this.selectedMilestones.delete(milestone.id)
-      );
+      this.selectedMilestones = [];
     }
+    this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
   }
 
   // Vérifier si une milestone est sélectionnée
-  isSelected(id: number): boolean {
-    return this.selectedMilestones.has(id);
+  isSelected(milestone: IGitlabMilestone): boolean {
+    return (
+      this.selectedMilestones.findIndex((m) => m.id === milestone.id) !== -1
+    );
   }
 }

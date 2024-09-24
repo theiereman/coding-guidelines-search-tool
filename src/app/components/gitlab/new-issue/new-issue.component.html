@@ -92,14 +92,18 @@
 
     <div class="flex flex-col gap-2">
       <label for="milestone">Milestone</label>
-      <app-milestone-list></app-milestone-list>
+      <app-milestone-list
+        (selectedMilestonesEvent)="setSelectedMilestones($event)"
+        [milestones]="milestones"
+      ></app-milestone-list>
     </div>
 
     <div class="flex flex-col gap-2">
       <label for="summary">Résumé des actions</label>
       <app-new-issue-actions-summary
-        [issue]="createdIssue"
+        [issue]="futureIssue"
         [project]="selectedProject"
+        [selectedMilestones]="selectedMilestones"
       ></app-new-issue-actions-summary>
     </div>
   </div>
