@@ -27,6 +27,7 @@ import {
   IGitlabLabel,
   QUOI_DE_NEUF_LABEL_NAME,
 } from 'src/app/interfaces/gitlab/igitlab-label';
+import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
 
 @Component({
   selector: 'app-new-issue',
@@ -191,11 +192,20 @@ export class NewIssueComponent {
       .getLabelsFromProject(environment.gitlab_id_projet_reintegration)
       .pipe(
         tap((labels) => {
-          this.developmentTypeLabels = labels.filter(
-            (label: IGitlabLabel) =>
-              label.name !== BUG_LABEL_NAME &&
-              label.name !== QUOI_DE_NEUF_LABEL_NAME
-          );
+          this.developmentTypeLabels = labels
+            .filter(
+              (label: IGitlabLabel) =>
+                label.name !== BUG_LABEL_NAME &&
+                label.name !== QUOI_DE_NEUF_LABEL_NAME
+            )
+            .map((label) => {
+              return {
+                id: label.id,
+                name: capitalizeFirstLetter(label.name),
+                color: label.color,
+                text_color: label.text_color,
+              };
+            });
         })
       )
       .subscribe((labels) => {
