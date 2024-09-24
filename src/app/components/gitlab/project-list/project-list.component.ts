@@ -5,11 +5,18 @@ import { debounceTime, switchMap, tap } from 'rxjs';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
+import { ProjectIssueCardComponent } from '../project-issue-card/project-issue-card.component';
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, NgFor, NgClass],
+  imports: [
+    ReactiveFormsModule,
+    NgIf,
+    NgFor,
+    NgClass,
+    ProjectIssueCardComponent,
+  ],
   templateUrl: './project-list.component.html',
 })
 export class ProjectListComponent {
@@ -49,14 +56,8 @@ export class ProjectListComponent {
   }
 
   setSelectedProject(project: IGitlabIssue) {
-    console.log(project);
-
     this.gitlabService.addIssueToLocalStorage(project);
     this.selectedProject = project;
-  }
-
-  getProjectDetailsUrl(projectId: number) {
-    return `${environment.gitlab_app_base_uri}/adhoc/suivi-de-projets/-/issues/${projectId}`;
   }
 
   startSearchingForIssues() {

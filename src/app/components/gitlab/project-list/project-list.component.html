@@ -32,45 +32,12 @@
       *ngIf="!loadingIssuesList"
       class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
     >
-      <div
+      <app-project-issue-card
         (click)="setSelectedProject(issue)"
         *ngFor="let issue of issues"
-        class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border"
-        [ngClass]="{ 'border-blue-500': selectedProject?.iid === issue.iid }"
-      >
-        <div
-          class="absolute top-0 right-0 rounded-full size-2 m-2"
-          [ngClass]="{
-            'bg-green-500': issue.state === 'opened',
-            'bg-red-500': issue.state === 'closed'
-          }"
-        ></div>
-        <div class="mb-2">
-          <div class="mb-2">
-            <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
-              <h1 class="text-md font-bold truncate">
-                {{ issue.title }}
-              </h1>
-              <h1 class="text-md font-bold whitespace-nowrap">
-                (#{{ issue.iid }})
-              </h1>
-            </div>
-            <p class="text-xs italic text-gray-600">
-              Assignee : {{ issue.assignee?.name ?? "Aucun" }}
-            </p>
-          </div>
-        </div>
-        <p class="text-gray-600 flex-1 mb-4 text-xs text-ellipsis line-clamp-3">
-          {{ issue.description || "Pas de description disponible" }}
-        </p>
-        <a
-          href="{{ getProjectDetailsUrl(issue.iid) }}"
-          target="_blank"
-          class="text-blue-500 hover:underline text-xs font-medium"
-        >
-          Voir plus
-        </a>
-      </div>
+        [issue]="issue"
+        [selectedProject]="selectedProject"
+      ></app-project-issue-card>
     </div>
   </div>
 
@@ -78,33 +45,13 @@
     <details open>
       <summary class="cursor-pointer mb-2">Issues récentes</summary>
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-        <div
+        <app-project-issue-card
           (click)="setSelectedProject(issue)"
           *ngFor="let issue of recentIssues"
-          class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border"
-          [ngClass]="{ 'border-blue-500': selectedProject?.iid === issue.iid }"
-        >
-          <div
-            class="absolute top-0 right-0 rounded-full size-2 m-2"
-            [ngClass]="{
-              'bg-green-500': issue.state === 'opened',
-              'bg-red-500': issue.state === 'closed'
-            }"
-          ></div>
-          <div class="mb-2">
-            <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
-              <h1 class="text-md font-bold truncate">
-                {{ issue.title }}
-              </h1>
-              <h1 class="text-md font-bold whitespace-nowrap">
-                (#{{ issue.iid }})
-              </h1>
-            </div>
-            <p class="text-xs italic text-gray-600">
-              Assignee : {{ issue.assignee?.name ?? "Aucun" }}
-            </p>
-          </div>
-        </div>
+          [issue]="issue"
+          [selectedProject]="selectedProject"
+          [hideDetails]="true"
+        ></app-project-issue-card>
       </div>
     </details>
   </div>
