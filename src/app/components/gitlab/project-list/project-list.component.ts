@@ -1,6 +1,11 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, forwardRef, Output } from '@angular/core';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  FormControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { debounceTime, switchMap, tap } from 'rxjs';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -18,8 +23,15 @@ import { ProjectIssueCardComponent } from '../project-issue-card/project-issue-c
     ProjectIssueCardComponent,
   ],
   templateUrl: './project-list.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ProjectListComponent),
+      multi: true,
+    },
+  ],
 })
-export class ProjectListComponent {
+export class ProjectListComponent implements ControlValueAccessor {
   searchValueControl: FormControl = new FormControl('');
   openOnlyControl: FormControl = new FormControl(true);
   issues: IGitlabIssue[] = [];
@@ -29,38 +41,17 @@ export class ProjectListComponent {
   @Output() selectedProjectEvent = new EventEmitter<IGitlabIssue>();
   selectedProject?: IGitlabIssue = undefined;
 
-  constructor(private gitlabService: GitlabService) {
-    this.searchValueControl.valueChanges
-      .pipe(
-        tap(() => (this.loadingIssuesList = true)),
-        debounceTime(300),
-        switchMap(() => {
-          return this.startSearchingForIssues();
-        })
-      )
-      .subscribe((issues) => {
-        this.updateIssuesList(issues);
-      });
+  private onChange: (value: IGitlabIssue | null) => void = () => {};
+  private onTouched: () => void = () => {};
 
-    //interrupteur ouvert uniquement
-    this.openOnlyControl.valueChanges
-      .pipe(
-        tap(() => {
-          this.recentIssues = this.getLocalStorageIssues();
-        }),
-        switchMap(() => {
-          return this.startSearchingForIssues();
-        })
-      )
-      .subscribe((issues) => {
-        this.updateIssuesList(issues);
-      });
-  }
+  constructor(private gitlabService: GitlabService) {}
 
   setSelectedProject(project: IGitlabIssue) {
     this.gitlabService.addIssueToLocalStorage(project);
     this.selectedProjectEvent?.emit(project);
     this.selectedProject = project;
+    this.onChange(project); // Inform the form control about the change
+    this.onTouched(); // Mark the control as touched
   }
 
   startSearchingForIssues() {
@@ -92,5 +83,46 @@ export class ProjectListComponent {
 
   ngOnInit(): void {
     this.recentIssues = this.getLocalStorageIssues();
+    this.searchValueControl.valueChanges
+      .pipe(
+        tap(() => (this.loadingIssuesList = true)),
+        debounceTime(300),
+        switchMap(() => {
+          return this.startSearchingForIssues();
+        })
+      )
+      .subscribe((issues) => {
+        this.updateIssuesList(issues);
+      });
+
+    // interrupteur ouvert uniquement
+    this.openOnlyControl.valueChanges
+      .pipe(
+        tap(() => {
+          this.recentIssues = this.getLocalStorageIssues();
+        }),
+        switchMap(() => {
+          return this.startSearchingForIssues();
+        })
+      )
+      .subscribe((issues) => {
+        this.updateIssuesList(issues);
+      });
+  }
+
+  writeValue(project: IGitlabIssue | undefined): void {
+    this.selectedProject = project;
+  }
+
+  registerOnChange(fn: (value: IGitlabIssue | null) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    // Manage component disabled state
   }
 }
