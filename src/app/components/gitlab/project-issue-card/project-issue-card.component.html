@@ -1,33 +1,40 @@
 <div
-  [ngClass]="{ 'border-blue-500': selectedProject?.iid === issue.iid }"
+  [ngClass]="{
+    'border-blue-500':
+      selectedProject?.iid === issue?.iid && !disableInteraction
+  }"
+  [ngClass]="{ 'hover:cursor-pointer': !disableInteraction }"
   class="hover:cursor-pointer relative flex flex-col items-start bg-white shadow-md rounded-lg p-4 border h-full"
 >
   <div
     class="absolute top-0 right-0 rounded-full size-2 m-2"
     [ngClass]="{
-      'bg-green-500': issue.state === 'opened',
-      'bg-red-500': issue.state === 'closed'
+      'bg-green-500': issue?.state === 'opened',
+      'bg-red-500': issue?.state === 'closed'
     }"
   ></div>
   <div [ngClass]="{ 'mb-2': !hideDetails }">
     <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
       <h1 class="text-md font-bold truncate">
-        {{ issue.title }}
+        {{ issue === undefined ? "Aucun projet selectionné" : issue.title }}
       </h1>
-      <h1 class="text-md font-bold whitespace-nowrap">(#{{ issue.iid }})</h1>
+      <h1 class="text-md font-bold whitespace-nowrap">
+        {{ issue === undefined ? "" : "(#" + issue.iid + ")" }}
+      </h1>
     </div>
     <p class="text-xs italic text-gray-600">
-      Assignee : {{ issue.assignee?.name ?? "Aucun" }}
+      Assignee : {{ issue?.assignee?.name ?? "Aucun" }}
     </p>
   </div>
   <p
     *ngIf="!hideDetails"
-    class="text-gray-600 flex-1 mb-4 text-xs text-ellipsis line-clamp-3"
+    class="text-gray-600 flex-1 text-xs text-ellipsis line-clamp-3"
+    [ngClass]="{ 'mb-4': issue && !hideDetails }"
   >
-    {{ issue.description || "Pas de description disponible" }}
+    {{ issue?.description || "Pas de description disponible" }}
   </p>
   <a
-    *ngIf="!hideDetails"
+    *ngIf="issue && !hideDetails"
     href="{{ getProjectDetailsUrl(issue.iid) }}"
     target="_blank"
     class="text-blue-500 hover:underline text-xs font-medium"

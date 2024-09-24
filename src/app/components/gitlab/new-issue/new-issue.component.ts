@@ -10,6 +10,7 @@ import { ProjectListComponent } from '../project-list/project-list.component';
 import { MilestoneListComponent } from '../milestone-list/milestone-list.component';
 import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
+import { NewIssueActionsSummaryComponent } from '../new-issue-actions-summary/new-issue-actions-summary.component';
 
 @Component({
   selector: 'app-new-issue',
@@ -21,6 +22,7 @@ import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
     ProjectListComponent,
     MilestoneListComponent,
     CommentPreviewComponent,
+    NewIssueActionsSummaryComponent,
   ],
   templateUrl: './new-issue.component.html',
 })
@@ -36,6 +38,7 @@ export class NewIssueComponent {
   description = new FormControl('');
   milestone = new FormControl('');
 
+  selectedProject?: IGitlabIssue = undefined;
   createdIssue: IGitlabIssue = {} as IGitlabIssue;
 
   constructor(private gitlabService: GitlabService) {
@@ -74,5 +77,9 @@ export class NewIssueComponent {
       .subscribe((labels) => {
         this.labels = labels;
       });
+  }
+
+  setSelectedProject(project: IGitlabIssue) {
+    this.selectedProject = project;
   }
 }
