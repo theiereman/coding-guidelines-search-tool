@@ -109,20 +109,21 @@
       ></app-milestone-list>
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label for="summary">Résumé des actions</label>
+    <fieldset class="border-2 border-gray-400 rounded-md p-4">
+      <legend class="p-2 text-lg font-semibold">
+        Résumé de la réintégration
+      </legend>
       <app-new-issue-actions-summary
         [issue]="futureIssue"
         [project]="selectedProject"
         [selectedMilestones]="selectedMilestones"
       ></app-new-issue-actions-summary>
-    </div>
+      <button
+        [disabled]="!issueCreationForm.valid"
+        class="p-2 mt-6 float-end border-gray-400 rounded-md bg-purple-700 text-white disabled:bg-gray-200 disabled:text-gray-500"
+      >
+        Créer une issue de réintégration
+      </button>
+    </fieldset>
   </div>
-
-  <button
-    [disabled]="!issueCreationForm.valid"
-    class="p-2 my-6 float-end border-gray-400 rounded-md bg-purple-700 text-white disabled:bg-gray-200 disabled:text-gray-500"
-  >
-    Créer une issue de réintégration
-  </button>
 </form>
