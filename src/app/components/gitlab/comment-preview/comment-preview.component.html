@@ -1,10 +1,6 @@
 <div class="flex items-start space-x-4 border rounded-lg border-gray-400 p-4">
   <div class="shrink-0">
-    <img
-      src="https://gitlab.adhoc-gti.com/uploads/-/system/user/avatar/134/bot.jpg"
-      alt=""
-      class="w-8 h-8 rounded-full"
-    />
+    <img src="" alt="" class="w-8 h-8 rounded-full" />
   </div>
   <div class="flex-1">
     <div class="flex items-center space-x-2">
@@ -26,12 +22,10 @@
     </div>
     <div class="flex gap-2">
       <span
-        class="mt-2 inline-flex items-center rounded-full bg-red-500 px-4 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10"
-        >bug</span
-      >
-      <span
-        class="mt-2 inline-flex items-center rounded-full bg-blue-500 px-4 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10"
-        >dev standard</span
+        *ngFor="let label of issue.labels"
+        [ngStyle]="{ 'background-color': label.color }"
+        class="mt-2 inline-flex items-center rounded-full px-2 py-[2px] text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10"
+        >{{ label.name }}</span
       >
     </div>
   </div>

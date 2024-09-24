@@ -10,8 +10,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { map } from 'rxjs';
-import { IGitlabLabel } from 'src/app/interfaces/gitlab/igitlab-label';
+import { map, tap } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
@@ -23,6 +22,11 @@ import { NewIssueActionsSummaryComponent } from '../new-issue-actions-summary/ne
 import { AlertsService } from 'src/app/services/alerts.service';
 import { validateMilestonesSelection } from '../validators/milestones-selection-validator';
 import { validateProjectSelection } from '../validators/selected-project-validator';
+import {
+  BUG_LABEL_NAME,
+  IGitlabLabel,
+  QUOI_DE_NEUF_LABEL_NAME,
+} from 'src/app/interfaces/gitlab/igitlab-label';
 
 @Component({
   selector: 'app-new-issue',
@@ -42,6 +46,8 @@ import { validateProjectSelection } from '../validators/selected-project-validat
 export class NewIssueComponent {
   milestones: IGitlabMilestone[] = [];
   labels: IGitlabLabel[] = [];
+  developmentTypeLabels: IGitlabLabel[] = [];
+  lastDevelopmentTypeLabelUsed: IGitlabLabel | undefined = undefined;
 
   issueCreationForm = new FormGroup({
     developmentType: new FormControl('', Validators.required),
@@ -60,33 +66,15 @@ export class NewIssueComponent {
   });
 
   selectedProject?: IGitlabIssue = undefined;
-  futureIssue: IGitlabIssue = {} as IGitlabIssue;
+  futureIssue: IGitlabIssue = {
+    labels: [] as IGitlabLabel[],
+  } as IGitlabIssue;
   selectedMilestones: IGitlabMilestone[] = [];
 
   constructor(
     private gitlabService: GitlabService,
     private alertsService: AlertsService
-  ) {
-    this.issueCreationForm.controls.title.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(
-        this.issueCreationForm.controls.scope.value ?? '',
-        value ?? ''
-      );
-    });
-
-    this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(
-        value ?? '',
-        this.issueCreationForm.controls.title.value ?? ''
-      );
-    });
-
-    this.issueCreationForm.controls.description.valueChanges.subscribe(
-      (value) => {
-        this.futureIssue.description = value ?? '';
-      }
-    );
-  }
+  ) {}
 
   ngOnInit(): void {
     this.updateLabelList();
@@ -95,6 +83,103 @@ export class NewIssueComponent {
       .subscribe((milestones: IGitlabMilestone[]) => {
         this.milestones = milestones;
       });
+
+    //mise à jour du titre
+    this.issueCreationForm.controls.title.valueChanges.subscribe((value) => {
+      this.updateIssueTitle(
+        this.issueCreationForm.controls.scope.value ?? '',
+        value ?? ''
+      );
+    });
+
+    //mise à jour du périmètre
+    this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
+      this.updateIssueTitle(
+        value ?? '',
+        this.issueCreationForm.controls.title.value ?? ''
+      );
+    });
+
+    //mise à jour de la description
+    this.issueCreationForm.controls.description.valueChanges.subscribe(
+      (value) => {
+        this.futureIssue.description = value ?? '';
+      }
+    );
+
+    //ajout du label 'bug' par défaut en fonction de la combo isBugCorrection
+    this.issueCreationForm.controls.isBugCorrection.valueChanges.subscribe(
+      (value) => {
+        if (value === 'true') {
+          const bugLabel = this.labels.find(
+            (label) => label.name === BUG_LABEL_NAME
+          );
+
+          if (
+            bugLabel &&
+            !this.futureIssue.labels.some(
+              (label) => label.name === BUG_LABEL_NAME
+            )
+          ) {
+            this.futureIssue.labels.push(bugLabel);
+          }
+        } else {
+          this.futureIssue.labels = this.futureIssue.labels.filter(
+            (label) => label.name !== BUG_LABEL_NAME
+          );
+        }
+      }
+    );
+
+    // ajout du label 'quoi de neuf ?' par défaut en fonction de la combo isQuoiDeNeuf
+    this.issueCreationForm.controls.isQuoiDeNeuf.valueChanges.subscribe(
+      (value) => {
+        console.log(this.futureIssue);
+
+        if (value === 'true') {
+          const quoiDeNeufLabel = this.labels.find(
+            (label) => label.name === QUOI_DE_NEUF_LABEL_NAME
+          );
+
+          if (
+            quoiDeNeufLabel &&
+            !this.futureIssue.labels.some(
+              (label) => label.name === QUOI_DE_NEUF_LABEL_NAME
+            )
+          ) {
+            this.futureIssue.labels.push(quoiDeNeufLabel);
+          }
+        } else {
+          this.futureIssue.labels = this.futureIssue.labels.filter(
+            (label) => label.name !== QUOI_DE_NEUF_LABEL_NAME
+          );
+        }
+      }
+    );
+
+    //ajout du label spécifique au choix de la combo developmentType
+    this.issueCreationForm.controls.developmentType.valueChanges.subscribe(
+      (value) => {
+        console.log(value);
+
+        const correspondingLabel = this.labels.find(
+          (label) => label.id === Number(value)
+        );
+
+        if (!correspondingLabel) return;
+
+        this.futureIssue.labels = this.futureIssue.labels.filter(
+          (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id
+        );
+
+        this.lastDevelopmentTypeLabelUsed = correspondingLabel;
+
+        this.futureIssue.labels = [
+          correspondingLabel,
+          ...this.futureIssue.labels,
+        ];
+      }
+    );
   }
 
   private updateIssueTitle(scope: string, title: string) {
@@ -105,10 +190,11 @@ export class NewIssueComponent {
     this.gitlabService
       .getLabelsFromProject(environment.gitlab_id_projet_reintegration)
       .pipe(
-        map((labels) => {
-          return labels.filter(
+        tap((labels) => {
+          this.developmentTypeLabels = labels.filter(
             (label: IGitlabLabel) =>
-              label.name !== 'bug' && label.name !== 'quoi de neuf ?'
+              label.name !== BUG_LABEL_NAME &&
+              label.name !== QUOI_DE_NEUF_LABEL_NAME
           );
         })
       )
