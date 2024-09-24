@@ -124,13 +124,13 @@ export class GitlabService {
       );
   }
 
-  addIssueToLocalStorage(issue: IGitlabIssue) {
+  public addIssueToLocalStorage(issue: IGitlabIssue) {
     let issuesArray: IGitlabIssue[] = this.getIssuesFromLocalStorage();
     issuesArray.unshift(issue);
     localStorage.setItem('issues', JSON.stringify(issuesArray));
   }
 
-  getIssuesFromLocalStorage(size: number = 10): IGitlabIssue[] {
+  public getIssuesFromLocalStorage(size: number = 10): IGitlabIssue[] {
     const issues = JSON.parse(localStorage.getItem('issues') ?? '[]');
     const uniqueIssues = issues.filter(
       (issue: IGitlabIssue, index: number, self: IGitlabIssue[]) =>
@@ -162,6 +162,28 @@ export class GitlabService {
             'Impossible de récupérer les milestones du projet'
           );
           return of([]);
+        })
+      );
+  }
+
+  public createNewIssue(issue: IGitlabIssue): Observable<boolean> {
+    return this.httpClient
+      .post<IGitlabIssue>(
+        `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_reintegration}/issues`,
+        issue,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError('Impossible de créer une nouvelle issue');
+          return of();
+        }),
+        map((issue) => {
+          this.addIssueToLocalStorage(issue);
+          return true;
         })
       );
   }
