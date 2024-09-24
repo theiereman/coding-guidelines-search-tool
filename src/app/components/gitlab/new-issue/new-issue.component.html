@@ -1,4 +1,4 @@
-<div class="mx-auto">
+<form [formGroup]="issueCreationForm" class="mx-auto">
   <div
     class="mb-6 font-bold border-2 rounded-xl border-red-500 p-4 text-red-500"
   >
@@ -19,7 +19,7 @@
       <select
         class="p-1 border border-gray-400 rounded-md bg-transparent"
         id="developmentType"
-        [formControl]="developmentType"
+        formControlName="developmentType"
       >
         <option *ngFor="let label of labels" [value]="label.id">
           {{ label.name }}
@@ -27,13 +27,22 @@
       </select>
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label for="scope">Périmètre</label>
+    <div class="flex flex-col">
+      <label class="flex mb-2" for="scope"
+        >Périmètre
+        <p class="text-red-500">*</p>
+      </label>
       <input
+        [ngClass]="{
+          'border-red-500 border-2':
+            issueCreationForm.get('scope')?.invalid &&
+            (issueCreationForm.get('scope')?.dirty ||
+              issueCreationForm.get('scope')?.touched)
+        }"
         class="p-1 border border-gray-400 rounded-md"
         type="text"
         id="scope"
-        [formControl]="scope"
+        formControlName="scope"
       />
     </div>
 
@@ -43,7 +52,7 @@
         class="p-1 border border-gray-400 rounded-md"
         type="text"
         id="title"
-        [formControl]="title"
+        formControlName="title"
       />
     </div>
 
@@ -52,7 +61,7 @@
       <textarea
         class="p-1 border border-gray-400 rounded-md"
         id="description"
-        [formControl]="description"
+        formControlName="description"
       ></textarea>
     </div>
 
@@ -61,6 +70,7 @@
       <app-project-list
         id="project-list"
         (selectedProjectEvent)="setSelectedProject($event)"
+        formControlName="selectedProject"
       ></app-project-list>
     </div>
 
@@ -69,7 +79,7 @@
       <select
         class="p-1 border border-gray-400 rounded-md bg-transparent"
         id="bug"
-        [formControl]="isBugCorrection"
+        formControlName="isBugCorrection"
       >
         <option value="false">Non</option>
         <option value="true">Oui</option>
@@ -83,7 +93,7 @@
       <select
         class="p-1 border border-gray-400 rounded-md bg-transparent"
         id="quoiDeNeuf"
-        [formControl]="isQuoiDeNeuf"
+        formControlName="isQuoiDeNeuf"
       >
         <option value="false">Non</option>
         <option value="true">Oui</option>
@@ -95,6 +105,7 @@
       <app-milestone-list
         (selectedMilestonesEvent)="setSelectedMilestones($event)"
         [milestones]="milestones"
+        formControlName="selectedMilestones"
       ></app-milestone-list>
     </div>
 
@@ -109,8 +120,9 @@
   </div>
 
   <button
-    class="p-2 my-6 float-end border-gray-400 rounded-md bg-purple-700 text-white"
+    [disabled]="!issueCreationForm.valid"
+    class="p-2 my-6 float-end border-gray-400 rounded-md bg-purple-700 text-white disabled:bg-gray-200 disabled:text-gray-500"
   >
     Créer une issue de réintégration
   </button>
-</div>
+</form>

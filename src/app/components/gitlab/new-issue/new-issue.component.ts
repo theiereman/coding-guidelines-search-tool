@@ -1,6 +1,15 @@
-import { NgClass, NgFor } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { map } from 'rxjs';
 import { IGitlabLabel } from 'src/app/interfaces/gitlab/igitlab-label';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
@@ -12,6 +21,8 @@ import { CommentPreviewComponent } from '../comment-preview/comment-preview.comp
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { NewIssueActionsSummaryComponent } from '../new-issue-actions-summary/new-issue-actions-summary.component';
 import { AlertsService } from 'src/app/services/alerts.service';
+import { validateMilestonesSelection } from '../validators/milestones-selection-validator';
+import { validateProjectSelection } from '../validators/selected-project-validator';
 
 @Component({
   selector: 'app-new-issue',
@@ -20,6 +31,7 @@ import { AlertsService } from 'src/app/services/alerts.service';
     ReactiveFormsModule,
     NgClass,
     NgFor,
+    NgIf,
     ProjectListComponent,
     MilestoneListComponent,
     CommentPreviewComponent,
@@ -31,13 +43,21 @@ export class NewIssueComponent {
   milestones: IGitlabMilestone[] = [];
   labels: IGitlabLabel[] = [];
 
-  developmentType = new FormControl('');
-  isBugCorrection = new FormControl('');
-  isQuoiDeNeuf = new FormControl('');
-  scope = new FormControl('');
-  title = new FormControl('');
-  description = new FormControl('');
-  milestone = new FormControl('');
+  issueCreationForm = new FormGroup({
+    developmentType: new FormControl('', Validators.required),
+    isBugCorrection: new FormControl('', Validators.required),
+    isQuoiDeNeuf: new FormControl('', Validators.required),
+    scope: new FormControl('', Validators.required),
+    title: new FormControl('', Validators.required),
+    description: new FormControl(''),
+    selectedMilestones: new FormControl<IGitlabMilestone[]>(
+      [],
+      [validateMilestonesSelection]
+    ),
+    selectedProject: new FormControl<IGitlabIssue | null>(null, [
+      validateProjectSelection,
+    ]),
+  });
 
   selectedProject?: IGitlabIssue = undefined;
   futureIssue: IGitlabIssue = {} as IGitlabIssue;
@@ -47,17 +67,25 @@ export class NewIssueComponent {
     private gitlabService: GitlabService,
     private alertsService: AlertsService
   ) {
-    this.title.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(this.scope.value ?? '', value ?? '');
+    this.issueCreationForm.controls.title.valueChanges.subscribe((value) => {
+      this.updateIssueTitle(
+        this.issueCreationForm.controls.scope.value ?? '',
+        value ?? ''
+      );
     });
 
-    this.scope.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(value ?? '', this.title.value ?? '');
+    this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
+      this.updateIssueTitle(
+        value ?? '',
+        this.issueCreationForm.controls.title.value ?? ''
+      );
     });
 
-    this.description.valueChanges.subscribe((value) => {
-      this.futureIssue.description = value ?? '';
-    });
+    this.issueCreationForm.controls.description.valueChanges.subscribe(
+      (value) => {
+        this.futureIssue.description = value ?? '';
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -91,10 +119,12 @@ export class NewIssueComponent {
 
   setSelectedProject(project: IGitlabIssue) {
     this.selectedProject = project;
+    this.issueCreationForm.controls.selectedProject.setValue(project);
   }
 
   setSelectedMilestones(milestones: IGitlabMilestone[]) {
     this.selectedMilestones = milestones;
+    this.issueCreationForm.controls.selectedMilestones.setValue(milestones);
   }
 
   createNewIssue() {
