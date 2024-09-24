@@ -39,7 +39,8 @@ export class NewIssueComponent {
   milestone = new FormControl('');
 
   selectedProject?: IGitlabIssue = undefined;
-  createdIssue: IGitlabIssue = {} as IGitlabIssue;
+  futureIssue: IGitlabIssue = {} as IGitlabIssue;
+  selectedMilestones: IGitlabMilestone[] = [];
 
   constructor(private gitlabService: GitlabService) {
     this.title.valueChanges.subscribe((value) => {
@@ -51,16 +52,21 @@ export class NewIssueComponent {
     });
 
     this.description.valueChanges.subscribe((value) => {
-      this.createdIssue.description = value ?? '';
+      this.futureIssue.description = value ?? '';
     });
   }
 
   ngOnInit(): void {
     this.updateLabelList();
+    this.gitlabService
+      .getLastMilestonesFromProject(environment.gitlab_id_projet_reintegration)
+      .subscribe((milestones: IGitlabMilestone[]) => {
+        this.milestones = milestones;
+      });
   }
 
   private updateIssueTitle(scope: string, title: string) {
-    this.createdIssue.title = `[${scope}] - ${title}`;
+    this.futureIssue.title = `[${scope}] - ${title}`;
   }
 
   private updateLabelList() {
@@ -81,5 +87,9 @@ export class NewIssueComponent {
 
   setSelectedProject(project: IGitlabIssue) {
     this.selectedProject = project;
+  }
+
+  setSelectedMilestones(milestones: IGitlabMilestone[]) {
+    this.selectedMilestones = milestones;
   }
 }
