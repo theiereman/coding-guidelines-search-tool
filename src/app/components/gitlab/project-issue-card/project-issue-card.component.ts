@@ -10,9 +10,10 @@ import { environment } from 'src/environments/environment';
   templateUrl: './project-issue-card.component.html',
 })
 export class ProjectIssueCardComponent {
-  @Input({ required: true }) issue: IGitlabIssue = {} as IGitlabIssue;
+  @Input() issue?: IGitlabIssue = undefined;
   @Input() selectedProject?: IGitlabIssue = undefined;
   @Input() hideDetails: boolean = false;
+  @Input() disableInteraction: boolean = false;
 
   getProjectDetailsUrl(projectId: number) {
     return `${environment.gitlab_app_base_uri}/adhoc/suivi-de-projets/-/issues/${projectId}`;

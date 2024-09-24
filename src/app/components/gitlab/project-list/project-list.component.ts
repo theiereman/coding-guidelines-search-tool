@@ -1,5 +1,5 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, switchMap, tap } from 'rxjs';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
@@ -25,6 +25,8 @@ export class ProjectListComponent {
   issues: IGitlabIssue[] = [];
   recentIssues: IGitlabIssue[] = [];
   loadingIssuesList: boolean = false;
+
+  @Output() selectedProjectEvent = new EventEmitter<IGitlabIssue>();
   selectedProject?: IGitlabIssue = undefined;
 
   constructor(private gitlabService: GitlabService) {
@@ -57,6 +59,7 @@ export class ProjectListComponent {
 
   setSelectedProject(project: IGitlabIssue) {
     this.gitlabService.addIssueToLocalStorage(project);
+    this.selectedProjectEvent?.emit(project);
     this.selectedProject = project;
   }
 

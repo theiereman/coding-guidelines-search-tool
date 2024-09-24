@@ -58,7 +58,10 @@
 
     <div class="flex flex-col gap-2">
       <label for="project-list">Projet</label>
-      <app-project-list id="project-list"></app-project-list>
+      <app-project-list
+        id="project-list"
+        (selectedProjectEvent)="setSelectedProject($event)"
+      ></app-project-list>
     </div>
 
     <div class="flex flex-col gap-2">
@@ -93,8 +96,11 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label for="milestone">Aperçu du commentaire</label>
-      <app-comment-preview [issue]="createdIssue"></app-comment-preview>
+      <label for="summary">Résumé des actions</label>
+      <app-new-issue-actions-summary
+        [issue]="createdIssue"
+        [project]="selectedProject"
+      ></app-new-issue-actions-summary>
     </div>
   </div>
 
