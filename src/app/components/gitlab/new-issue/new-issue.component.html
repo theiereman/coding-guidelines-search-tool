@@ -28,6 +28,16 @@
     </div>
 
     <div class="flex flex-col gap-2">
+      <label for="scope">Périmètre</label>
+      <input
+        class="p-1 border border-gray-400 rounded-md"
+        type="text"
+        id="scope"
+        [formControl]="scope"
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
       <label for="title">Titre</label>
       <input
         class="p-1 border border-gray-400 rounded-md"
@@ -81,14 +91,11 @@
       <label for="milestone">Milestone</label>
       <app-milestone-list></app-milestone-list>
     </div>
-  </div>
 
-  <br class="h-6" />
-
-  <div id="preview">
-    <div>{{ title.value }}</div>
-    <div>{{ description.value }}</div>
-    <div>{{ milestone.value }}</div>
+    <div class="flex flex-col gap-2">
+      <label for="milestone">Aperçu du commentaire</label>
+      <app-comment-preview [issue]="createdIssue"></app-comment-preview>
+    </div>
   </div>
 
   <button
