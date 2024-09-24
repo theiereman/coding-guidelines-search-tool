@@ -11,6 +11,7 @@ import { MilestoneListComponent } from '../milestone-list/milestone-list.compone
 import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { NewIssueActionsSummaryComponent } from '../new-issue-actions-summary/new-issue-actions-summary.component';
+import { AlertsService } from 'src/app/services/alerts.service';
 
 @Component({
   selector: 'app-new-issue',
@@ -42,7 +43,10 @@ export class NewIssueComponent {
   futureIssue: IGitlabIssue = {} as IGitlabIssue;
   selectedMilestones: IGitlabMilestone[] = [];
 
-  constructor(private gitlabService: GitlabService) {
+  constructor(
+    private gitlabService: GitlabService,
+    private alertsService: AlertsService
+  ) {
     this.title.valueChanges.subscribe((value) => {
       this.updateIssueTitle(this.scope.value ?? '', value ?? '');
     });
@@ -91,5 +95,16 @@ export class NewIssueComponent {
 
   setSelectedMilestones(milestones: IGitlabMilestone[]) {
     this.selectedMilestones = milestones;
+  }
+
+  createNewIssue() {
+    this.gitlabService.createNewIssue(this.futureIssue).subscribe((success) => {
+      if (success) {
+        this.alertsService.addSuccess('Nouvelle issue créée');
+        this.futureIssue = {} as IGitlabIssue;
+        this.selectedProject = undefined;
+        this.selectedMilestones = [];
+      }
+    });
   }
 }
