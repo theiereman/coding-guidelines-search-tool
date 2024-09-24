@@ -46,19 +46,19 @@
           }"
         ></div>
         <div class="mb-2">
-          <div class="flex">
-            <h1
-              class="text-md font-bold line-clamp-2 text-ellipsis overflow-hidden"
-            >
-              {{ issue.title }}
-            </h1>
-            <h1 class="text-md font-bold line-clamp-1 shrink-0">
-              &nbsp;(#{{ issue.iid }})
-            </h1>
+          <div class="mb-2">
+            <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
+              <h1 class="text-md font-bold truncate">
+                {{ issue.title }}
+              </h1>
+              <h1 class="text-md font-bold whitespace-nowrap">
+                (#{{ issue.iid }})
+              </h1>
+            </div>
+            <p class="text-xs italic text-gray-600">
+              Assignee : {{ issue.assignee?.name ?? "Aucun" }}
+            </p>
           </div>
-          <p class="text-xs italic text-gray-600">
-            Assignee : {{ issue.assignee?.name ?? "Aucun" }}
-          </p>
         </div>
         <p class="text-gray-600 flex-1 mb-4 text-xs text-ellipsis line-clamp-3">
           {{ issue.description || "Pas de description disponible" }}
@@ -91,15 +91,18 @@
               'bg-red-500': issue.state === 'closed'
             }"
           ></div>
-          <div class="flex">
-            <h1
-              class="text-md font-bold line-clamp-2 text-ellipsis overflow-hidden"
-            >
-              {{ issue.title }}
-            </h1>
-            <h1 class="text-md font-bold line-clamp-1 shrink-0">
-              &nbsp;(#{{ issue.iid }})
-            </h1>
+          <div class="mb-2">
+            <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
+              <h1 class="text-md font-bold truncate">
+                {{ issue.title }}
+              </h1>
+              <h1 class="text-md font-bold whitespace-nowrap">
+                (#{{ issue.iid }})
+              </h1>
+            </div>
+            <p class="text-xs italic text-gray-600">
+              Assignee : {{ issue.assignee?.name ?? "Aucun" }}
+            </p>
           </div>
         </div>
       </div>
