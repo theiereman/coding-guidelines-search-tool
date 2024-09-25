@@ -13,11 +13,19 @@
     </div>
     <div class="mt-2">
       <!-- TODO: ajouter une lien cliquable is le lien est ok -->
+
       <p class="text-gray-700" [ngClass]="{ italic: !issue.title }">
-        {{ !issue.title ? titlePlaceholder : issue.title }} (<span
+        {{ !issue.title ? titlePlaceholder : issue.title }} (@if(issue.web_url)
+        {
+        <a
           class="text-blue-500 underline"
-          >{{ !issue.web_url ? "@URL" : issue.web_url }}</span
-        >)
+          href="{{ issue.web_url }}"
+          target="_blank"
+          >lien</a
+        >
+        } @else {
+        <span class="text-blue-500 underline">&#64;URL</span>
+        })
       </p>
       <p class="text-gray-700">{{ issue.description }}</p>
     </div>
