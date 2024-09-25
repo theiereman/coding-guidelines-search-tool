@@ -276,7 +276,7 @@ export class NewIssueComponent {
       return this.gitlabService.createNewIssue(newIssue).pipe(
         switchMap((createdIssue) => {
           if (createdIssue) {
-            // Si l'issue a été créée avec succès, ajoute un commentaire dans le projet sélectionné
+            this.futureIssue.web_url = createdIssue.web_url;
             return this.gitlabService
               .addCommentOfReintegrationInLinkedProjectIssue(
                 createdIssue,
@@ -303,11 +303,13 @@ export class NewIssueComponent {
           'Une erreur est survenue lors de la création de la(des) issue(s)'
         );
       }
-
-      // Réinitialisation des champs après traitement
-      this.futureIssue = {} as IGitlabIssue;
-      this.selectedProject = undefined;
-      this.selectedMilestones = [];
     });
+  }
+
+  resetForm() {
+    this.issueCreationForm.reset();
+    this.futureIssue = {} as IGitlabIssue;
+    this.selectedProject = undefined;
+    this.selectedMilestones = [];
   }
 }
