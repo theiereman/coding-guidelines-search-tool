@@ -118,12 +118,20 @@
         [project]="selectedProject"
         [selectedMilestones]="selectedMilestones"
       ></app-new-issue-actions-summary>
-      <button
-        [disabled]="!issueCreationForm.valid"
-        class="p-2 mt-6 float-end border-gray-400 rounded-md bg-purple-700 text-white disabled:bg-gray-200 disabled:text-gray-500"
-      >
-        Créer une issue de réintégration
-      </button>
+      <div class="flex gap-2 items-center justify-end mt-6">
+        <span
+          class="text-sm text-gray-500 italic"
+          *ngIf="!issueCreationForm.valid"
+          >Veuillez remplir tous les champs obligatoires</span
+        >
+        <button
+          (click)="createNewIssue()"
+          [disabled]="!issueCreationForm.valid"
+          class="p-2 float-end border-gray-400 rounded-md bg-purple-700 text-white disabled:bg-gray-200 disabled:text-gray-500"
+        >
+          Créer une issue de réintégration
+        </button>
+      </div>
     </fieldset>
   </div>
 </form>

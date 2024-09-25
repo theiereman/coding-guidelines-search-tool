@@ -10,7 +10,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { map, tap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
@@ -28,6 +28,7 @@ import {
   QUOI_DE_NEUF_LABEL_NAME,
 } from 'src/app/interfaces/gitlab/igitlab-label';
 import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
+import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 
 @Component({
   selector: 'app-new-issue',
@@ -68,71 +69,60 @@ export class NewIssueComponent {
 
   selectedProject?: IGitlabIssue = undefined;
   futureIssue: IGitlabIssue = {
-    labels: [] as IGitlabLabel[],
+    labels: [] as string[],
+    detailed_labels: [] as IGitlabLabel[],
   } as IGitlabIssue;
   selectedMilestones: IGitlabMilestone[] = [];
 
   constructor(
+    private gitlabAuthService: GitlabAuthService,
     private gitlabService: GitlabService,
     private alertsService: AlertsService
   ) {}
 
   ngOnInit(): void {
     this.updateLabelList();
-    this.gitlabService
-      .getLastMilestonesFromProject(environment.gitlab_id_projet_reintegration)
-      .subscribe((milestones: IGitlabMilestone[]) => {
-        this.milestones = milestones;
-      });
+    this.updateMilestoneList();
 
-    //mise à jour du titre
-    this.issueCreationForm.controls.title.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(
-        this.issueCreationForm.controls.scope.value ?? '',
-        value ?? ''
-      );
-    });
+    this.setCurrentUserAsAssignee();
 
-    //mise à jour du périmètre
-    this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(
-        value ?? '',
-        this.issueCreationForm.controls.title.value ?? ''
-      );
-    });
+    this.manageTitleValueUpdate();
+    this.manageScopeValueUpdate();
+    this.manageDescriptionValueUpdate();
+    this.manageBugValueUpdate();
+    this.manageQuoiDeNeufValueUpdate();
+    this.manageDevelopmentTypeValueUpdate();
+  }
 
-    //mise à jour de la description
-    this.issueCreationForm.controls.description.valueChanges.subscribe(
+  private manageDevelopmentTypeValueUpdate() {
+    this.issueCreationForm.controls.developmentType.valueChanges.subscribe(
       (value) => {
-        this.futureIssue.description = value ?? '';
-      }
-    );
+        const correspondingLabel = this.labels.find(
+          (label) => label.id === Number(value)
+        );
 
-    //ajout du label 'bug' par défaut en fonction de la combo isBugCorrection
-    this.issueCreationForm.controls.isBugCorrection.valueChanges.subscribe(
-      (value) => {
-        if (value === 'true') {
-          const bugLabel = this.labels.find(
-            (label) => label.name === BUG_LABEL_NAME
+        if (!correspondingLabel) return;
+
+        this.futureIssue.detailed_labels =
+          this.futureIssue.detailed_labels.filter(
+            (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id
           );
 
-          if (
-            bugLabel &&
-            !this.futureIssue.labels.some(
-              (label) => label.name === BUG_LABEL_NAME
-            )
-          ) {
-            this.futureIssue.labels.push(bugLabel);
-          }
-        } else {
-          this.futureIssue.labels = this.futureIssue.labels.filter(
-            (label) => label.name !== BUG_LABEL_NAME
-          );
-        }
+        this.lastDevelopmentTypeLabelUsed = correspondingLabel;
+
+        this.futureIssue.detailed_labels = [
+          correspondingLabel,
+          ...this.futureIssue.detailed_labels,
+        ];
+
+        this.futureIssue.labels = this.futureIssue.detailed_labels.map(
+          (label) => label.name
+        );
       }
     );
+  }
 
-    // ajout du label 'quoi de neuf ?' par défaut en fonction de la combo isQuoiDeNeuf
+  private manageQuoiDeNeufValueUpdate() {
     this.issueCreationForm.controls.isQuoiDeNeuf.valueChanges.subscribe(
       (value) => {
         console.log(this.futureIssue);
@@ -144,43 +134,79 @@ export class NewIssueComponent {
 
           if (
             quoiDeNeufLabel &&
-            !this.futureIssue.labels.some(
+            !this.futureIssue.detailed_labels.some(
               (label) => label.name === QUOI_DE_NEUF_LABEL_NAME
             )
           ) {
-            this.futureIssue.labels.push(quoiDeNeufLabel);
+            this.futureIssue.detailed_labels.push(quoiDeNeufLabel);
           }
         } else {
-          this.futureIssue.labels = this.futureIssue.labels.filter(
-            (label) => label.name !== QUOI_DE_NEUF_LABEL_NAME
-          );
+          this.futureIssue.detailed_labels =
+            this.futureIssue.detailed_labels.filter(
+              (label) => label.name !== QUOI_DE_NEUF_LABEL_NAME
+            );
         }
+        this.futureIssue.labels = this.futureIssue.detailed_labels.map(
+          (label) => label.name
+        );
       }
     );
+  }
 
-    //ajout du label spécifique au choix de la combo developmentType
-    this.issueCreationForm.controls.developmentType.valueChanges.subscribe(
+  private manageBugValueUpdate() {
+    this.issueCreationForm.controls.isBugCorrection.valueChanges.subscribe(
       (value) => {
-        console.log(value);
+        if (value === 'true') {
+          const bugLabel = this.labels.find(
+            (label) => label.name === BUG_LABEL_NAME
+          );
 
-        const correspondingLabel = this.labels.find(
-          (label) => label.id === Number(value)
+          if (
+            bugLabel &&
+            !this.futureIssue.detailed_labels.some(
+              (label) => label.name === BUG_LABEL_NAME
+            )
+          ) {
+            this.futureIssue.detailed_labels.push(bugLabel);
+          }
+        } else {
+          this.futureIssue.detailed_labels =
+            this.futureIssue.detailed_labels.filter(
+              (label) => label.name !== BUG_LABEL_NAME
+            );
+        }
+
+        this.futureIssue.labels = this.futureIssue.detailed_labels.map(
+          (label) => label.name
         );
-
-        if (!correspondingLabel) return;
-
-        this.futureIssue.labels = this.futureIssue.labels.filter(
-          (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id
-        );
-
-        this.lastDevelopmentTypeLabelUsed = correspondingLabel;
-
-        this.futureIssue.labels = [
-          correspondingLabel,
-          ...this.futureIssue.labels,
-        ];
       }
     );
+  }
+
+  private manageDescriptionValueUpdate() {
+    this.issueCreationForm.controls.description.valueChanges.subscribe(
+      (value) => {
+        this.futureIssue.description = value ?? '';
+      }
+    );
+  }
+
+  private manageScopeValueUpdate() {
+    this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
+      this.updateIssueTitle(
+        value ?? '',
+        this.issueCreationForm.controls.title.value ?? ''
+      );
+    });
+  }
+
+  private manageTitleValueUpdate() {
+    this.issueCreationForm.controls.title.valueChanges.subscribe((value) => {
+      this.updateIssueTitle(
+        this.issueCreationForm.controls.scope.value ?? '',
+        value ?? ''
+      );
+    });
   }
 
   private updateIssueTitle(scope: string, title: string) {
@@ -213,9 +239,25 @@ export class NewIssueComponent {
       });
   }
 
+  private updateMilestoneList() {
+    this.gitlabService
+      .getLastMilestonesFromProject(environment.gitlab_id_projet_reintegration)
+      .subscribe((milestones: IGitlabMilestone[]) => {
+        this.milestones = milestones;
+      });
+  }
+
+  private setCurrentUserAsAssignee() {
+    this.gitlabAuthService.getAuthenticatedUser().subscribe((user) => {
+      this.futureIssue.assignee = user;
+      this.futureIssue.assignee_id = user?.id ?? 0;
+    });
+  }
+
   setSelectedProject(project: IGitlabIssue) {
     this.selectedProject = project;
     this.issueCreationForm.controls.selectedProject.setValue(project);
+    console.log('selected project', this.selectedProject);
   }
 
   setSelectedMilestones(milestones: IGitlabMilestone[]) {
@@ -224,13 +266,48 @@ export class NewIssueComponent {
   }
 
   createNewIssue() {
-    this.gitlabService.createNewIssue(this.futureIssue).subscribe((success) => {
-      if (success) {
-        this.alertsService.addSuccess('Nouvelle issue créée');
-        this.futureIssue = {} as IGitlabIssue;
-        this.selectedProject = undefined;
-        this.selectedMilestones = [];
+    // Crée une issue par milestone sélectionnée
+    const issueObservables = this.selectedMilestones.map((milestone) => {
+      const newIssue: IGitlabIssue = {
+        ...this.futureIssue,
+        milestone_id: milestone.id,
+      };
+
+      return this.gitlabService.createNewIssue(newIssue).pipe(
+        switchMap((createdIssue) => {
+          if (createdIssue) {
+            // Si l'issue a été créée avec succès, ajoute un commentaire dans le projet sélectionné
+            return this.gitlabService
+              .addCommentOfReintegrationInLinkedProjectIssue(
+                createdIssue,
+                this.selectedProject!
+              )
+              .pipe(
+                map((commentSuccess) => commentSuccess),
+                catchError(() => of(false))
+              );
+          }
+          return of(false);
+        }),
+        catchError(() => of(false))
+      );
+    });
+
+    forkJoin(issueObservables).subscribe((results) => {
+      if (results.every((success) => success)) {
+        this.alertsService.addSuccess(
+          'Nouvelle(s) issue(s) créée(s) et mention(s) ajoutée(s)'
+        );
+      } else {
+        this.alertsService.addError(
+          'Une erreur est survenue lors de la création de la(des) issue(s)'
+        );
       }
+
+      // Réinitialisation des champs après traitement
+      this.futureIssue = {} as IGitlabIssue;
+      this.selectedProject = undefined;
+      this.selectedMilestones = [];
     });
   }
 }
