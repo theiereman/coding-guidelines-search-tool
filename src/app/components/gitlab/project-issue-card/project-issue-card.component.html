@@ -1,9 +1,9 @@
 <div
   [ngClass]="{
-    '!border-blue-500':
+    'hover:cursor-pointer': !disableInteraction,
+    '!border-blue-500 border-2':
       selectedProject?.iid === issue?.iid && !disableInteraction
   }"
-  [ngClass]="{ 'hover:cursor-pointer': !disableInteraction }"
   class="border-gray-400 hover:cursor-pointer relative flex flex-col items-start bg-white rounded-lg p-4 border h-full"
 >
   <div

@@ -257,7 +257,6 @@ export class NewIssueComponent {
   setSelectedProject(project: IGitlabIssue) {
     this.selectedProject = project;
     this.issueCreationForm.controls.selectedProject.setValue(project);
-    console.log('selected project', this.selectedProject);
   }
 
   setSelectedMilestones(milestones: IGitlabMilestone[]) {

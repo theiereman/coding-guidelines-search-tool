@@ -11,6 +11,7 @@ import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { ProjectIssueCardComponent } from '../project-issue-card/project-issue-card.component';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-project-list',
@@ -41,17 +42,20 @@ export class ProjectListComponent implements ControlValueAccessor {
   @Output() selectedProjectEvent = new EventEmitter<IGitlabIssue>();
   selectedProject?: IGitlabIssue = undefined;
 
-  private onChange: (value: IGitlabIssue | null) => void = () => {};
+  private onChange: (value: IGitlabIssue | undefined) => void = () => {};
   private onTouched: () => void = () => {};
 
   constructor(private gitlabService: GitlabService) {}
 
-  setSelectedProject(project: IGitlabIssue) {
-    this.gitlabService.addIssueToLocalStorage(project);
-    this.selectedProjectEvent?.emit(project);
-    this.selectedProject = project;
-    this.onChange(project); // Inform the form control about the change
-    this.onTouched(); // Mark the control as touched
+  toggleSelectedProject(project: IGitlabIssue) {
+    if (_.isEqual(this.selectedProject, project)) {
+      this.selectedProject = undefined;
+    } else {
+      this.selectedProject = project;
+    }
+    this.selectedProjectEvent?.emit(this.selectedProject);
+    this.onChange(this.selectedProject);
+    this.onTouched();
   }
 
   startSearchingForIssues() {
@@ -66,7 +70,14 @@ export class ProjectListComponent implements ControlValueAccessor {
 
   updateIssuesList(issues: IGitlabIssue[]) {
     this.issues = issues;
-    if (!this.issues.some((issue) => issue.iid === this.selectedProject?.iid)) {
+    if (
+      !(
+        this.issues.some((issue) => issue.iid === this.selectedProject?.iid) ||
+        this.recentIssues.some(
+          (issue) => issue.iid === this.selectedProject?.iid
+        )
+      )
+    ) {
       this.selectedProject = undefined;
     }
     this.loadingIssuesList = false;
@@ -114,7 +125,7 @@ export class ProjectListComponent implements ControlValueAccessor {
     this.selectedProject = project;
   }
 
-  registerOnChange(fn: (value: IGitlabIssue | null) => void): void {
+  registerOnChange(fn: (value: IGitlabIssue | undefined) => void): void {
     this.onChange = fn;
   }
 
