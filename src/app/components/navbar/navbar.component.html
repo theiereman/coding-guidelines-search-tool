@@ -21,26 +21,36 @@
     </button>
   </div>
 
-  <div class="max-md:invisible flex flex-col gap-0 items-end">
-    <div class="text-sm">
-      Gitlab :
-      {{
-        isAuthenticatedOnGitlab()
-          ? gitlabUser?.name + " (" + gitlabUser?.username + ")"
-          : "non connecté"
-      }}
+  <div class="max-md:invisible flex items-center gap-2">
+    <div class="flex flex-col gap-0 items-end">
+      <span class="text-sm">
+        {{
+          isAuthenticatedOnGitlab()
+            ? gitlabUser?.name + " (" + gitlabUser?.username + ")"
+            : "Gitlab"
+        }}
+      </span>
+      <button
+        class="text-xs"
+        (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
+      >
+        {{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}
+      </button>
     </div>
-    <button
-      class="text-xs"
-      (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
-    >
-      {{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}
-    </button>
+    <img
+      class="w-[35px] h-[35px] rounded-full bg-gray-400"
+      src="{{
+        gitlabUser?.avatar_url
+          ? gitlabUser?.avatar_url
+          : 'assets/gitlab-logo.png'
+      }}"
+      alt=""
+    />
   </div>
 
   <div class="max-md:invisible flex items-center gap-2">
     <div class="flex flex-col gap-0 items-end">
-      <div class="text-sm" *ngIf="user">{{ user.displayName }}</div>
+      <div class="text-sm">{{ user ? user.displayName : "Office 365" }}</div>
       <button
         (click)="loginDisplay ? microsoftLogout() : microsoftLogin()"
         class="text-xs"
@@ -50,15 +60,13 @@
     </div>
 
     <img
-      *ngIf="user?.profilePictureBase64"
       class="w-[35px] h-[35px] rounded-full bg-gray-400"
-      src="{{ user?.profilePictureBase64 }}"
+      src="{{
+        user?.profilePictureBase64
+          ? user?.profilePictureBase64
+          : 'assets/office-365-logo.png'
+      }}"
       alt=""
     />
-
-    <div
-      *ngIf="!user?.profilePictureBase64"
-      class="w-[35px] h-[35px] rounded-full bg-gray-400"
-    ></div>
   </div>
 </div>
