@@ -9,6 +9,7 @@ import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
 import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
 import { IGitlabMilestone } from '../interfaces/gitlab/igitlab-milestone';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
+import { IGitlabProject } from '../interfaces/gitlab/igitlab-project';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,30 @@ export class GitlabService {
     private alertsService: AlertsService,
     private httpClient: HttpClient
   ) {}
+
+  public getProject(projectId: number): Observable<IGitlabProject> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return of();
+    }
+
+    return this.httpClient
+      .get<IGitlabProject>(
+        `${environment.gitlab_api_base_uri}/projects/${projectId}`,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            'Impossible de récupérer les informations du projet'
+          );
+          return of();
+        })
+      );
+  }
 
   public getLabelsFromProject(projectId: number): Observable<IGitlabLabel[]> {
     if (!this.authService.isAuthenticated()) {
