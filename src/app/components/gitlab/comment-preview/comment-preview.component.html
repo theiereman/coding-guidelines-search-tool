@@ -12,10 +12,11 @@
       <span class="text-gray-500 text-sm">just now</span>
     </div>
     <div class="mt-2">
+      <!-- TODO: ajouter une lien cliquable is le lien est ok -->
       <p class="text-gray-700" [ngClass]="{ italic: !issue.title }">
         {{ !issue.title ? titlePlaceholder : issue.title }} (<span
           class="text-blue-500 underline"
-          >&#64;URL</span
+          >{{ !issue.web_url ? "@URL" : issue.web_url }}</span
         >)
       </p>
       <p class="text-gray-700">{{ issue.description }}</p>
