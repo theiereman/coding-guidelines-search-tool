@@ -6,14 +6,14 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { GitlabService } from 'src/app/services/gitlab.service';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: [],
   standalone: true,
-  imports: [NgIf, RouterLink],
+  imports: [NgIf, RouterLink, NgClass],
 })
 export class NavbarComponent {
   user?: IUser;
@@ -23,7 +23,6 @@ export class NavbarComponent {
   constructor(
     private microsoftAuthService: AuthService,
     private gitlabAuthService: GitlabAuthService,
-    private gitlabService: GitlabService,
     private route: ActivatedRoute
   ) {}
 
@@ -74,14 +73,11 @@ export class NavbarComponent {
   }
 
   gitlabLogout() {
+    this.gitlabUser = undefined;
     this.gitlabAuthService.logout();
   }
 
   isAuthenticatedOnGitlab(): boolean {
     return this.gitlabAuthService.isAuthenticated();
-  }
-
-  getGitlabUserProfilePicture() {
-    return this.gitlabUser?.avatar_url;
   }
 }
