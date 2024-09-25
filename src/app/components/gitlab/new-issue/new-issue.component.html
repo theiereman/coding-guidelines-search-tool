@@ -124,6 +124,7 @@
           *ngIf="!issueCreationForm.valid"
           >Veuillez remplir tous les champs obligatoires</span
         >
+        <!-- TODO : ajouter un spinner pendant chargement + message uen fois le traitement terminé -->
         <button
           (click)="createNewIssue()"
           [disabled]="!issueCreationForm.valid"
