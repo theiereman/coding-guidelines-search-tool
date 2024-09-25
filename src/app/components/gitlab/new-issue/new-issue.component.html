@@ -14,50 +14,70 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <div class="flex flex-col gap-2">
-      <label for="developmentType">Type de développement</label>
+    <div class="flex flex-col">
+      <label class="flex mb-2" for="developmentType"
+        >Type de développement
+        <p class="text-red-500">*</p></label
+      >
       <select
         class="p-1 border border-gray-400 rounded-md bg-transparent"
         id="developmentType"
         formControlName="developmentType"
+        [ngClass]="{
+          'border-red-500 border-2': formControlInvalid('developmentType')
+        }"
       >
         <option *ngFor="let label of developmentTypeLabels" [value]="label.id">
           {{ label.name }}
         </option>
       </select>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('developmentType')"
+        >Veuillez selectionner une valeur</span
+      >
     </div>
 
     <div class="flex flex-col">
-      <label class="flex mb-2" for="scope"
+      <label class="flex" for="scope"
         >Périmètre
-        <p class="text-red-500">*</p>
+        <p class="text-red-500 mb-2">*</p>
       </label>
       <input
-        [ngClass]="{
-          'border-red-500 border-2':
-            issueCreationForm.get('scope')?.invalid &&
-            (issueCreationForm.get('scope')?.dirty ||
-              issueCreationForm.get('scope')?.touched)
-        }"
         class="p-1 border border-gray-400 rounded-md"
         type="text"
         id="scope"
         formControlName="scope"
+        [ngClass]="{
+          'border-red-500 border-2': formControlInvalid('scope')
+        }"
       />
+      <span class="text-sm text-red-500" *ngIf="formControlInvalid('scope')"
+        >Veuillez renseigner une valeur</span
+      >
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label for="title">Titre</label>
+    <div class="flex flex-col">
+      <label class="flex mb-2" for="title"
+        >Titre
+        <p class="text-red-500">*</p></label
+      >
       <input
         class="p-1 border border-gray-400 rounded-md"
         type="text"
         id="title"
         formControlName="title"
+        [ngClass]="{
+          'border-red-500 border-2': formControlInvalid('title')
+        }"
       />
+      <span class="text-sm text-red-500" *ngIf="formControlInvalid('title')"
+        >Veuillez renseigner une valeur</span
+      >
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label for="description">Description (optionnel)</label>
+    <div class="flex flex-col">
+      <label class="mb-2" for="description">Description</label>
       <textarea
         class="p-1 border border-gray-400 rounded-md"
         id="description"
@@ -66,47 +86,86 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label for="project-list">Projet</label>
+      <label class="flex" for="project-list"
+        >Projet
+        <p class="text-red-500">*</p></label
+      >
       <app-project-list
         id="project-list"
         (selectedProjectEvent)="setSelectedProject($event)"
         formControlName="selectedProject"
+        [ngClass]="{
+          'border-red-500 border-2 rounded-lg':
+            formControlInvalid('selectedProject')
+        }"
       ></app-project-list>
     </div>
 
     <div class="flex flex-col gap-2">
-      <label for="bug">Est une correction de bug ?</label>
+      <label class="flex" for="bug"
+        >Est une correction de bug ?
+        <p class="text-red-500">*</p></label
+      >
       <select
         class="p-1 border border-gray-400 rounded-md bg-transparent"
         id="bug"
         formControlName="isBugCorrection"
+        [ngClass]="{
+          'border-red-500 border-2': formControlInvalid('isBugCorrection')
+        }"
       >
         <option value="false">Non</option>
         <option value="true">Oui</option>
       </select>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('isBugCorrection')"
+        >Veuillez sélectionner une valeur</span
+      >
     </div>
 
     <div class="flex flex-col gap-2">
-      <label for="quoiDeNeuf"
-        >Doit être mentionné dans le 'quoi de neuf' ?</label
+      <label class="flex" for="quoiDeNeuf"
+        >Doit être mentionné dans le 'quoi de neuf' ?
+        <p class="text-red-500">*</p></label
       >
       <select
         class="p-1 border border-gray-400 rounded-md bg-transparent"
         id="quoiDeNeuf"
         formControlName="isQuoiDeNeuf"
+        [ngClass]="{
+          'border-red-500 border-2': formControlInvalid('isQuoiDeNeuf')
+        }"
       >
         <option value="false">Non</option>
         <option value="true">Oui</option>
       </select>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('isQuoiDeNeuf')"
+        >Veuillez sélectionner une valeur</span
+      >
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label for="milestone">Milestone</label>
+    <div class="flex flex-col">
+      <label class="flex mb-2" for="milestone"
+        >Milestone
+        <p class="text-red-500">*</p></label
+      >
       <app-milestone-list
         (selectedMilestonesEvent)="setSelectedMilestones($event)"
         [milestones]="milestones"
         formControlName="selectedMilestones"
+        [ngClass]="{
+          'border-red-500 border-2 rounded-lg':
+            formControlInvalid('selectedMilestones')
+        }"
       ></app-milestone-list>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('selectedMilestones')"
+        >Veuillez sélectionner au moins une valeur</span
+      >
     </div>
 
     <fieldset class="border-2 border-gray-400 rounded-md p-4">
