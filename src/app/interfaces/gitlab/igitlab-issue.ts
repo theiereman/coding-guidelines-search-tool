@@ -6,7 +6,9 @@ export interface IGitlabIssue {
   description: string;
   state: string;
   assignee?: IGitlabUser;
-  labels: IGitlabLabel[];
+  assignee_id: number;
+  labels: string[];
+  detailed_labels: IGitlabLabel[];
   id: number;
   iid: number;
   title: string;
@@ -14,4 +16,5 @@ export interface IGitlabIssue {
   created_at: string;
   closed_at: string;
   web_url: string;
+  milestone_id: number;
 }

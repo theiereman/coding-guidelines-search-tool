@@ -14,15 +14,5 @@ export class CommentPreviewComponent {
 
   titlePlaceholder: string = "[Périmètre] - Titre de l'issue";
 
-  constructor(private gitlabAuthService: GitlabAuthService) {}
-
-  ngOnInit(): void {
-    this.gitlabAuthService.isAuthenticated$.subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        this.gitlabAuthService.getAuthenticatedUser().subscribe((user) => {
-          this.issue.assignee = user;
-        });
-      }
-    });
-  }
+  constructor() {}
 }

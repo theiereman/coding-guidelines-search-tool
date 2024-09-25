@@ -22,7 +22,7 @@
     </div>
     <div class="flex gap-2">
       <span
-        *ngFor="let label of issue.labels"
+        *ngFor="let label of issue.detailed_labels"
         [ngStyle]="{ 'background-color': label.color }"
         class="mt-2 inline-flex items-center rounded-full px-2 py-[2px] text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10"
         >{{ label.name }}</span

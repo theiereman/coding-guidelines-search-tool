@@ -137,7 +137,9 @@ export class GitlabService {
       );
   }
 
-  public createNewIssue(issue: IGitlabIssue): Observable<boolean> {
+  public createNewIssue(
+    issue: IGitlabIssue
+  ): Observable<IGitlabIssue | undefined> {
     return this.httpClient
       .post<IGitlabIssue>(
         `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_reintegration}/issues`,
@@ -150,10 +152,36 @@ export class GitlabService {
         catchError((err) => {
           console.error(err);
           this.alertsService.addError('Impossible de créer une nouvelle issue');
-          return of();
+          return of(undefined);
+        })
+      );
+  }
+
+  public addCommentOfReintegrationInLinkedProjectIssue(
+    reintegrationIssue: IGitlabIssue,
+    linkedProjectIssue: IGitlabIssue
+  ): Observable<boolean> {
+    return this.httpClient
+      .post<IGitlabIssue>(
+        `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_suivi_general}/issues/${linkedProjectIssue.iid}/notes`,
+        {
+          body: `${reintegrationIssue.title} (${reintegrationIssue.web_url})`,
+          resolved: false,
+        },
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            'Impossible de mentionner la réintégration dans la issue'
+          );
+          return of(false);
         }),
-        map((issue) => {
-          this.addIssueToLocalStorage(issue);
+        map(() => {
+          this.addIssueToLocalStorage(linkedProjectIssue);
           return true;
         })
       );
