@@ -312,4 +312,13 @@ export class NewIssueComponent {
     this.selectedProject = undefined;
     this.selectedMilestones = [];
   }
+
+  formControlInvalid(controlName: string): boolean {
+    return (
+      (this.issueCreationForm.get(controlName)?.invalid &&
+        (this.issueCreationForm.get(controlName)?.dirty ||
+          this.issueCreationForm.get(controlName)?.touched)) ??
+      true
+    );
+  }
 }
