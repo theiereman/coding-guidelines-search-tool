@@ -21,7 +21,10 @@
     Aucune milestone trouvée
   </p>
   <ul class="list-none">
-    <li *ngFor="let milestone of milestones">
+    <li
+      class="flex items-center mb-2 gap-2"
+      *ngFor="let milestone of milestones"
+    >
       <label class="flex items-center">
         <input
           *ngIf="!disableInteraction"
@@ -32,6 +35,13 @@
         />
         <span>{{ milestone.title }}</span>
       </label>
+      <span>-</span>
+      <a
+        class="text-blue-500 underline"
+        href="{{ getMilestoneURL(milestone) }}"
+        target="_blank"
+        >voir plus</a
+      >
     </li>
   </ul>
 </div>

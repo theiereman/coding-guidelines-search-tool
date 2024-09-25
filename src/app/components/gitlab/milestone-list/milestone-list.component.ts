@@ -8,6 +8,9 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
+import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
+import { GitlabService } from 'src/app/services/gitlab.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-milestone-list',
@@ -29,10 +32,20 @@ export class MilestoneListComponent implements ControlValueAccessor {
   @Input() disableInteraction: boolean = false;
   @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
 
+  private projetReintegration?: IGitlabProject = undefined;
+
   private onChange: (value: IGitlabMilestone[]) => void = () => {};
   private onTouched: () => void = () => {};
 
-  constructor() {}
+  constructor(private gitlabService: GitlabService) {}
+
+  ngOnInit(): void {
+    this.gitlabService
+      .getProject(environment.gitlab_id_projet_reintegration)
+      .subscribe((projet) => {
+        this.projetReintegration = projet;
+      });
+  }
 
   toggleMilestone(milestone: IGitlabMilestone) {
     const milestoneIndex = this.selectedMilestones.findIndex(
@@ -58,6 +71,11 @@ export class MilestoneListComponent implements ControlValueAccessor {
     this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
     this.onChange(this.selectedMilestones);
     this.onTouched();
+  }
+
+  getMilestoneURL(milestone: IGitlabMilestone) {
+    if (!this.projetReintegration) return '';
+    return `${this.projetReintegration.web_url}/-/milestones/${milestone.id}`;
   }
 
   isSelected(milestone: IGitlabMilestone): boolean {
