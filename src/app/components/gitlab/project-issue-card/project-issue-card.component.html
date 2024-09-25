@@ -15,7 +15,7 @@
   ></div>
   <div [ngClass]="{ 'mb-2': !hideDetails }">
     <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
-      <h1 class="text-md font-bold truncate">
+      <h1 title="{{ issue?.title }}" class="text-md font-bold truncate">
         {{ issue === undefined ? "Aucun projet selectionné" : issue.title }}
       </h1>
       <h1 class="text-md font-bold whitespace-nowrap">
