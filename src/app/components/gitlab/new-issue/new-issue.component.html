@@ -85,8 +85,8 @@
       ></textarea>
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label class="flex" for="project-list"
+    <div class="flex flex-col">
+      <label class="flex mb-2" for="project-list"
         >Projet
         <p class="text-red-500">*</p></label
       >
@@ -99,6 +99,11 @@
             formControlInvalid('selectedProject')
         }"
       ></app-project-list>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('selectedProject')"
+        >Veuillez selectionner une valeur</span
+      >
     </div>
 
     <div class="flex flex-col gap-2">
