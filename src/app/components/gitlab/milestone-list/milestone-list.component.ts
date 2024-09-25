@@ -6,7 +6,12 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import {
+  NG_VALUE_ACCESSOR,
+  ControlValueAccessor,
+  FormControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -15,7 +20,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-milestone-list',
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf],
   templateUrl: './milestone-list.component.html',
   providers: [
     {
@@ -31,6 +36,8 @@ export class MilestoneListComponent implements ControlValueAccessor {
   selectAll: boolean = false;
   @Input() disableInteraction: boolean = false;
   @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
+
+  searchValueControl: FormControl = new FormControl('');
 
   private projetReintegration?: IGitlabProject = undefined;
 
