@@ -1,16 +1,16 @@
 <div class="border rounded-lg border-gray-400 p-4">
   <div class="p-2 rounded-md flex flex-col">
     <!-- TODO: modifier cet affichage pour que ça soit mieux intégré et par composant -->
-    <div *ngIf="!disableInteraction" class="mb-4">
+    <div *ngIf="interactiveMode" class="mb-4">
       <button class="text-blue-500" (click)="toggleSelectAll()">
         Tout {{ selectAll ? "désélectionner" : "sélectionner" }}
       </button>
     </div>
 
     <p class="text-center flex-1 text-gray-500" *ngIf="milestones.length === 0">
-      Aucune milestone {{ disableInteraction ? "selectionnée" : "trouvée" }}
+      Aucune milestone {{ !interactiveMode ? "selectionnée" : "trouvée" }}
     </p>
-    <span *ngIf="!disableInteraction" class="mb-2">Dernières milestones</span>
+    <span *ngIf="interactiveMode" class="mb-2">Dernières milestones</span>
     <ul class="flex flex-col gap-2 list-none">
       <li class="flex items-center gap-2" *ngFor="let milestone of milestones">
         <!-- TODO: faire un composant pour afficher les milestones entries -->
@@ -19,7 +19,7 @@
         >
           <label class="flex flex-1 items-center">
             <input
-              *ngIf="!disableInteraction"
+              *ngIf="interactiveMode"
               type="checkbox"
               class="mr-2"
               [checked]="isSelected(milestone)"
@@ -47,7 +47,7 @@
         </div>
       </li>
     </ul>
-    <div *ngIf="!disableInteraction" class="mt-2">
+    <div *ngIf="interactiveMode" class="mt-2">
       <span *ngIf="lastClosedMilestones.length > 0">Anciennes versions</span>
       <ul class="flex flex-col gap-2 list-none mt-2">
         <li
