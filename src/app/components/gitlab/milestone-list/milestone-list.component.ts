@@ -69,7 +69,6 @@ export class MilestoneListComponent implements ControlValueAccessor {
       )
       .subscribe((milestones) => {
         this.searchedMilestones = milestones;
-        //if selectedMilestones contains milestones that are not in searchedMilestones or milestones, remove them
         this.selectedMilestones = this.selectedMilestones.filter(
           (milestone) => {
             return (
@@ -122,6 +121,19 @@ export class MilestoneListComponent implements ControlValueAccessor {
     return (
       this.selectedMilestones.findIndex((m) => m.id === milestone.id) !== -1
     );
+  }
+
+  getMilestoneStateLabel(milestone: IGitlabMilestone): string {
+    switch (milestone.state) {
+      case 'closed':
+        return 'Fermée';
+      case 'active':
+        return 'Ouverte';
+      case 'fake':
+        return 'Nouvelle';
+      default:
+        return 'Inconnue';
+    }
   }
 
   writeValue(value: IGitlabMilestone[]): void {

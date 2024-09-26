@@ -135,9 +135,8 @@ export class GitlabService {
     return uniqueIssues.slice(0, size);
   }
 
-  public getLastMilestonesFromProject(
-    projectId: number,
-    maxResults: number = 2
+  public getOpenMilestonesFromProject(
+    projectId: number
   ): Observable<IGitlabMilestone[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
@@ -146,7 +145,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabMilestone[]>(
-        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?per_page=${maxResults}&order_by=title`,
+        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?order_by=title&state=active`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
@@ -224,13 +223,35 @@ export class GitlabService {
 
     if (query.trim() === '') return of([]);
 
-    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${query}&per_page=${maxResults}`;
+    //empeche la recherche de sous versions pour forcer à trouver forcément la dernière milestone corrective
+    const numericQuery = query.replace(/[^\d.]/g, '');
+    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}`;
 
     return this.httpClient
       .get<IGitlabMilestone[]>(url, {
         context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
       })
       .pipe(
+        map((milestones: IGitlabMilestone[]) => {
+          if (milestones.length === 0) return [];
+
+          milestones.sort((a, b) => a.title.localeCompare(b.title));
+          const lastMilestone = milestones[milestones.length - 1];
+
+          // nouvelle milestone fictive en incrémentant le dernier caractère
+          const nextMilestoneTitle = this.incrementMilestone(
+            lastMilestone.title
+          );
+
+          const newMilestone: IGitlabMilestone = {
+            id: -1, // ID fictif
+            title: nextMilestoneTitle,
+            state: 'fake',
+          };
+
+          // Retourner seulement la dernière milestone et la nouvelle fictive
+          return [lastMilestone, newMilestone];
+        }),
         catchError((err) => {
           console.error(err);
           this.alertsService.addError(
@@ -239,5 +260,19 @@ export class GitlabService {
           return of([]);
         })
       );
+  }
+
+  // Fonction utilitaire pour incrémenter le dernier caractère
+  private incrementMilestone(title: string): string {
+    const match = title.match(/^(.*?)([a-z])$/i); // Capture la partie finale (dernière lettre)
+    if (match) {
+      const prefix = match[1]; // Partie avant la lettre
+      const lastChar = match[2]; // Dernier caractère
+      const newChar = String.fromCharCode(lastChar.charCodeAt(0) + 1); // Incrémenter le dernier caractère
+      return prefix + newChar;
+    } else {
+      // Si pas de lettre à la fin, on ajoute 'a'
+      return title + 'a';
+    }
   }
 }
