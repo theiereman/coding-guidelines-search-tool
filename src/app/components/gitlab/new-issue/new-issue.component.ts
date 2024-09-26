@@ -1,13 +1,9 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  AbstractControl,
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';

@@ -11,7 +11,6 @@ import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { ProjectIssueCardComponent } from '../project-issue-card/project-issue-card.component';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'app-project-list',
@@ -48,7 +47,7 @@ export class ProjectListComponent implements ControlValueAccessor {
   constructor(private gitlabService: GitlabService) {}
 
   toggleSelectedProject(project: IGitlabIssue) {
-    if (_.isEqual(this.selectedProject, project)) {
+    if (this.selectedProject?.iid === project.iid) {
       this.selectedProject = undefined;
     } else {
       this.selectedProject = project;
