@@ -1,5 +1,6 @@
 <div class="border rounded-lg border-gray-400 p-4">
   <div class="p-2 rounded-md flex flex-col">
+    <!-- TODO: modifier cet affichage pour que ça soit mieux intégré et par composant -->
     <div *ngIf="!disableInteraction" class="mb-4">
       <button class="text-blue-500" (click)="toggleSelectAll()">
         Tout {{ selectAll ? "désélectionner" : "sélectionner" }}
@@ -25,11 +26,8 @@
               (change)="toggleMilestone(milestone)"
             />
             <span class="font-medium text-gray-700">{{ milestone.title }}</span>
-          </label>
-
-          <div class="flex items-center space-x-2">
             <span
-              class="rounded-full px-2 py-1 text-xs font-semibold"
+              class="rounded-full px-2 py-[2px] text-xs font-semibold ms-2"
               [ngClass]="{
                 'bg-red-300 text-red-800': milestone.state == 'closed',
                 'bg-green-300 text-green-800': milestone.state == 'active'
@@ -37,14 +35,15 @@
             >
               {{ milestone.state === "closed" ? "Fermée" : "Ouverte" }}
             </span>
-            <a
-              class="px-2 py-1 text-xs font-semibold bg-blue-500 underline text-white rounded-full hover:bg-blue-600 transition duration-100"
-              href="{{ getMilestoneURL(milestone) }}"
-              target="_blank"
-            >
-              Ouvrir sur Gitlab
-            </a>
-          </div>
+          </label>
+
+          <a
+            class="text-xs font-semibold underline text-blue-500 rounded-full"
+            href="{{ getMilestoneURL(milestone) }}"
+            target="_blank"
+          >
+            Ouvrir sur Gitlab
+          </a>
         </div>
       </li>
     </ul>
@@ -55,42 +54,10 @@
           class="flex items-center gap-2"
           *ngFor="let milestone of lastClosedMilestones"
         >
-          <div
-            class="p-2 border rounded-lg bg-gray-100 flex gap-2 w-full items-center justify-between"
-          >
-            <label class="flex flex-1 items-center">
-              <input
-                *ngIf="!disableInteraction"
-                type="checkbox"
-                class="mr-2"
-                [checked]="isSelected(milestone)"
-                (change)="toggleMilestone(milestone)"
-              />
-              <span class="font-medium text-gray-700">{{
-                milestone.title
-              }}</span>
-            </label>
-
-            <div class="flex items-center space-x-2">
-              <span
-                class="rounded-full px-2 py-1 text-xs font-semibold"
-                [ngClass]="{
-                  'bg-red-300 text-red-800': milestone.state == 'closed',
-                  'bg-green-300 text-green-800': milestone.state == 'active',
-                  'bg-gray-300 text-gray-800': milestone.state == 'fake'
-                }"
-              >
-                {{ getMilestoneStateLabel(milestone) }}
-              </span>
-              <a
-                class="px-2 py-1 text-xs font-semibold bg-blue-500 underline text-white rounded-full hover:bg-blue-600 transition duration-100"
-                href="{{ getMilestoneURL(milestone) }}"
-                target="_blank"
-              >
-                Ouvrir sur Gitlab
-              </a>
-            </div>
-          </div>
+          <app-old-milestone-action-choice
+            class="w-full"
+            [milestone]="milestone"
+          ></app-old-milestone-action-choice>
         </li>
       </ul>
     </div>
