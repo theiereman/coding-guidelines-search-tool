@@ -33,13 +33,12 @@ import { environment } from 'src/environments/environment';
 })
 export class MilestoneListComponent implements ControlValueAccessor {
   @Input() milestones: IGitlabMilestone[] = [];
-  searchedMilestones: IGitlabMilestone[] = [];
+  lastClosedMilestones: IGitlabMilestone[] = [];
   selectedMilestones: IGitlabMilestone[] = [];
   selectAll: boolean = false;
   @Input() disableInteraction: boolean = false;
   @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
 
-  searchValueControl: FormControl = new FormControl('');
   loadingMilestones: boolean = false;
 
   private projetReintegration?: IGitlabProject = undefined;
@@ -56,30 +55,14 @@ export class MilestoneListComponent implements ControlValueAccessor {
         this.projetReintegration = projet;
       });
 
-    this.searchValueControl.valueChanges
-      .pipe(
-        tap(() => (this.loadingMilestones = true)),
-        debounceTime(300),
-        switchMap(() => {
-          return this.gitlabService.searchMilestonesFromProject(
-            environment.gitlab_id_projet_reintegration,
-            this.searchValueControl.value
-          );
-        })
+    //TODO : liste d'éléments qui permettent de choisir entre la dernière milestone de la version ou un nouveau numéro de version
+
+    this.gitlabService
+      .getLastMilestonesOfOldVersionsFromProject(
+        environment.gitlab_id_projet_reintegration
       )
       .subscribe((milestones) => {
-        this.searchedMilestones = milestones;
-        this.selectedMilestones = this.selectedMilestones.filter(
-          (milestone) => {
-            return (
-              this.searchedMilestones.some((m) => m.id === milestone.id) ||
-              this.milestones.some((m) => m.id === milestone.id)
-            );
-          }
-        );
-
-        this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
-        this.loadingMilestones = false;
+        this.lastClosedMilestones = milestones;
       });
   }
 
@@ -102,7 +85,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
     if (this.selectAll) {
       this.selectedMilestones = [
         ...this.milestones,
-        ...this.searchedMilestones,
+        ...this.lastClosedMilestones,
       ];
     } else {
       this.selectedMilestones = [];
@@ -142,11 +125,10 @@ export class MilestoneListComponent implements ControlValueAccessor {
       this.selectAll =
         this.selectedMilestones.length > 0 &&
         this.selectedMilestones.length ===
-          this.milestones.length + this.searchedMilestones.length;
+          this.milestones.length + this.lastClosedMilestones.length;
     } else {
       this.selectedMilestones = [];
     }
-    console.log(this.selectAll);
   }
 
   registerOnChange(fn: (value: IGitlabMilestone[]) => void): void {
