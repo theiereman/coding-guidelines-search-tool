@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -12,6 +12,7 @@ import {
   FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { debounceTime, switchMap, tap } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -20,7 +21,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-milestone-list',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf, NgClass],
   templateUrl: './milestone-list.component.html',
   providers: [
     {
@@ -32,12 +33,14 @@ import { environment } from 'src/environments/environment';
 })
 export class MilestoneListComponent implements ControlValueAccessor {
   @Input() milestones: IGitlabMilestone[] = [];
+  searchedMilestones: IGitlabMilestone[] = [];
   selectedMilestones: IGitlabMilestone[] = [];
   selectAll: boolean = false;
   @Input() disableInteraction: boolean = false;
   @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
 
   searchValueControl: FormControl = new FormControl('');
+  loadingMilestones: boolean = false;
 
   private projetReintegration?: IGitlabProject = undefined;
 
@@ -51,6 +54,33 @@ export class MilestoneListComponent implements ControlValueAccessor {
       .getProject(environment.gitlab_id_projet_reintegration)
       .subscribe((projet) => {
         this.projetReintegration = projet;
+      });
+
+    this.searchValueControl.valueChanges
+      .pipe(
+        tap(() => (this.loadingMilestones = true)),
+        debounceTime(300),
+        switchMap(() => {
+          return this.gitlabService.searchMilestonesFromProject(
+            environment.gitlab_id_projet_reintegration,
+            this.searchValueControl.value
+          );
+        })
+      )
+      .subscribe((milestones) => {
+        this.searchedMilestones = milestones;
+        //if selectedMilestones contains milestones that are not in searchedMilestones or milestones, remove them
+        this.selectedMilestones = this.selectedMilestones.filter(
+          (milestone) => {
+            return (
+              this.searchedMilestones.some((m) => m.id === milestone.id) ||
+              this.milestones.some((m) => m.id === milestone.id)
+            );
+          }
+        );
+
+        this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
+        this.loadingMilestones = false;
       });
   }
 
@@ -71,7 +101,10 @@ export class MilestoneListComponent implements ControlValueAccessor {
   toggleSelectAll() {
     this.selectAll = !this.selectAll;
     if (this.selectAll) {
-      this.selectedMilestones = [...this.milestones];
+      this.selectedMilestones = [
+        ...this.milestones,
+        ...this.searchedMilestones,
+      ];
     } else {
       this.selectedMilestones = [];
     }
@@ -95,10 +128,13 @@ export class MilestoneListComponent implements ControlValueAccessor {
     if (value) {
       this.selectedMilestones = value;
       this.selectAll =
-        this.selectedMilestones.length === this.milestones.length;
+        this.selectedMilestones.length > 0 &&
+        this.selectedMilestones.length ===
+          this.milestones.length + this.searchedMilestones.length;
     } else {
       this.selectedMilestones = [];
     }
+    console.log(this.selectAll);
   }
 
   registerOnChange(fn: (value: IGitlabMilestone[]) => void): void {

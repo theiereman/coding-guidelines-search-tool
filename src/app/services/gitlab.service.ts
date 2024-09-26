@@ -211,4 +211,33 @@ export class GitlabService {
         })
       );
   }
+
+  searchMilestonesFromProject(
+    projectId: number,
+    query: string,
+    maxResults: number = 20
+  ): Observable<IGitlabMilestone[]> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return of([]);
+    }
+
+    if (query.trim() === '') return of([]);
+
+    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${query}&per_page=${maxResults}`;
+
+    return this.httpClient
+      .get<IGitlabMilestone[]>(url, {
+        context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+      })
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            'Impossible de récupérer les milestones du projet'
+          );
+          return of([]);
+        })
+      );
+  }
 }

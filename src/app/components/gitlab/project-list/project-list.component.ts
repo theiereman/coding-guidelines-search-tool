@@ -59,7 +59,6 @@ export class ProjectListComponent implements ControlValueAccessor {
   }
 
   startSearchingForIssues() {
-    this.loadingIssuesList = true;
     return this.gitlabService.searchIssuesFromProject(
       environment.gitlab_id_projet_suivi_general,
       this.searchValueControl.value,
