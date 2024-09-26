@@ -85,10 +85,11 @@
               class="rounded-full px-2 py-1 text-xs font-semibold"
               [ngClass]="{
                 'bg-red-300 text-red-800': milestone.state == 'closed',
-                'bg-green-300 text-green-800': milestone.state == 'active'
+                'bg-green-300 text-green-800': milestone.state == 'active',
+                'bg-gray-300 text-gray-800': milestone.state == 'fake'
               }"
             >
-              {{ milestone.state === "closed" ? "Fermée" : "Ouverte" }}
+              {{ getMilestoneStateLabel(milestone) }}
             </span>
             <a
               class="px-2 py-1 text-xs font-semibold bg-blue-500 underline text-white rounded-full hover:bg-blue-600 transition duration-100"

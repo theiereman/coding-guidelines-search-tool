@@ -241,7 +241,7 @@ export class NewIssueComponent {
 
   private updateMilestoneList() {
     this.gitlabService
-      .getLastMilestonesFromProject(environment.gitlab_id_projet_reintegration)
+      .getOpenMilestonesFromProject(environment.gitlab_id_projet_reintegration)
       .subscribe((milestones: IGitlabMilestone[]) => {
         this.milestones = milestones;
       });
