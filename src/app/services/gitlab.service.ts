@@ -10,8 +10,6 @@ import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
 import { IGitlabMilestone } from '../interfaces/gitlab/igitlab-milestone';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
 import { IGitlabProject } from '../interfaces/gitlab/igitlab-project';
-import { last } from 'lodash';
-import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root',
