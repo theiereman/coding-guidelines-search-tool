@@ -151,6 +151,15 @@ export class GitlabService {
         }
       )
       .pipe(
+        map((milestones) => {
+          return milestones.map((milestone) => {
+            const title = milestone.title.split(' ')[0];
+            return {
+              ...milestone,
+              title,
+            };
+          });
+        }),
         catchError((err) => {
           console.error(err);
           this.alertsService.addError(
@@ -213,7 +222,7 @@ export class GitlabService {
 
   //TODO: récupérer les dernières milestones fermées pour pouvoir créer des correctifs en une seule fois sur plusieurs anciennes versions
 
-  getLastMilestonesOfOldVersionsFromProject(
+  getLastClosedVersionsFromProject(
     projectId: number,
     maxResults: number = 3
   ): Observable<IGitlabMilestone[]> {
@@ -224,30 +233,53 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabMilestone[]>(
-        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?state=closed&order_by=due_date&sort=desc&per_page=100`,
+        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?order_by=due_date&sort=desc&per_page=100`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
       )
       .pipe(
         map((milestones: IGitlabMilestone[]) => {
-          return milestones
-            .reduce<IGitlabMilestone[]>((acc, milestone) => {
-              const baseTitle =
-                this.extractBaseVersionFromMilestoneTitle(milestone);
-              const isVersionPresent = acc.some(
-                (m) =>
-                  this.extractBaseVersionFromMilestoneTitle(m) === baseTitle
-              );
-
-              if (!isVersionPresent && acc.length < maxResults) {
-                acc.push(milestone);
-              }
-
-              return acc;
-            }, [])
+          //récupère que la première partie du titre de la milestone
+          milestones = milestones
+            .map((milestone) => {
+              const title = milestone.title.split(' ')[0];
+              return {
+                ...milestone,
+                title,
+              };
+            })
             .sort((a, b) => a.title.localeCompare(b.title))
             .reverse();
+
+          const filteredByVersionMilestones = milestones.reduce<
+            IGitlabMilestone[]
+          >((acc, milestone) => {
+            const baseTitle =
+              this.extractBaseVersionFromMilestoneTitle(milestone);
+            const isVersionPresent = acc.some((m) => {
+              return this.extractBaseVersionFromMilestoneTitle(m) === baseTitle;
+            });
+
+            //permet de filtrer les versions qui ne contiennent pas de points comme "Dev" qui ne sera jamais une vieille version
+            if (baseTitle.split('.').length < 3) return acc;
+            if (isVersionPresent) return acc;
+            if (acc.length >= maxResults) return acc;
+
+            acc.push(milestone);
+
+            return acc;
+          }, []);
+
+          //ne renvoie pas les milestones ouvertes
+          return filteredByVersionMilestones.reduce<IGitlabMilestone[]>(
+            (acc, milestone) => {
+              if (this.milestoneIsOpen(milestone)) return acc;
+              acc.push(milestone);
+              return acc;
+            },
+            []
+          );
         }),
         catchError((err) => {
           console.error(err);
@@ -312,7 +344,7 @@ export class GitlabService {
 
   // Fonction utilitaire pour incrémenter le dernier caractère
   incrementMilestoneBugFixVersion(title: string): string {
-    const match = title.match(/^(.*?)([a-z])$/i); // Capture la partie finale (dernière lettre)
+    const match = title.match(/^(.*?)([a-z])$/); // Capture la partie finale (dernière lettre)
     if (match) {
       const prefix = match[1]; // Partie avant la lettre
       const lastChar = match[2]; // Dernier caractère
@@ -326,7 +358,15 @@ export class GitlabService {
 
   private extractBaseVersionFromMilestoneTitle(milestone: IGitlabMilestone) {
     // Si le titre se termine par une lettre (a-z), on l'enlève pour la comparaison
-    const match = milestone.title.match(/^(.*?)([a-z]?)$/i);
+    const match = milestone.title.match(/^(.*?)([a-z]?)$/);
     return match ? match[1] : milestone.title;
+  }
+
+  milestoneIsClosed(milestone: IGitlabMilestone) {
+    return milestone.state === 'closed';
+  }
+
+  milestoneIsOpen(milestone: IGitlabMilestone) {
+    return milestone.state === 'active';
   }
 }
