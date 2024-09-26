@@ -10,6 +10,8 @@ import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
 import { IGitlabMilestone } from '../interfaces/gitlab/igitlab-milestone';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
 import { IGitlabProject } from '../interfaces/gitlab/igitlab-project';
+import { last } from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -211,7 +213,55 @@ export class GitlabService {
       );
   }
 
-  searchMilestonesFromProject(
+  //TODO: récupérer les dernières milestones fermées pour pouvoir créer des correctifs en une seule fois sur plusieurs anciennes versions
+
+  getLastMilestonesOfOldVersionsFromProject(
+    projectId: number,
+    maxResults: number = 3
+  ): Observable<IGitlabMilestone[]> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return of([]);
+    }
+
+    return this.httpClient
+      .get<IGitlabMilestone[]>(
+        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?state=closed&order_by=due_date&sort=desc&per_page=100`,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        map((milestones: IGitlabMilestone[]) => {
+          return milestones
+            .reduce<IGitlabMilestone[]>((acc, milestone) => {
+              const baseTitle =
+                this.extractBaseVersionFromMilestoneTitle(milestone);
+              const isVersionPresent = acc.some(
+                (m) =>
+                  this.extractBaseVersionFromMilestoneTitle(m) === baseTitle
+              );
+
+              if (!isVersionPresent && acc.length < maxResults) {
+                acc.push(milestone);
+              }
+
+              return acc;
+            }, [])
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .reverse();
+        }),
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            'Impossible de récupérer les milestones du projet'
+          );
+          return of([]);
+        })
+      );
+  }
+
+  searchClosedMilestonesFromProject(
     projectId: number,
     query: string,
     maxResults: number = 20
@@ -225,7 +275,7 @@ export class GitlabService {
 
     //empeche la recherche de sous versions pour forcer à trouver forcément la dernière milestone corrective
     const numericQuery = query.replace(/[^\d.]/g, '');
-    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}`;
+    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}&state=closed`;
 
     return this.httpClient
       .get<IGitlabMilestone[]>(url, {
@@ -274,5 +324,11 @@ export class GitlabService {
       // Si pas de lettre à la fin, on ajoute 'a'
       return title + 'a';
     }
+  }
+
+  private extractBaseVersionFromMilestoneTitle(milestone: IGitlabMilestone) {
+    // Si le titre se termine par une lettre (a-z), on l'enlève pour la comparaison
+    const match = milestone.title.match(/^(.*?)([a-z]?)$/i);
+    return match ? match[1] : milestone.title;
   }
 }

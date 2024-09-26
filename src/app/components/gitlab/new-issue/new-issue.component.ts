@@ -125,8 +125,6 @@ export class NewIssueComponent {
   private manageQuoiDeNeufValueUpdate() {
     this.issueCreationForm.controls.isQuoiDeNeuf.valueChanges.subscribe(
       (value) => {
-        console.log(this.futureIssue);
-
         if (value === 'true') {
           const quoiDeNeufLabel = this.labels.find(
             (label) => label.name === QUOI_DE_NEUF_LABEL_NAME

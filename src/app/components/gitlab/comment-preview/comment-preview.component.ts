@@ -15,8 +15,4 @@ export class CommentPreviewComponent {
   titlePlaceholder: string = "[Périmètre] - Titre de l'issue";
 
   constructor() {}
-
-  ngOnInit(): void {
-    console.log('issue', this.issue.web_url);
-  }
 }
