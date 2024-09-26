@@ -289,7 +289,7 @@ export class GitlabService {
           const lastMilestone = milestones[milestones.length - 1];
 
           // nouvelle milestone fictive en incrémentant le dernier caractère
-          const nextMilestoneTitle = this.incrementMilestone(
+          const nextMilestoneTitle = this.incrementMilestoneBugFixVersion(
             lastMilestone.title
           );
 
@@ -313,7 +313,7 @@ export class GitlabService {
   }
 
   // Fonction utilitaire pour incrémenter le dernier caractère
-  private incrementMilestone(title: string): string {
+  incrementMilestoneBugFixVersion(title: string): string {
     const match = title.match(/^(.*?)([a-z])$/i); // Capture la partie finale (dernière lettre)
     if (match) {
       const prefix = match[1]; // Partie avant la lettre

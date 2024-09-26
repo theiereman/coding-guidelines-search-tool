@@ -1,0 +1,66 @@
+<fieldset
+  class="p-2 border rounded-lg bg-gray-100 flex flex-col gap-2 w-full items-start"
+>
+  <!-- Première milestone -->
+  <div class="flex items-center w-full justify-between">
+    <label class="flex flex-1 items-center">
+      <input
+        type="radio"
+        id="old-milestone"
+        [checked]="isSelected(milestone)"
+        (click)="toggleRadio(milestone)"
+        name="{{ uniqueName }}"
+        value="{{ milestone.id }}"
+        class="mr-2"
+      />
+      <span class="font-medium text-gray-700">{{ milestone.title }}</span>
+      <span
+        class="rounded-full px-2 py-[2px] text-xs font-semibold ms-2"
+        [ngClass]="{
+          'bg-red-300 text-red-800': milestone.state == 'closed',
+          'bg-green-300 text-green-800': milestone.state == 'active'
+        }"
+      >
+        {{ milestone.state === "closed" ? "Fermée" : "Ouverte" }}
+      </span>
+    </label>
+    <div class="flex items-center space-x-2">
+      <span class="italic text-xs text-gray-700"
+        >Rouvrir la milestone puis la refermer</span
+      >
+      <a
+        class="text-xs font-semibold underline text-blue-500 rounded-full"
+        href="{{ getMilestoneURL(milestone) }}"
+        target="_blank"
+      >
+        Ouvrir sur Gitlab
+      </a>
+    </div>
+  </div>
+
+  <!-- Prochaine milestone -->
+  <div class="flex items-center w-full justify-between">
+    <label class="flex flex-1 items-center">
+      <input
+        type="radio"
+        id="next-milestone"
+        value="-1"
+        [checked]="isSelected(nextMilestone)"
+        (click)="toggleRadio(nextMilestone)"
+        name="{{ uniqueName }}"
+        class="mr-2"
+      />
+      <span class="font-medium text-gray-700">{{ nextMilestone.title }}</span>
+      <span
+        class="rounded-full px-2 py-[2px] text-xs font-semibold bg-blue-300 text-blue-800 ms-2"
+      >
+        Prochaine
+      </span>
+    </label>
+    <div class="flex items-center space-x-2">
+      <span class="italic text-xs text-gray-700"
+        >Créer la milestone puis la refermer</span
+      >
+    </div>
+  </div>
+</fieldset>

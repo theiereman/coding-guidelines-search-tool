@@ -157,6 +157,7 @@
         >Milestone
         <p class="text-red-500">*</p></label
       >
+      <!-- diviser en 2 composants : milestone list (classique) et old milestone action choice -->
       <app-milestone-list
         (selectedMilestonesEvent)="setSelectedMilestones($event)"
         [milestones]="milestones"

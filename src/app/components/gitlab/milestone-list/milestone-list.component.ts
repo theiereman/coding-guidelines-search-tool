@@ -17,11 +17,18 @@ import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
+import { OldMilestoneActionChoiceComponent } from '../old-milestone-action-choice/old-milestone-action-choice.component';
 
 @Component({
   selector: 'app-milestone-list',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf, NgClass],
+  imports: [
+    ReactiveFormsModule,
+    NgFor,
+    NgIf,
+    NgClass,
+    OldMilestoneActionChoiceComponent,
+  ],
   templateUrl: './milestone-list.component.html',
   providers: [
     {
@@ -31,6 +38,8 @@ import { environment } from 'src/environments/environment';
     },
   ],
 })
+
+//TODO: modifier ce composant en "openMilestonesList"
 export class MilestoneListComponent implements ControlValueAccessor {
   @Input() milestones: IGitlabMilestone[] = [];
   lastClosedMilestones: IGitlabMilestone[] = [];
