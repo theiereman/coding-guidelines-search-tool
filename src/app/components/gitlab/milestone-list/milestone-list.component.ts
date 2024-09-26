@@ -45,7 +45,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
   lastClosedMilestones: IGitlabMilestone[] = [];
   selectedMilestones: IGitlabMilestone[] = [];
   selectAll: boolean = false;
-  @Input() disableInteraction: boolean = false;
+  @Input() interactiveMode: boolean = true;
   @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
 
   loadingMilestones: boolean = false;
@@ -67,7 +67,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
     //TODO : liste d'éléments qui permettent de choisir entre la dernière milestone de la version ou un nouveau numéro de version
 
     this.gitlabService
-      .getLastMilestonesOfOldVersionsFromProject(
+      .getLastClosedVersionsFromProject(
         environment.gitlab_id_projet_reintegration
       )
       .subscribe((milestones) => {
@@ -149,6 +149,6 @@ export class MilestoneListComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disableInteraction = isDisabled;
+    this.interactiveMode = !isDisabled;
   }
 }
