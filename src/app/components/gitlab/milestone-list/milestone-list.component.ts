@@ -11,17 +11,12 @@ import {
   ControlValueAccessor,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  CLOSED_STATUS,
-  FAKE_STATUS,
-  IGitlabMilestone,
-  OPEN_STATUS,
-} from 'src/app/interfaces/gitlab/igitlab-milestone';
+import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { OldMilestoneActionChoiceComponent } from '../old-milestone-action-choice/old-milestone-action-choice.component';
-import { Observable, of, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-milestone-list',
@@ -95,7 +90,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
 
   getMilestoneURL(milestone: IGitlabMilestone) {
     if (!this.projetReintegration) return '';
-    if (milestone.state === FAKE_STATUS) return '';
+    if (this.gitlabService.milestoneIsFake(milestone)) return '';
     return `${this.projetReintegration.web_url}/-/milestones/${milestone.id}`;
   }
 
@@ -106,29 +101,20 @@ export class MilestoneListComponent implements ControlValueAccessor {
   }
 
   getMilestoneStateLabel(milestone: IGitlabMilestone): string {
-    switch (milestone.state) {
-      case CLOSED_STATUS:
-        return 'Fermée';
-      case OPEN_STATUS:
-        return 'Ouverte';
-      case FAKE_STATUS:
-        return 'Prochaine';
-      default:
-        return 'Inconnue';
-    }
+    if (this.gitlabService.milestoneIsFake(milestone)) return 'Nouvelle';
+    if (this.gitlabService.milestoneIsClosed(milestone)) return 'Fermée';
+    if (this.gitlabService.milestoneIsOpen(milestone)) return 'Ouverte';
+    return 'Inconnue';
   }
 
   getMilestoneStateColorClasses(milestone: IGitlabMilestone) {
-    switch (milestone.state) {
-      case CLOSED_STATUS:
-        return 'bg-red-300 text-red-800';
-      case OPEN_STATUS:
-        return 'bg-green-300 text-green-800';
-      case FAKE_STATUS:
-        return 'bg-blue-300 text-blue-800';
-      default:
-        return 'bg-gray-300 text-gray-800';
-    }
+    if (this.gitlabService.milestoneIsFake(milestone))
+      return 'bg-blue-300 text-blue-800';
+    if (this.gitlabService.milestoneIsClosed(milestone))
+      return 'bg-red-300 text-red-800';
+    if (this.gitlabService.milestoneIsOpen(milestone))
+      return 'bg-green-300 text-green-800';
+    return 'bg-gray-300 text-gray-800';
   }
 
   getSortedMilestones() {

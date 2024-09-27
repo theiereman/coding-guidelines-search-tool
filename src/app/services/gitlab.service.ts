@@ -374,4 +374,8 @@ export class GitlabService {
   milestoneIsOpen(milestone: IGitlabMilestone) {
     return milestone.state === OPEN_STATUS;
   }
+
+  milestoneIsFake(milestone: IGitlabMilestone) {
+    return milestone.state === FAKE_STATUS;
+  }
 }
