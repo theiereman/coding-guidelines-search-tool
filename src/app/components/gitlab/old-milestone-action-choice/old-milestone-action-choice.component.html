@@ -7,11 +7,10 @@
   <div class="flex items-center w-full justify-between">
     <label class="flex flex-1 items-center">
       <input
-        type="radio"
+        type="checkbox"
         id="old-milestone"
         [checked]="isSelected(milestone)"
-        (click)="toggleRadio(milestone)"
-        name="{{ uniqueName }}"
+        (click)="toggleMilestone(milestone)"
         value="{{ milestone.id }}"
         class="mr-2"
       />
@@ -44,12 +43,11 @@
   <div class="flex items-center w-full justify-between">
     <label class="flex flex-1 items-center">
       <input
-        type="radio"
+        type="checkbox"
         id="next-milestone"
         value="-1"
         [checked]="isSelected(nextMilestone)"
-        (click)="toggleRadio(nextMilestone)"
-        name="{{ uniqueName }}"
+        (click)="toggleMilestone(nextMilestone)"
         class="mr-2"
       />
       <span class="font-medium text-gray-700">{{ nextMilestone.title }}</span>

@@ -18,8 +18,6 @@ export class OldMilestoneActionChoiceComponent {
 
   private projetReintegration?: IGitlabProject = undefined;
   uniqueName: string = '';
-
-  //TODO: gérer la selection dans le composant qui liste les milestones
   selectedMilestone?: IGitlabMilestone = undefined;
 
   constructor(private gitlabService: GitlabService) {}
@@ -47,12 +45,16 @@ export class OldMilestoneActionChoiceComponent {
     return `${this.projetReintegration.web_url}/-/milestones/${milestone.id}`;
   }
 
-  toggleRadio(milestone: IGitlabMilestone): void {
-    if (this.selectedMilestone?.id === milestone.id) {
-      this.selectedMilestone = undefined; // Désélectionner si c'est déjà sélectionné
+  toggleMilestone(milestone: IGitlabMilestone) {
+    const isAlreadySelected = this.selectedMilestone?.id === milestone.id;
+    if (!isAlreadySelected) {
+      this.selectedMilestone = milestone;
     } else {
-      this.selectedMilestone = milestone; // Sélectionner la nouvelle option
+      this.selectedMilestone = undefined;
     }
+    // this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
+    // this.onChange(this.selectedMilestones);
+    // this.onTouched();
   }
 
   isSelected(milestone: IGitlabMilestone): boolean {
