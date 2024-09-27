@@ -1,8 +1,12 @@
 export interface IGitlabMilestone {
-  id: number;
+  id?: number;
   title: string;
   description?: string;
-  state: string;
+  state?: string;
+}
+
+export interface IGitlabEditMilestone extends IGitlabMilestone {  
+  state_event: string;
 }
 
 export const FAKE_STATUS = 'fake';
