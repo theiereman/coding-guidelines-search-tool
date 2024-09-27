@@ -4,3 +4,7 @@ export interface IGitlabMilestone {
   description?: string;
   state: string;
 }
+
+export const FAKE_STATUS = 'fake';
+export const OPEN_STATUS = 'active';
+export const CLOSED_STATUS = 'closed';

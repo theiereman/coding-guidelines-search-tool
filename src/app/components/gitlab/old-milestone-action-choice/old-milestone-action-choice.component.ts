@@ -1,6 +1,11 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
+import {
+  CLOSED_STATUS,
+  FAKE_STATUS,
+  IGitlabMilestone,
+  OPEN_STATUS,
+} from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
@@ -21,6 +26,9 @@ export class OldMilestoneActionChoiceComponent {
   selectedMilestone?: IGitlabMilestone = undefined;
   private lastSelectedMilestone?: IGitlabMilestone = undefined;
   @Output() selectedMilestoneEvent = new EventEmitter<IGitlabMilestone>();
+  
+  CLOSED_STATUS: string = CLOSED_STATUS;
+  OPEN_STATUS: any = OPEN_STATUS;
 
   constructor(private gitlabService: GitlabService) {}
 
@@ -36,7 +44,7 @@ export class OldMilestoneActionChoiceComponent {
       title: this.gitlabService.incrementMilestoneBugFixVersion(
         this.milestone.title
       ),
-      state: 'fake',
+      state: FAKE_STATUS,
     };
 
     this.uniqueName = 'milestone_' + Math.random().toString(36).substring(2);

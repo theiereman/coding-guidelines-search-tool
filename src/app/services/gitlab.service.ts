@@ -7,7 +7,12 @@ import { environment } from 'src/environments/environment';
 import { catchError, map, max, Observable, of, tap } from 'rxjs';
 import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
 import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
-import { IGitlabMilestone } from '../interfaces/gitlab/igitlab-milestone';
+import {
+  CLOSED_STATUS,
+  FAKE_STATUS,
+  IGitlabMilestone,
+  OPEN_STATUS,
+} from '../interfaces/gitlab/igitlab-milestone';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
 import { IGitlabProject } from '../interfaces/gitlab/igitlab-project';
 
@@ -145,7 +150,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabMilestone[]>(
-        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?order_by=title&state=active`,
+        `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?order_by=title&state=${OPEN_STATUS}`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         }
@@ -305,7 +310,7 @@ export class GitlabService {
 
     //empeche la recherche de sous versions pour forcer à trouver forcément la dernière milestone corrective
     const numericQuery = query.replace(/[^\d.]/g, '');
-    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}&state=closed`;
+    const url = `${environment.gitlab_api_base_uri}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}&state=${CLOSED_STATUS}`;
 
     return this.httpClient
       .get<IGitlabMilestone[]>(url, {
@@ -326,7 +331,7 @@ export class GitlabService {
           const newMilestone: IGitlabMilestone = {
             id: -1, // ID fictif
             title: nextMilestoneTitle,
-            state: 'fake',
+            state: FAKE_STATUS,
           };
 
           // Retourner seulement la dernière milestone et la nouvelle fictive
@@ -363,10 +368,10 @@ export class GitlabService {
   }
 
   milestoneIsClosed(milestone: IGitlabMilestone) {
-    return milestone.state === 'closed';
+    return milestone.state === CLOSED_STATUS;
   }
 
   milestoneIsOpen(milestone: IGitlabMilestone) {
-    return milestone.state === 'active';
+    return milestone.state === OPEN_STATUS;
   }
 }
