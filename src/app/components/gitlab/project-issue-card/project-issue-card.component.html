@@ -9,8 +9,8 @@
   <div
     class="absolute top-0 right-0 rounded-full size-2 m-2"
     [ngClass]="{
-      'bg-green-500': issue?.state === 'opened',
-      'bg-red-500': issue?.state === 'closed'
+      'bg-green-500': issue?.state === OPEN_STATUS,
+      'bg-red-500': issue?.state === CLOSED_STATUS
     }"
   ></div>
   <div [ngClass]="{ 'mb-2': !hideDetails }">

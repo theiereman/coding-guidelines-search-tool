@@ -5,37 +5,37 @@
 
   <!-- Première milestone -->
   <div class="flex items-center w-full justify-between">
-    <label class="flex flex-1 items-center">
+    <label class="flex flex-1 items-center gap-2">
       <input
         type="checkbox"
         id="old-milestone"
         [checked]="isSelected(milestone)"
         (click)="toggleMilestone(milestone)"
         value="{{ milestone.id }}"
-        class="mr-2"
       />
-      <span class="font-medium text-gray-700">{{ milestone.title }}</span>
-      <span
-        class="rounded-full px-2 py-[2px] text-xs font-semibold ms-2"
-        [ngClass]="{
-          'bg-red-300 text-red-800': milestone.state == 'closed',
-          'bg-green-300 text-green-800': milestone.state == 'active'
-        }"
+      <span class="font-medium text-gray-700 leading-4">{{
+        milestone.title
+      }}</span>
+      <a
+        href="{{ getMilestoneURL(milestone) }}"
+        target="_blank"
+        class="material-icons text-[1.2rem] text-blue-500"
+        >open_in_new</a
       >
-        {{ milestone.state === "closed" ? "Fermée" : "Ouverte" }}
-      </span>
     </label>
     <div class="flex items-center space-x-2">
       <span class="italic text-xs text-gray-700"
         >Rouvrir la milestone puis la refermer</span
       >
-      <a
-        class="text-xs font-semibold underline text-blue-500 rounded-full"
-        href="{{ getMilestoneURL(milestone) }}"
-        target="_blank"
+      <span
+        class="rounded-full px-2 py-[2px] text-xs font-semibold ms-2"
+        [ngClass]="{
+          'bg-red-300 text-red-800': milestone.state == CLOSED_STATUS,
+          'bg-green-300 text-green-800': milestone.state == OPEN_STATUS
+        }"
       >
-        Ouvrir sur Gitlab
-      </a>
+        {{ milestone.state === CLOSED_STATUS ? "Fermée" : "Ouverte" }}
+      </span>
     </div>
   </div>
 
@@ -51,16 +51,16 @@
         class="mr-2"
       />
       <span class="font-medium text-gray-700">{{ nextMilestone.title }}</span>
-      <span
-        class="rounded-full px-2 py-[2px] text-xs font-semibold bg-blue-300 text-blue-800 ms-2"
-      >
-        Prochaine
-      </span>
     </label>
     <div class="flex items-center space-x-2">
       <span class="italic text-xs text-gray-700"
         >Créer la milestone puis la refermer</span
       >
     </div>
+    <span
+      class="rounded-full px-2 py-[2px] text-xs font-semibold bg-blue-300 text-blue-800 ms-2"
+    >
+      Prochaine
+    </span>
   </div>
 </fieldset>

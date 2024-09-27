@@ -10,33 +10,30 @@
         *ngFor="let milestone of getSortedMilestones()"
       >
         <!-- TODO: faire un composant pour afficher les milestones entries -->
-        <div
-          class="p-2 border rounded-lg bg-gray-100 flex gap-2 w-full items-center justify-between"
-        >
-          <label class="flex flex-1 items-center">
+        <div class="p-2 border rounded-lg bg-gray-100 flex gap-2 w-full">
+          <label class="flex flex-1 items-center gap-2">
             <input
               *ngIf="interactiveMode"
               type="checkbox"
-              class="mr-2"
+              class="size-4"
               [checked]="isSelected(milestone)"
               (change)="toggleMilestone(milestone)"
             />
-            <span class="font-medium text-gray-700">{{ milestone.title }}</span>
-            <span
-              class="rounded-full px-2 py-[2px] text-xs font-semibold ms-2"
-              [ngClass]="getMilestoneStateColorClasses(milestone)"
+            <span class="text-gray-700 leading-4">{{ milestone.title }}</span>
+            <a
+              *ngIf="getMilestoneURL(milestone)"
+              href="{{ getMilestoneURL(milestone) }}"
+              target="_blank"
+              class="material-icons text-[1.2rem] text-blue-500"
+              >open_in_new</a
             >
-              {{ getMilestoneStateLabel(milestone) }}
-            </span>
           </label>
-
-          <a
-            class="text-xs font-semibold underline text-blue-500 rounded-full"
-            href="{{ getMilestoneURL(milestone) }}"
-            target="_blank"
+          <span
+            class="rounded-full px-2 py-[2px] text-xs font-semibold"
+            [ngClass]="getMilestoneStateColorClasses(milestone)"
           >
-            Ouvrir sur Gitlab
-          </a>
+            {{ getMilestoneStateLabel(milestone) }}
+          </span>
         </div>
       </li>
     </ul>
