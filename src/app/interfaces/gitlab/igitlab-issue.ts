@@ -1,4 +1,5 @@
 import { IGitlabLabel } from './igitlab-label';
+import { IGitlabMilestone } from './igitlab-milestone';
 import { IGitlabUser } from './igitlab-user';
 
 export interface IGitlabIssue {

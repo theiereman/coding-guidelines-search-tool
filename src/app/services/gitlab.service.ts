@@ -4,12 +4,22 @@ import { AlertsService } from './alerts.service';
 import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { catchError, map, max, Observable, of, tap } from 'rxjs';
+import {
+  catchError,
+  empty,
+  map,
+  max,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
 import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
 import {
   CLOSED_STATUS,
   FAKE_STATUS,
+  IGitlabEditMilestone,
   IGitlabMilestone,
   OPEN_STATUS,
 } from '../interfaces/gitlab/igitlab-milestone';
@@ -29,7 +39,9 @@ export class GitlabService {
   public getProject(projectId: number): Observable<IGitlabProject> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of();
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
     }
 
     return this.httpClient
@@ -53,7 +65,9 @@ export class GitlabService {
   public getLabelsFromProject(projectId: number): Observable<IGitlabLabel[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of();
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
     }
 
     return this.httpClient
@@ -82,7 +96,9 @@ export class GitlabService {
   ): Observable<IGitlabIssue[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of([]);
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
     }
 
     const isUrl = /^https?:\/\//.test(query);
@@ -140,12 +156,95 @@ export class GitlabService {
     return uniqueIssues.slice(0, size);
   }
 
+  createMilestone(title: string): Observable<IGitlabMilestone> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
+    }
+
+    const newMilestone: IGitlabMilestone = {
+      title,
+    };
+
+    return this.httpClient
+      .post<IGitlabMilestone>(
+        `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_reintegration}/milestones`,
+        newMilestone,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            `Impossible de créer la milestone ${title}`
+          );
+          return throwError(
+            () => new Error(`Impossible de créer la milestone ${title}`)
+          );
+        })
+      );
+  }
+
+  private editMilestone(
+    milestone: IGitlabEditMilestone
+  ): Observable<IGitlabMilestone> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
+    }
+
+    return this.httpClient
+      .put<IGitlabMilestone>(
+        `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_reintegration}/milestones/${milestone.id}`,
+        milestone,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            `Impossible de modifier la milestone ${milestone.title}`
+          );
+          return throwError(
+            () =>
+              new Error(
+                `Impossible de modifier la milestone ${milestone.title}`
+              )
+          );
+        })
+      );
+  }
+
+  openMilestone(milestone: IGitlabMilestone): Observable<IGitlabMilestone> {
+    return this.editMilestone({
+      ...milestone,
+      state_event: 'activate',
+    });
+  }
+
+  closeMilestone(milestone: IGitlabMilestone): Observable<IGitlabMilestone> {
+    return this.editMilestone({
+      ...milestone,
+      state_event: 'close',
+    });
+  }
+
   public getOpenMilestonesFromProject(
     projectId: number
   ): Observable<IGitlabMilestone[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of([]);
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
     }
 
     return this.httpClient
@@ -175,9 +274,14 @@ export class GitlabService {
       );
   }
 
-  public createNewIssue(
-    issue: IGitlabIssue
-  ): Observable<IGitlabIssue | undefined> {
+  public createNewIssue(issue: IGitlabIssue): Observable<IGitlabIssue> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
+    }
+
     return this.httpClient
       .post<IGitlabIssue>(
         `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_reintegration}/issues`,
@@ -190,7 +294,9 @@ export class GitlabService {
         catchError((err) => {
           console.error(err);
           this.alertsService.addError('Impossible de créer une nouvelle issue');
-          return of(undefined);
+          return throwError(
+            () => new Error(`Impossible de créer l'issue ${issue.title}`)
+          );
         })
       );
   }
@@ -198,7 +304,14 @@ export class GitlabService {
   public addCommentOfReintegrationInLinkedProjectIssue(
     reintegrationIssue: IGitlabIssue,
     linkedProjectIssue: IGitlabIssue
-  ): Observable<boolean> {
+  ): Observable<void> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
+    }
+
     return this.httpClient
       .post<IGitlabIssue>(
         `${environment.gitlab_api_base_uri}/projects/${environment.gitlab_id_projet_suivi_general}/issues/${linkedProjectIssue.iid}/notes`,
@@ -216,11 +329,15 @@ export class GitlabService {
           this.alertsService.addError(
             'Impossible de mentionner la réintégration dans la issue'
           );
-          return of(false);
+          return throwError(
+            () =>
+              new Error(
+                'Impossible de mentionner la réintégration dans la issue'
+              )
+          );
         }),
         map(() => {
           this.addIssueToLocalStorage(linkedProjectIssue);
-          return true;
         })
       );
   }
@@ -233,7 +350,9 @@ export class GitlabService {
   ): Observable<IGitlabMilestone[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of([]);
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
     }
 
     return this.httpClient
@@ -303,7 +422,9 @@ export class GitlabService {
   ): Observable<IGitlabMilestone[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
-      return of([]);
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
     }
 
     if (query.trim() === '') return of([]);

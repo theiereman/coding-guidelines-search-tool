@@ -1,61 +1,56 @@
-<div class="border rounded-lg border-gray-400 p-4">
-  <div class="p-2 rounded-md flex flex-col">
-    <p class="text-center text-gray-500 flex-1" *ngIf="milestones.length === 0">
-      Aucune milestone {{ !interactiveMode ? "selectionnée" : "trouvée" }}
-    </p>
-    <span *ngIf="interactiveMode && milestones.length > 0" class="mb-2"
-      >Dernières milestones</span
+<div class="border rounded-lg border-gray-400 p-4 flex flex-col">
+  <p class="text-center text-gray-500 flex-1" *ngIf="milestones.length === 0">
+    Aucune milestone {{ !interactiveMode ? "selectionnée" : "trouvée" }}
+  </p>
+  <span *ngIf="interactiveMode && milestones.length > 0" class="mb-2"
+    >Dernières milestones</span
+  >
+  <ul class="flex flex-col gap-2 list-none">
+    <li
+      class="flex items-center gap-2"
+      *ngFor="let milestone of getSortedMilestones()"
     >
-    <ul class="flex flex-col gap-2 list-none">
+      <!-- TODO: faire un composant pour afficher les milestones entries -->
+      <div class="p-2 border rounded-lg bg-gray-100 flex gap-2 w-full">
+        <label class="flex flex-1 items-center gap-2">
+          <input
+            *ngIf="interactiveMode"
+            type="checkbox"
+            class="size-4"
+            [checked]="isSelected(milestone)"
+            (change)="toggleMilestone(milestone)"
+          />
+          <span class="text-gray-700 leading-4">{{ milestone.title }}</span>
+          <a
+            *ngIf="getMilestoneURL(milestone)"
+            href="{{ getMilestoneURL(milestone) }}"
+            target="_blank"
+            class="material-icons text-[1.2rem] text-blue-500"
+            >open_in_new</a
+          >
+        </label>
+        <span
+          class="rounded-full px-2 py-[2px] text-xs font-semibold"
+          [ngClass]="getMilestoneStateColorClasses(milestone)"
+        >
+          {{ getMilestoneStateLabel(milestone) }}
+        </span>
+      </div>
+    </li>
+  </ul>
+  <div *ngIf="interactiveMode && lastClosedMilestones.length > 0" class="mt-2">
+    <span>Anciennes versions</span>
+    <ul class="flex flex-col gap-2 list-none mt-2">
       <li
         class="flex items-center gap-2"
-        *ngFor="let milestone of getSortedMilestones()"
+        *ngFor="let milestone of lastClosedMilestones"
       >
-        <!-- TODO: faire un composant pour afficher les milestones entries -->
-        <div class="p-2 border rounded-lg bg-gray-100 flex gap-2 w-full">
-          <label class="flex flex-1 items-center gap-2">
-            <input
-              *ngIf="interactiveMode"
-              type="checkbox"
-              class="size-4"
-              [checked]="isSelected(milestone)"
-              (change)="toggleMilestone(milestone)"
-            />
-            <span class="text-gray-700 leading-4">{{ milestone.title }}</span>
-            <a
-              *ngIf="getMilestoneURL(milestone)"
-              href="{{ getMilestoneURL(milestone) }}"
-              target="_blank"
-              class="material-icons text-[1.2rem] text-blue-500"
-              >open_in_new</a
-            >
-          </label>
-          <span
-            class="rounded-full px-2 py-[2px] text-xs font-semibold"
-            [ngClass]="getMilestoneStateColorClasses(milestone)"
-          >
-            {{ getMilestoneStateLabel(milestone) }}
-          </span>
-        </div>
+        <app-old-milestone-action-choice
+          class="w-full"
+          [milestone]="milestone"
+          (selectedMilestoneEvent)="toggleMilestone($event)"
+        ></app-old-milestone-action-choice>
       </li>
     </ul>
-    <div
-      *ngIf="interactiveMode && lastClosedMilestones.length > 0"
-      class="mt-2"
-    >
-      <span>Anciennes versions</span>
-      <ul class="flex flex-col gap-2 list-none mt-2">
-        <li
-          class="flex items-center gap-2"
-          *ngFor="let milestone of lastClosedMilestones"
-        >
-          <app-old-milestone-action-choice
-            class="w-full"
-            [milestone]="milestone"
-            (selectedMilestoneEvent)="toggleMilestone($event)"
-          ></app-old-milestone-action-choice>
-        </li>
-      </ul>
-    </div>
   </div>
 </div>

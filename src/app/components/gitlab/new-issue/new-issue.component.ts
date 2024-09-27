@@ -6,7 +6,16 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
@@ -258,34 +267,71 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.selectedMilestones.setValue(milestones);
   }
 
+  //TODO: ajouter un service uqi permet de suivre ce qui a été fait ou non
+  //TODO: reset l'affichage (recharger la page ?)
+  //TODO: afficher un lien vers le projet
   createNewIssue() {
-    // Crée une issue par milestone sélectionnée
-    const issueObservables = this.selectedMilestones.map((milestone) => {
-      const newIssue: IGitlabIssue = {
-        ...this.futureIssue,
-        milestone_id: milestone.id,
-      };
+    //? déplacer ce fonctionnement dans le service gitlab
 
-      return this.gitlabService.createNewIssue(newIssue).pipe(
-        switchMap((createdIssue) => {
-          if (createdIssue) {
-            this.futureIssue.web_url = createdIssue.web_url;
-            return this.gitlabService
-              .addCommentOfReintegrationInLinkedProjectIssue(
-                createdIssue,
-                this.selectedProject!
-              )
-              .pipe(
-                map((commentSuccess) => commentSuccess),
-                catchError(() => of(false))
-              );
-          }
-          return of(false);
-        }),
-        catchError(() => of(false))
+    const issueObservables = this.selectedMilestones.map((milestone) => {
+      let milestoneOperation$: Observable<IGitlabMilestone | null> =
+        of(milestone);
+
+      // Vérifie si la milestone est fake (à créer) ou fermée (à ouvrir)
+      if (this.gitlabService.milestoneIsFake(milestone)) {
+        milestoneOperation$ = this.gitlabService
+          .createMilestone(milestone.title)
+          .pipe(catchError(() => of(null)));
+      } else if (this.gitlabService.milestoneIsClosed(milestone)) {
+        milestoneOperation$ = this.gitlabService
+          .openMilestone(milestone)
+          .pipe(catchError(() => of(null)));
+      }
+
+      // Crée l'issue une fois l'opération sur la milestone effectuée (si nécessaire)
+      return milestoneOperation$.pipe(
+        switchMap((milestoneResult) => {
+          if (!milestoneResult) return of(false); // Si la création ou l'ouverture échoue
+
+          const newIssue: IGitlabIssue = {
+            ...this.futureIssue,
+            milestone_id: milestoneResult.id ?? -1,
+          };
+
+          return this.gitlabService.createNewIssue(newIssue).pipe(
+            switchMap((createdIssue) => {
+              this.futureIssue.web_url = createdIssue.web_url;
+              return this.gitlabService
+                .addCommentOfReintegrationInLinkedProjectIssue(
+                  createdIssue,
+                  this.selectedProject!
+                )
+                .pipe(
+                  switchMap(() => {
+                    // Si la milestone a été ouverte ou créée, la refermer
+                    if (
+                      this.gitlabService.milestoneIsFake(milestone) ||
+                      this.gitlabService.milestoneIsClosed(milestone)
+                    ) {
+                      return this.gitlabService
+                        .closeMilestone(milestoneResult)
+                        .pipe(
+                          map(() => true),
+                          catchError(() => of(false)) // Gestion des erreurs lors de la fermeture
+                        );
+                    }
+                    return of(true);
+                  }),
+                  catchError(() => of(false)) // Erreur lors du commentaire
+                );
+            }),
+            catchError(() => of(false)) // Erreur lors de la création de l'issue
+          );
+        })
       );
     });
 
+    // Gestion des résultats après la création des issues
     forkJoin(issueObservables).subscribe((results) => {
       if (results.every((success) => success)) {
         this.alertsService.addSuccess(
