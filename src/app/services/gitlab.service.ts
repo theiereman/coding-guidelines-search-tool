@@ -342,8 +342,6 @@ export class GitlabService {
       );
   }
 
-  //TODO: récupérer les dernières milestones fermées pour pouvoir créer des correctifs en une seule fois sur plusieurs anciennes versions
-
   getLastClosedVersionsFromProject(
     projectId: number,
     maxResults: number = 3
