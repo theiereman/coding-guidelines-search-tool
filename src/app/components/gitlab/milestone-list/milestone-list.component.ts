@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -9,20 +9,20 @@ import {
 import {
   NG_VALUE_ACCESSOR,
   ControlValueAccessor,
-  FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { debounceTime, switchMap, tap } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { OldMilestoneActionChoiceComponent } from '../old-milestone-action-choice/old-milestone-action-choice.component';
+import { Observable, of, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-milestone-list',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     NgFor,
     NgIf,
@@ -38,19 +38,18 @@ import { OldMilestoneActionChoiceComponent } from '../old-milestone-action-choic
     },
   ],
 })
-
-//TODO: modifier ce composant en "openMilestonesList"
 export class MilestoneListComponent implements ControlValueAccessor {
   @Input() milestones: IGitlabMilestone[] = [];
-  lastClosedMilestones: IGitlabMilestone[] = [];
-  selectedMilestones: IGitlabMilestone[] = [];
-  selectAll: boolean = false;
   @Input() interactiveMode: boolean = true;
+
   @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
 
-  loadingMilestones: boolean = false;
-
+  lastClosedMilestones: IGitlabMilestone[] = [];
   private projetReintegration?: IGitlabProject = undefined;
+
+  selectedMilestones: IGitlabMilestone[] = [];
+
+  private _destroy$ = new Subject<void>();
 
   private onChange: (value: IGitlabMilestone[]) => void = () => {};
   private onTouched: () => void = () => {};
@@ -60,16 +59,16 @@ export class MilestoneListComponent implements ControlValueAccessor {
   ngOnInit(): void {
     this.gitlabService
       .getProject(environment.gitlab_id_projet_reintegration)
+      .pipe(takeUntil(this._destroy$))
       .subscribe((projet) => {
         this.projetReintegration = projet;
       });
-
-    //TODO : liste d'éléments qui permettent de choisir entre la dernière milestone de la version ou un nouveau numéro de version
 
     this.gitlabService
       .getLastClosedVersionsFromProject(
         environment.gitlab_id_projet_reintegration
       )
+      .pipe(takeUntil(this._destroy$))
       .subscribe((milestones) => {
         this.lastClosedMilestones = milestones;
       });
@@ -77,27 +76,12 @@ export class MilestoneListComponent implements ControlValueAccessor {
 
   toggleMilestone(milestone: IGitlabMilestone) {
     const milestoneIndex = this.selectedMilestones.findIndex(
-      (m) => m.id === milestone.id
+      (m) => m.title === milestone.title
     );
     if (milestoneIndex === -1) {
       this.selectedMilestones.push(milestone);
     } else {
       this.selectedMilestones.splice(milestoneIndex, 1);
-    }
-    this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
-    this.onChange(this.selectedMilestones);
-    this.onTouched();
-  }
-
-  toggleSelectAll() {
-    this.selectAll = !this.selectAll;
-    if (this.selectAll) {
-      this.selectedMilestones = [
-        ...this.milestones,
-        ...this.lastClosedMilestones,
-      ];
-    } else {
-      this.selectedMilestones = [];
     }
     this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
     this.onChange(this.selectedMilestones);
@@ -122,22 +106,33 @@ export class MilestoneListComponent implements ControlValueAccessor {
       case 'active':
         return 'Ouverte';
       case 'fake':
-        return 'Nouvelle';
+        return 'Prochaine';
       default:
         return 'Inconnue';
     }
   }
 
-  writeValue(value: IGitlabMilestone[]): void {
-    if (value) {
-      this.selectedMilestones = value;
-      this.selectAll =
-        this.selectedMilestones.length > 0 &&
-        this.selectedMilestones.length ===
-          this.milestones.length + this.lastClosedMilestones.length;
-    } else {
-      this.selectedMilestones = [];
+  getMilestoneStateColorClasses(milestone: IGitlabMilestone) {
+    switch (milestone.state) {
+      case 'closed':
+        return 'bg-red-300 text-red-800';
+      case 'active':
+        return 'bg-green-300 text-green-800';
+      case 'fake':
+        return 'bg-blue-300 text-blue-800';
+      default:
+        return 'bg-gray-300 text-gray-800';
     }
+  }
+
+  getSortedMilestones() {
+    return this.milestones
+      .sort((a, b) => a.title.localeCompare(b.title))
+      .reverse();
+  }
+
+  writeValue(value: IGitlabMilestone[]): void {
+    this.selectedMilestones = value ?? [];
   }
 
   registerOnChange(fn: (value: IGitlabMilestone[]) => void): void {
@@ -150,5 +145,10 @@ export class MilestoneListComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.interactiveMode = !isDisabled;
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 }
