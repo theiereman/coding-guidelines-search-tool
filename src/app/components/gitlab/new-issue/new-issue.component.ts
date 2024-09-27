@@ -15,6 +15,7 @@ import {
   switchMap,
   tap,
   throwError,
+  timer,
 } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -55,6 +56,8 @@ export class NewIssueComponent {
   labels: IGitlabLabel[] = [];
   developmentTypeLabels: IGitlabLabel[] = [];
   lastDevelopmentTypeLabelUsed: IGitlabLabel | undefined = undefined;
+
+  pendingCreationResult: boolean = false;
 
   issueCreationForm = new FormGroup({
     developmentType: new FormControl('', Validators.required),
@@ -267,38 +270,33 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.selectedMilestones.setValue(milestones);
   }
 
-  //TODO: ajouter un service uqi permet de suivre ce qui a été fait ou non
-  //TODO: reset l'affichage (recharger la page ?)
-  //TODO: afficher un lien vers le projet
   createNewIssue() {
     //? déplacer ce fonctionnement dans le service gitlab
 
+    this.pendingCreationResult = true;
+
     const issueObservables = this.selectedMilestones.map((milestone) => {
-      let milestoneOperation$: Observable<IGitlabMilestone | null> =
-        of(milestone);
+      let milestoneOperation$: Observable<IGitlabMilestone> = of(milestone);
 
       // Vérifie si la milestone est fake (à créer) ou fermée (à ouvrir)
       if (this.gitlabService.milestoneIsFake(milestone)) {
-        milestoneOperation$ = this.gitlabService
-          .createMilestone(milestone.title)
-          .pipe(catchError(() => of(null)));
+        milestoneOperation$ = this.gitlabService.createMilestone(
+          milestone.title
+        );
       } else if (this.gitlabService.milestoneIsClosed(milestone)) {
-        milestoneOperation$ = this.gitlabService
-          .openMilestone(milestone)
-          .pipe(catchError(() => of(null)));
+        milestoneOperation$ = this.gitlabService.openMilestone(milestone);
       }
 
       // Crée l'issue une fois l'opération sur la milestone effectuée (si nécessaire)
       return milestoneOperation$.pipe(
         switchMap((milestoneResult) => {
-          if (!milestoneResult) return of(false); // Si la création ou l'ouverture échoue
-
           const newIssue: IGitlabIssue = {
             ...this.futureIssue,
             milestone_id: milestoneResult.id ?? -1,
           };
 
           return this.gitlabService.createNewIssue(newIssue).pipe(
+            //TODO: faire un fork join plutot
             switchMap((createdIssue) => {
               this.futureIssue.web_url = createdIssue.web_url;
               return this.gitlabService
@@ -315,24 +313,21 @@ export class NewIssueComponent {
                     ) {
                       return this.gitlabService
                         .closeMilestone(milestoneResult)
-                        .pipe(
-                          map(() => true),
-                          catchError(() => of(false)) // Gestion des erreurs lors de la fermeture
-                        );
+                        .pipe(map(() => true));
                     }
                     return of(true);
-                  }),
-                  catchError(() => of(false)) // Erreur lors du commentaire
+                  })
                 );
-            }),
-            catchError(() => of(false)) // Erreur lors de la création de l'issue
+            })
           );
-        })
+        }),
+        catchError(() => of(false))
       );
     });
 
     // Gestion des résultats après la création des issues
     forkJoin(issueObservables).subscribe((results) => {
+      this.pendingCreationResult = false;
       if (results.every((success) => success)) {
         this.alertsService.addSuccess(
           'Nouvelle(s) issue(s) créée(s) et mention(s) ajoutée(s)'
