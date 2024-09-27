@@ -1,20 +1,20 @@
 <div class="flex items-start space-x-4 border rounded-lg border-gray-400 p-4">
   <div class="shrink-0">
-    <img src="" alt="" class="w-8 h-8 rounded-full" />
+    <img
+      src="{{ connectedUser?.avatar_url }}"
+      alt=""
+      class="w-8 h-8 rounded-full"
+    />
   </div>
-  <div class="flex-1">
+  <div class="flex-1 border rounded-sm border-gray-200 p-2 px-4">
     <div class="flex items-center space-x-2">
       <span href="#" class="font-bold text-gray-900">{{
-        issue.assignee?.name
+        connectedUser?.name
       }}</span>
-      <!-- TODO: modifier assignee car faux pour la création d'une issue de réintégration -->
-      <span class="text-gray-500">&#64;{{ issue.assignee?.username }}</span>
       <span class="text-gray-500">·</span>
       <span class="text-gray-500 text-sm">just now</span>
     </div>
     <div class="mt-2">
-      <!-- TODO: ajouter une lien cliquable is le lien est ok -->
-
       <p class="text-gray-700" [ngClass]="{ italic: !issue.title }">
         {{ !issue.title ? titlePlaceholder : issue.title }} (@if(issue.web_url)
         {
