@@ -1,5 +1,5 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -19,6 +19,8 @@ export class OldMilestoneActionChoiceComponent {
   private projetReintegration?: IGitlabProject = undefined;
   uniqueName: string = '';
   selectedMilestone?: IGitlabMilestone = undefined;
+  private lastSelectedMilestone?: IGitlabMilestone = undefined;
+  @Output() selectedMilestoneEvent = new EventEmitter<IGitlabMilestone>();
 
   constructor(private gitlabService: GitlabService) {}
 
@@ -47,14 +49,19 @@ export class OldMilestoneActionChoiceComponent {
 
   toggleMilestone(milestone: IGitlabMilestone) {
     const isAlreadySelected = this.selectedMilestone?.id === milestone.id;
-    if (!isAlreadySelected) {
-      this.selectedMilestone = milestone;
-    } else {
+
+    if (isAlreadySelected) {
       this.selectedMilestone = undefined;
+    } else {
+      this.selectedMilestone = milestone;
+      this.selectedMilestoneEvent.emit(this.selectedMilestone);
     }
-    // this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
-    // this.onChange(this.selectedMilestones);
-    // this.onTouched();
+
+    //envoi de la dernière selection pour qu'elle se déselectionne
+    if (this.lastSelectedMilestone) {
+      this.selectedMilestoneEvent.emit(this.lastSelectedMilestone);
+    }
+    this.lastSelectedMilestone = this.selectedMilestone;
   }
 
   isSelected(milestone: IGitlabMilestone): boolean {
