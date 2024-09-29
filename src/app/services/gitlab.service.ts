@@ -264,8 +264,7 @@ export class GitlabService {
             };
           });
         }),
-        catchError((err) => {
-          console.error(err);
+        catchError(() => {
           this.alertsService.addError(
             'Impossible de récupérer les milestones du projet'
           );
