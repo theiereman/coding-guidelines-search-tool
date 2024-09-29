@@ -6,10 +6,10 @@ import { normalize } from '../../../helpers/strings-helper';
 import { HighlightOnSearchDirective } from '../../../directives/highlight-on-search.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guideline-search.component';
-import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from '@microsoft/mgt';
-import { ConnectionRequiredComponent } from '../connection-required/connection-required.component';
 import { GRAPH_API } from 'src/app/constants/graph-api.constants';
+import { AuthService } from 'src/app/services/auth.service';
+import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
 
 @Component({
   selector: 'app-code-guideline-list',
@@ -37,7 +37,7 @@ export class CodeGuidelineListComponent {
 
   constructor(
     private graphService: MicrosoftGraphService,
-    private authService: AuthService
+    public authService: AuthService
   ) {
     //mise à jour de la recherche
     this.searchValueChangedSubject$

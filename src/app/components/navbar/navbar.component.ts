@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
 import { IUser } from 'src/app/interfaces/iuser';
-import { GRAPH_API } from 'src/app/constants/graph-api.constants';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
-import { GitlabService } from 'src/app/services/gitlab.service';
 import { NgClass, NgIf } from '@angular/common';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
