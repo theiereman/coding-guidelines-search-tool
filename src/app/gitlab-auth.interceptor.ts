@@ -24,6 +24,8 @@ export const gitlabAuthInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
+  //TODO: trouvr une solution pour refresh sur une autre page que la racine (400 bad request etc etc)
+
   return next(authReq).pipe(
     catchError((error) => {
       if (error.status === 401) {
