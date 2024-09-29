@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 
+//TODO : mutaliser ce composant avec gitlab
+
 @Component({
   selector: 'app-connection-required',
   templateUrl: './connection-required.component.html',
