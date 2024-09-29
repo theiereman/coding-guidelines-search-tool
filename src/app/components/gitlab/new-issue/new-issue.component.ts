@@ -32,6 +32,7 @@ import { validateProjectSelection } from '../validators/selected-project-validat
 import {
   BUG_LABEL_NAME,
   IGitlabLabel,
+  MODIF_ANALYSE_LABEL_NAME,
   QUOI_DE_NEUF_LABEL_NAME,
 } from 'src/app/interfaces/gitlab/igitlab-label';
 import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
@@ -77,11 +78,11 @@ export class NewIssueComponent {
   });
 
   selectedProject?: IGitlabIssue = undefined;
+  selectedMilestones: IGitlabMilestone[] = [];
   futureIssue: IGitlabIssue = {
     labels: [] as string[],
     detailed_labels: [] as IGitlabLabel[],
   } as IGitlabIssue;
-  selectedMilestones: IGitlabMilestone[] = [];
 
   constructor(
     private gitlabAuthService: GitlabAuthService,
@@ -112,6 +113,10 @@ export class NewIssueComponent {
 
         if (!correspondingLabel) return;
 
+        this.issueCreationForm.controls.scope.setValue('');
+        this.updateFutureIssueTitle();
+
+        //met à jour les labels de 'type de développement' sur l'aperçu de l'issue
         this.futureIssue.detailed_labels =
           this.futureIssue.detailed_labels.filter(
             (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id
@@ -128,6 +133,16 @@ export class NewIssueComponent {
           (label) => label.name
         );
       }
+    );
+  }
+
+  isCurrentDevelopmentTypeModificationAnalyse() {
+    return (
+      this.labels.find(
+        (label) =>
+          label.id ===
+          Number(this.issueCreationForm.controls.developmentType.value)
+      )?.name === MODIF_ANALYSE_LABEL_NAME
     );
   }
 
@@ -200,24 +215,33 @@ export class NewIssueComponent {
 
   private manageScopeValueUpdate() {
     this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(
-        value ?? '',
-        this.issueCreationForm.controls.title.value ?? ''
-      );
+      //uniquemnt des chiffres pour le numéro de l'analyse
+      if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
+        this.issueCreationForm.controls.scope.setValue(
+          this.issueCreationForm.controls.scope.value?.replace(/[^0-9]/g, '') ??
+            ''
+        );
+      }
+      this.updateFutureIssueTitle();
     });
   }
 
   private manageTitleValueUpdate() {
-    this.issueCreationForm.controls.title.valueChanges.subscribe((value) => {
-      this.updateIssueTitle(
-        this.issueCreationForm.controls.scope.value ?? '',
-        value ?? ''
-      );
+    this.issueCreationForm.controls.title.valueChanges.subscribe(() => {
+      this.updateFutureIssueTitle();
     });
   }
 
-  private updateIssueTitle(scope: string, title: string) {
-    this.futureIssue.title = `[${scope}] - ${title}`;
+  private updateFutureIssueTitle() {
+    if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
+      this.futureIssue.title = `[Modification d'analyse] (${
+        this.issueCreationForm.controls.scope.value ?? ''
+      }) - ${this.issueCreationForm.controls.title.value ?? ''}`;
+    } else {
+      this.futureIssue.title = `[${
+        this.issueCreationForm.controls.scope.value ?? ''
+      }] - ${this.issueCreationForm.controls.title.value ?? ''}`;
+    }
   }
 
   private updateLabelList() {
@@ -364,6 +388,7 @@ export class NewIssueComponent {
     this.selectedMilestones = [];
   }
 
+  //TODO: remplacer par le service formControlService
   formControlInvalid(controlName: string): boolean {
     return (
       (this.issueCreationForm.get(controlName)?.invalid &&
