@@ -23,11 +23,12 @@ import {
 } from 'rxjs';
 import { IUser } from '../interfaces/iuser';
 import { AlertsService } from './alerts.service';
+import { AbstractAuthenticationServiceService } from './abstract-authentication-service.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements AbstractAuthenticationServiceService {
   public graphClient?: Client;
   private readonly _destroying$ = new Subject<void>();
 
