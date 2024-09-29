@@ -295,6 +295,7 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.selectedMilestones.setValue(milestones);
   }
 
+  //TODO: faire un affichage pour résumé de la réintégration + lien vers la réintégration
   createNewIssue() {
     //? déplacer ce fonctionnement dans le service gitlab
 
