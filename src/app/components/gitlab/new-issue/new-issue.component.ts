@@ -10,6 +10,7 @@ import {
   catchError,
   forkJoin,
   map,
+  mergeMap,
   Observable,
   of,
   switchMap,
@@ -296,28 +297,33 @@ export class NewIssueComponent {
           };
 
           return this.gitlabService.createNewIssue(newIssue).pipe(
-            //TODO: faire un fork join plutot
-            switchMap((createdIssue) => {
+            mergeMap((createdIssue) => {
               this.futureIssue.web_url = createdIssue.web_url;
-              return this.gitlabService
+              const commentOperation$ = this.gitlabService
                 .addCommentOfReintegrationInLinkedProjectIssue(
                   createdIssue,
                   this.selectedProject!
                 )
-                .pipe(
-                  switchMap(() => {
-                    // Si la milestone a été ouverte ou créée, la refermer
-                    if (
-                      this.gitlabService.milestoneIsFake(milestone) ||
-                      this.gitlabService.milestoneIsClosed(milestone)
-                    ) {
-                      return this.gitlabService
-                        .closeMilestone(milestoneResult)
-                        .pipe(map(() => true));
-                    }
-                    return of(true);
-                  })
-                );
+                .pipe(map(() => true));
+
+              const closeMilestoneOperation$ =
+                this.gitlabService.milestoneIsFake(milestone) ||
+                this.gitlabService.milestoneIsClosed(milestone)
+                  ? this.gitlabService
+                      .closeMilestone(milestoneResult)
+                      .pipe(map(() => true))
+                  : of(true);
+
+              return forkJoin([
+                commentOperation$,
+                closeMilestoneOperation$,
+              ]).pipe(
+                map(
+                  ([commentOperationResult, closeMilestoneOperationResult]) =>
+                    commentOperationResult && closeMilestoneOperationResult
+                ),
+                catchError(() => of(false))
+              );
             })
           );
         }),
@@ -325,7 +331,6 @@ export class NewIssueComponent {
       );
     });
 
-    // Gestion des résultats après la création des issues
     forkJoin(issueObservables).subscribe((results) => {
       this.pendingCreationResult = false;
       if (results.every((success) => success)) {
