@@ -1,5 +1,7 @@
 <app-connection-required
   *ngIf="!user && contentLoaded"
+  [authenticationService]="authService"
+  externalServiceName="Office365"
 ></app-connection-required>
 
 <div class="flex flex-col items-center h-full" *ngIf="user">

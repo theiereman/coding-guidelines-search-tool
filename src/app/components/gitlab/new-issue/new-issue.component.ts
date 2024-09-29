@@ -37,6 +37,8 @@ import {
 } from 'src/app/interfaces/gitlab/igitlab-label';
 import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
+import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-new-issue',
@@ -50,6 +52,7 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
     MilestoneListComponent,
     CommentPreviewComponent,
     NewIssueActionsSummaryComponent,
+    ConnectionRequiredComponent,
   ],
   templateUrl: './new-issue.component.html',
 })
@@ -85,12 +88,16 @@ export class NewIssueComponent {
   } as IGitlabIssue;
 
   constructor(
-    private gitlabAuthService: GitlabAuthService,
+    public gitlabAuthService: GitlabAuthService,
     private gitlabService: GitlabService,
     private alertsService: AlertsService
   ) {}
 
   ngOnInit(): void {
+    if (!this.gitlabAuthService.isAuthenticated()) {
+      return;
+    }
+
     this.updateLabelList();
     this.updateMilestoneList();
 
@@ -217,10 +224,15 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
       //uniquemnt des chiffres pour le numéro de l'analyse
       if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
-        this.issueCreationForm.controls.scope.setValue(
+        const sanitizedValue =
           this.issueCreationForm.controls.scope.value?.replace(/[^0-9]/g, '') ??
-            ''
-        );
+          '';
+        // Vérifiez si la valeur est différente pour éviter de mettre à jour inutilement
+        if (sanitizedValue !== value) {
+          this.issueCreationForm.controls.scope.setValue(sanitizedValue, {
+            emitEvent: false,
+          });
+        }
       }
       this.updateFutureIssueTitle();
     });

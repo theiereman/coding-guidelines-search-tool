@@ -40,7 +40,7 @@
     <img
       class="w-[35px] h-[35px] rounded-full bg-gray-400"
       src="{{
-        gitlabUser?.avatar_url
+        isAuthenticatedOnGitlab()
           ? gitlabUser?.avatar_url
           : 'assets/gitlab-logo.png'
       }}"
