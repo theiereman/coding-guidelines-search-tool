@@ -304,14 +304,24 @@ export class NewIssueComponent {
                   createdIssue,
                   this.selectedProject!
                 )
-                .pipe(map(() => true));
+                .pipe(
+                  map(() => true),
+                  catchError((err) => {
+                    console.log(err);
+                    return of(false);
+                  })
+                );
 
               const closeMilestoneOperation$ =
                 this.gitlabService.milestoneIsFake(milestone) ||
                 this.gitlabService.milestoneIsClosed(milestone)
-                  ? this.gitlabService
-                      .closeMilestone(milestoneResult)
-                      .pipe(map(() => true))
+                  ? this.gitlabService.closeMilestone(milestoneResult).pipe(
+                      map(() => true),
+                      catchError((err) => {
+                        console.log(err);
+                        return of(false);
+                      })
+                    )
                   : of(true);
 
               return forkJoin([
@@ -321,13 +331,15 @@ export class NewIssueComponent {
                 map(
                   ([commentOperationResult, closeMilestoneOperationResult]) =>
                     commentOperationResult && closeMilestoneOperationResult
-                ),
-                catchError(() => of(false))
+                )
               );
             })
           );
         }),
-        catchError(() => of(false))
+        catchError((err) => {
+          console.log(`Erreur lors de la création d'une issue : ${err}`);
+          return of(false);
+        })
       );
     });
 
@@ -339,7 +351,7 @@ export class NewIssueComponent {
         );
       } else {
         this.alertsService.addError(
-          'Une erreur est survenue lors de la création de la(des) issue(s)'
+          'Une erreur est survenue lors de la création de la(des) issue(s). Détails des erreurs dans la console.'
         );
       }
     });
