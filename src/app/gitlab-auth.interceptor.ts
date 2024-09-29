@@ -2,6 +2,7 @@ import { HttpContextToken, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { GitlabAuthService } from './services/gitlab-auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { IGitlabTokenResponse } from './interfaces/gitlab/igitlab-token-response';
 
 export const GITLAB_REQUEST_HEADER = new HttpContextToken<boolean>(() => false);
 
@@ -27,10 +28,10 @@ export const gitlabAuthInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error) => {
       if (error.status === 401) {
         return authService.refreshAccessToken().pipe(
-          switchMap((newToken: string) => {
+          switchMap((newToken: IGitlabTokenResponse) => {
             const newReq = req.clone({
               setHeaders: {
-                Authorization: `Bearer ${newToken}`,
+                Authorization: `Bearer ${newToken.access_token}`,
               },
             });
             return next(newReq);

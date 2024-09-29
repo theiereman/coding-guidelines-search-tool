@@ -162,7 +162,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
     localStorage.setItem(REFRESH_TOKEN, refreshToken);
   }
 
-  refreshAccessToken(): Observable<string> {
+  refreshAccessToken(): Observable<IGitlabTokenResponse> {
     const refreshToken = this.getRefreshToken();
 
     const body = new URLSearchParams();
@@ -171,11 +171,11 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
     body.set('refresh_token', refreshToken);
 
     return this.http
-      .post(this.tokenUrl, body.toString(), {
+      .post<IGitlabTokenResponse>(this.tokenUrl, body.toString(), {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
       .pipe(
-        tap((response: any) => {
+        tap((response: IGitlabTokenResponse) => {
           this.setAccessToken(response.access_token);
           this.setRefreshToken(response.refresh_token);
         }),
