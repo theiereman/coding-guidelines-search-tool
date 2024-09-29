@@ -16,6 +16,8 @@ import {
 import { AlertsService } from './alerts.service';
 import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
+import { AbstractAuthenticationServiceService } from './abstract-authentication-service.service';
+import { IGitlabTokenResponse } from '../interfaces/gitlab/igitlab-token-response';
 
 const ACCESS_TOKEN = 'gitlab_access_token';
 const REFRESH_TOKEN = 'gitlab_refresh_token';
@@ -25,7 +27,7 @@ const GITLAB_CODE_VERIFIER = 'gitlab_code_verifier';
 @Injectable({
   providedIn: 'root',
 })
-export class GitlabAuthService {
+export class GitlabAuthService implements AbstractAuthenticationServiceService {
   private clientId = environment.gitlab_app_id;
   private redirectUri = environment.gitlab_auth_redirect_uri;
   private authUrl = `${environment.gitlab_app_base_uri}/oauth/authorize`;
