@@ -220,6 +220,7 @@ export class NewIssueComponent {
     );
   }
 
+  //TODO: gérer le coller contenant "[ ] - blabla" qui met à jour automatiquement les autres variables
   private manageScopeValueUpdate() {
     this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
       //uniquemnt des chiffres pour le numéro de l'analyse
@@ -401,7 +402,6 @@ export class NewIssueComponent {
     this.selectedMilestones = [];
   }
 
-  //TODO: remplacer par le service formControlService
   formControlInvalid(controlName: string): boolean {
     return (
       (this.issueCreationForm.get(controlName)?.invalid &&
