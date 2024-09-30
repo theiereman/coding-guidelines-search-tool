@@ -7,9 +7,12 @@ import { HttpParams } from '@angular/common/http';
 import {
   BehaviorSubject,
   catchError,
+  filter,
   map,
   Observable,
   of,
+  switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -32,6 +35,10 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   private redirectUri = environment.gitlab_auth_redirect_uri;
   private authUrl = `${environment.gitlab_app_base_uri}/oauth/authorize`;
   private tokenUrl = `${environment.gitlab_app_base_uri}/oauth/token`;
+
+  private isRefreshing = false;
+  private refreshTokenSubject: BehaviorSubject<string | null> =
+    new BehaviorSubject<string | null>(null);
 
   public isAuthenticated$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(this.isAuthenticated());
@@ -163,27 +170,55 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   }
 
   refreshAccessToken(): Observable<IGitlabTokenResponse> {
-    const refreshToken = this.getRefreshToken();
-
-    const body = new URLSearchParams();
-    body.set('grant_type', 'refresh_token');
-    body.set('client_id', this.clientId);
-    body.set('refresh_token', refreshToken);
-
-    return this.http
-      .post<IGitlabTokenResponse>(this.tokenUrl, body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      })
-      .pipe(
-        tap((response: IGitlabTokenResponse) => {
-          this.setAccessToken(response.access_token);
-          this.setRefreshToken(response.refresh_token);
-        }),
-        catchError((error) => {
-          this.logout();
-          return throwError(() => new Error(error));
-        })
+    //permet de un rafrashchissement unique du token en cas de plusieurs 401 en parallèle
+    if (this.isRefreshing) {
+      return this.refreshTokenSubject.pipe(
+        filter((token) => token != null),
+        take(1),
+        switchMap((token) =>
+          of({ access_token: token } as IGitlabTokenResponse)
+        )
       );
+    } else {
+      //la première 401 va trigger le refresh qui va faire attendre les autres requêtes
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
+
+      const refreshToken = this.getRefreshToken();
+      const codeVerifier = localStorage.getItem(GITLAB_CODE_VERIFIER);
+
+      const body = new URLSearchParams();
+      body.set('grant_type', 'refresh_token');
+      body.set('client_id', this.clientId);
+      body.set('refresh_token', refreshToken);
+      body.set('code_verifier', codeVerifier ?? '');
+      body.set('redirect_uri', this.redirectUri);
+
+      return this.http
+        .post<IGitlabTokenResponse>(this.tokenUrl, body.toString(), {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        })
+        .pipe(
+          tap((response: IGitlabTokenResponse) => {
+            // Met à jour le nouveau token dans le localStorage
+            this.setAccessToken(response.access_token);
+            this.setRefreshToken(response.refresh_token);
+
+            // Diffuse le nouveau token à toutes les requêtes en attente
+            this.refreshTokenSubject.next(response.access_token);
+
+            // Terminer le rafraîchissement
+            this.isRefreshing = false;
+          }),
+          catchError((error) => {
+            // Si le rafraîchissement échoue, on réinitialise tout et renvoie l'erreur
+            this.isRefreshing = false;
+            this.refreshTokenSubject.next(null); // On réinitialise le subject
+            console.log(error);
+            return throwError(() => new Error(error));
+          })
+        );
+    }
   }
 
   getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
