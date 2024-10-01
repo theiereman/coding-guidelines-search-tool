@@ -38,7 +38,6 @@ export class ProjectListComponent implements ControlValueAccessor {
   recentIssues: IGitlabIssue[] = [];
   loadingIssuesList: boolean = false;
 
-  @Output() selectedProjectEvent = new EventEmitter<IGitlabIssue>();
   selectedProject?: IGitlabIssue = undefined;
 
   private onChange: (value: IGitlabIssue | undefined) => void = () => {};
@@ -52,7 +51,6 @@ export class ProjectListComponent implements ControlValueAccessor {
     } else {
       this.selectedProject = project;
     }
-    this.selectedProjectEvent?.emit(this.selectedProject);
     this.onChange(this.selectedProject);
     this.onTouched();
   }

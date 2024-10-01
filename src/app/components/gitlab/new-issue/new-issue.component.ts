@@ -106,12 +106,29 @@ export class NewIssueComponent {
     this.setCurrentUserAsAssignee();
 
     //TODO: ajouter les mêmes fonctions pour les projets et les milestones pour ne plus avoir à gérer d'event emitter
+    this.manageMilestoneValueUpdate();
+    this.manageProjectValueUpdate();
     this.manageTitleValueUpdate();
     this.manageScopeValueUpdate();
     this.manageDescriptionValueUpdate();
     this.manageBugValueUpdate();
     this.manageQuoiDeNeufValueUpdate();
     this.manageDevelopmentTypeValueUpdate();
+  }
+
+  manageProjectValueUpdate() {
+    this.issueCreationForm.controls.selectedProject.valueChanges.subscribe(
+      (value) => {
+        this.selectedProject = value ?? undefined;
+      }
+    );
+  }
+  manageMilestoneValueUpdate() {
+    this.issueCreationForm.controls.selectedMilestones.valueChanges.subscribe(
+      (value) => {
+        this.selectedMilestones = value ?? [];
+      }
+    );
   }
 
   private manageDevelopmentTypeValueUpdate() {
@@ -299,16 +316,6 @@ export class NewIssueComponent {
       this.futureIssue.assignee = user;
       this.futureIssue.assignee_id = user?.id ?? 0;
     });
-  }
-
-  setSelectedProject(project: IGitlabIssue) {
-    this.selectedProject = project;
-    this.issueCreationForm.controls.selectedProject.setValue(project);
-  }
-
-  setSelectedMilestones(milestones: IGitlabMilestone[]) {
-    this.selectedMilestones = milestones;
-    this.issueCreationForm.controls.selectedMilestones.setValue(milestones);
   }
 
   //TODO: faire un affichage pour résumé de la réintégration + lien vers la réintégration
