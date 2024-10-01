@@ -245,6 +245,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
         tap({
           error: (err) => {
             this.alertService.addError(err.message);
+            this.logout();
           },
         }),
         catchError(() => {
