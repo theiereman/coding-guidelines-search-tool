@@ -24,29 +24,11 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <div class="flex flex-col">
-      <label class="flex mb-2" for="developmentType"
-        >Type de développement
-        <p class="text-red-500">*</p></label
-      >
-      <select
-        class="p-1 border border-gray-400 rounded-md bg-transparent"
-        id="developmentType"
-        formControlName="developmentType"
-        [ngClass]="{
-          'border-red-500 border-2': formControlInvalid('developmentType')
-        }"
-      >
-        <option *ngFor="let label of developmentTypeLabels" [value]="label.id">
-          {{ label.name }}
-        </option>
-      </select>
-      <span
-        class="text-sm text-red-500"
-        *ngIf="formControlInvalid('developmentType')"
-        >Veuillez selectionner une valeur</span
-      >
-    </div>
+    <app-custom-input
+      [label]="'Type de développement'"
+      [selectOptions]="developmentTypeOptions"
+      [control]="issueCreationForm.controls['developmentType']"
+    ></app-custom-input>
 
     <app-custom-input
       [label]="
@@ -54,20 +36,17 @@
           ? 'Numéro de l\'analyse'
           : 'Périmètre'
       "
-      formControlName="scope"
       [control]="issueCreationForm.controls['scope']"
     ></app-custom-input>
 
     <app-custom-input
       [label]="'Titre'"
-      formControlName="title"
       [control]="issueCreationForm.controls['title']"
     ></app-custom-input>
 
     <app-custom-input
       [label]="'Description'"
-      [isTextArea]="true"
-      formControlName="description"
+      [isMultiline]="true"
       [control]="issueCreationForm.controls['description']"
     ></app-custom-input>
 
@@ -91,58 +70,23 @@
       >
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label class="flex" for="bug"
-        >Est une correction de bug ?
-        <p class="text-red-500">*</p></label
-      >
-      <select
-        class="p-1 border border-gray-400 rounded-md bg-transparent"
-        id="bug"
-        formControlName="isBugCorrection"
-        [ngClass]="{
-          'border-red-500 border-2': formControlInvalid('isBugCorrection')
-        }"
-      >
-        <option value="false">Non</option>
-        <option value="true">Oui</option>
-      </select>
-      <span
-        class="text-sm text-red-500"
-        *ngIf="formControlInvalid('isBugCorrection')"
-        >Veuillez sélectionner une valeur</span
-      >
-    </div>
+    <app-custom-input
+      [label]="'Est une correction de bug ?'"
+      [yesNoSelector]="true"
+      [control]="issueCreationForm.controls['isBugCorrection']"
+    ></app-custom-input>
 
-    <div class="flex flex-col gap-2">
-      <label class="flex" for="quoiDeNeuf"
-        >Doit être mentionné dans le 'quoi de neuf' ?
-        <p class="text-red-500">*</p></label
-      >
-      <select
-        class="p-1 border border-gray-400 rounded-md bg-transparent"
-        id="quoiDeNeuf"
-        formControlName="isQuoiDeNeuf"
-        [ngClass]="{
-          'border-red-500 border-2': formControlInvalid('isQuoiDeNeuf')
-        }"
-      >
-        <option value="false">Non</option>
-        <option value="true">Oui</option>
-      </select>
-      <span
-        class="text-sm text-red-500"
-        *ngIf="formControlInvalid('isQuoiDeNeuf')"
-        >Veuillez sélectionner une valeur</span
-      >
-    </div>
+    <app-custom-input
+      [label]="'Doit être mentionné dans le \'quoi de neuf\' ?'"
+      [yesNoSelector]="true"
+      [control]="issueCreationForm.controls['isQuoiDeNeuf']"
+    ></app-custom-input>
 
     <div class="flex flex-col">
       <label class="flex mb-2" for="milestone"
         >Milestone
         <p class="text-red-500">*</p></label
       >
-      <!-- diviser en 2 composants : milestone list (classique) et old milestone action choice -->
       <app-milestone-list
         [milestones]="milestones"
         formControlName="selectedMilestones"

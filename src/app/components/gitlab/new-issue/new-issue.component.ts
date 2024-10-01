@@ -15,8 +15,6 @@ import {
   of,
   switchMap,
   tap,
-  throwError,
-  timer,
 } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -38,8 +36,8 @@ import {
 import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CustomInputComponent } from '../../custom-input/custom-input.component';
+import { CustomInputComponent } from '../custom-input/custom-input.component';
+import { SelectOption } from 'src/app/interfaces/select-option';
 
 @Component({
   selector: 'app-new-issue',
@@ -61,7 +59,7 @@ import { CustomInputComponent } from '../../custom-input/custom-input.component'
 export class NewIssueComponent {
   milestones: IGitlabMilestone[] = [];
   labels: IGitlabLabel[] = [];
-  developmentTypeLabels: IGitlabLabel[] = [];
+  developmentTypeOptions: SelectOption[] = [];
   lastDevelopmentTypeLabelUsed: IGitlabLabel | undefined = undefined;
 
   pendingCreationResult: boolean = false;
@@ -105,7 +103,6 @@ export class NewIssueComponent {
 
     this.setCurrentUserAsAssignee();
 
-    //TODO: ajouter les mêmes fonctions pour les projets et les milestones pour ne plus avoir à gérer d'event emitter
     this.manageMilestoneValueUpdate();
     this.manageProjectValueUpdate();
     this.manageTitleValueUpdate();
@@ -266,14 +263,21 @@ export class NewIssueComponent {
   }
 
   private updateFutureIssueTitle() {
-    if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
-      this.futureIssue.title = `[Modification d'analyse] (${
-        this.issueCreationForm.controls.scope.value ?? ''
-      }) - ${this.issueCreationForm.controls.title.value ?? ''}`;
+    if (
+      this.issueCreationForm.controls.scope.value === '' &&
+      this.issueCreationForm.controls.title.value === ''
+    ) {
+      this.futureIssue.title = '';
     } else {
-      this.futureIssue.title = `[${
-        this.issueCreationForm.controls.scope.value ?? ''
-      }] - ${this.issueCreationForm.controls.title.value ?? ''}`;
+      if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
+        this.futureIssue.title = `[Modification d'analyse] (${
+          this.issueCreationForm.controls.scope.value ?? ''
+        }) - ${this.issueCreationForm.controls.title.value ?? ''}`;
+      } else {
+        this.futureIssue.title = `[${
+          this.issueCreationForm.controls.scope.value ?? ''
+        }] - ${this.issueCreationForm.controls.title.value ?? ''}`;
+      }
     }
   }
 
@@ -282,7 +286,7 @@ export class NewIssueComponent {
       .getLabelsFromProject(environment.gitlab_id_projet_reintegration)
       .pipe(
         tap((labels) => {
-          this.developmentTypeLabels = labels
+          this.developmentTypeOptions = labels
             .filter(
               (label: IGitlabLabel) =>
                 label.name !== BUG_LABEL_NAME &&
@@ -290,10 +294,8 @@ export class NewIssueComponent {
             )
             .map((label) => {
               return {
-                id: label.id,
+                value: label.id,
                 name: capitalizeFirstLetter(label.name),
-                color: label.color,
-                text_color: label.text_color,
               };
             });
         })
