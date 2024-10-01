@@ -1,15 +1,32 @@
 <div class="flex flex-col">
-  <label class="flex mb-2" for="{{ inputRandomId }}"
+  <label class="flex mb-2"
     >{{ label }}
     <p *ngIf="formControlRequired()" class="text-red-500">*</p></label
   >
 
+  @if (isSelectInput || yesNoSelector) {
+  <select
+    class="p-1 border border-gray-400 rounded-md bg-transparent"
+    [formControl]="control"
+    [ngClass]="{
+      'border-red-500 border-2': formControlInvalid()
+    }"
+  >
+    <option
+      *ngFor="let option of yesNoSelector ? yesNoOptions : selectOptions"
+      [value]="option.value"
+    >
+      {{ option.name }}
+    </option>
+  </select>
+  <span class="text-sm text-red-500" *ngIf="formControlInvalid()"
+    >Veuillez selectionner une valeur</span
+  >
+  } @else {
   <textarea
-    *ngIf="isTextArea"
+    *ngIf="isMultiline"
     class="p-1 border border-gray-400 rounded-md"
     type="text"
-    id="{{ inputRandomId }}"
-    (input)="onInput($event)"
     [formControl]="control"
     [ngClass]="{
       'border-red-500 border-2': formControlInvalid()
@@ -17,11 +34,9 @@
   ></textarea>
 
   <input
-    *ngIf="!isTextArea"
+    *ngIf="!isMultiline"
     class="p-1 border border-gray-400 rounded-md"
     type="text"
-    id="{{ inputRandomId }}"
-    (input)="onInput($event)"
     [formControl]="control"
     [ngClass]="{
       'border-red-500 border-2': formControlInvalid()
@@ -30,4 +45,5 @@
   <span class="text-sm text-red-500" *ngIf="formControlInvalid()"
     >Veuillez renseigner une valeur</span
   >
+  }
 </div>
