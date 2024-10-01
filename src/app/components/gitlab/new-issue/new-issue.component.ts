@@ -39,6 +39,7 @@ import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CustomInputComponent } from '../../custom-input/custom-input.component';
 
 @Component({
   selector: 'app-new-issue',
@@ -53,6 +54,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     CommentPreviewComponent,
     NewIssueActionsSummaryComponent,
     ConnectionRequiredComponent,
+    CustomInputComponent,
   ],
   templateUrl: './new-issue.component.html',
 })
@@ -103,6 +105,7 @@ export class NewIssueComponent {
 
     this.setCurrentUserAsAssignee();
 
+    //TODO: ajouter les mêmes fonctions pour les projets et les milestones pour ne plus avoir à gérer d'event emitter
     this.manageTitleValueUpdate();
     this.manageScopeValueUpdate();
     this.manageDescriptionValueUpdate();
@@ -228,7 +231,7 @@ export class NewIssueComponent {
         const sanitizedValue =
           this.issueCreationForm.controls.scope.value?.replace(/[^0-9]/g, '') ??
           '';
-        // Vérifiez si la valeur est différente pour éviter de mettre à jour inutilement
+        // Vérifiez si la valeur est différente pour éviter boucle infinie
         if (sanitizedValue !== value) {
           this.issueCreationForm.controls.scope.setValue(sanitizedValue, {
             emitEvent: false,

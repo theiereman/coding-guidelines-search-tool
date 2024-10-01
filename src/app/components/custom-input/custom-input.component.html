@@ -1,0 +1,33 @@
+<div class="flex flex-col">
+  <label class="flex mb-2" for="{{ inputRandomId }}"
+    >{{ label }}
+    <p *ngIf="formControlRequired()" class="text-red-500">*</p></label
+  >
+
+  <textarea
+    *ngIf="isTextArea"
+    class="p-1 border border-gray-400 rounded-md"
+    type="text"
+    id="{{ inputRandomId }}"
+    (input)="onInput($event)"
+    [formControl]="control"
+    [ngClass]="{
+      'border-red-500 border-2': formControlInvalid()
+    }"
+  ></textarea>
+
+  <input
+    *ngIf="!isTextArea"
+    class="p-1 border border-gray-400 rounded-md"
+    type="text"
+    id="{{ inputRandomId }}"
+    (input)="onInput($event)"
+    [formControl]="control"
+    [ngClass]="{
+      'border-red-500 border-2': formControlInvalid()
+    }"
+  />
+  <span class="text-sm text-red-500" *ngIf="formControlInvalid()"
+    >Veuillez renseigner une valeur</span
+  >
+</div>
