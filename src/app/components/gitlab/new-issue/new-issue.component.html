@@ -48,56 +48,28 @@
       >
     </div>
 
-    <div class="flex flex-col">
-      <label class="flex" for="scope"
-        >{{
-          isCurrentDevelopmentTypeModificationAnalyse()
-            ? "Numéro de l'analyse"
-            : "Périmètre"
-        }}
-        <p class="text-red-500 mb-2">*</p>
-      </label>
-      <input
-        class="p-1 border border-gray-400 rounded-md"
-        type="text"
-        id="scope"
-        formControlName="scope"
-        [ngClass]="{
-          'border-red-500 border-2': formControlInvalid('scope')
-        }"
-      />
-      <span class="text-sm text-red-500" *ngIf="formControlInvalid('scope')"
-        >Veuillez renseigner une valeur</span
-      >
-    </div>
+    <app-custom-input
+      [label]="
+        isCurrentDevelopmentTypeModificationAnalyse()
+          ? 'Numéro de l\'analyse'
+          : 'Périmètre'
+      "
+      formControlName="scope"
+      [control]="issueCreationForm.controls['scope']"
+    ></app-custom-input>
 
-    <div class="flex flex-col">
-      <label class="flex mb-2" for="title"
-        >Titre
-        <p class="text-red-500">*</p></label
-      >
-      <input
-        class="p-1 border border-gray-400 rounded-md"
-        type="text"
-        id="title"
-        formControlName="title"
-        [ngClass]="{
-          'border-red-500 border-2': formControlInvalid('title')
-        }"
-      />
-      <span class="text-sm text-red-500" *ngIf="formControlInvalid('title')"
-        >Veuillez renseigner une valeur</span
-      >
-    </div>
+    <app-custom-input
+      [label]="'Titre'"
+      formControlName="title"
+      [control]="issueCreationForm.controls['title']"
+    ></app-custom-input>
 
-    <div class="flex flex-col">
-      <label class="mb-2" for="description">Description</label>
-      <textarea
-        class="p-1 border border-gray-400 rounded-md"
-        id="description"
-        formControlName="description"
-      ></textarea>
-    </div>
+    <app-custom-input
+      [label]="'Description'"
+      [isTextArea]="true"
+      formControlName="description"
+      [control]="issueCreationForm.controls['description']"
+    ></app-custom-input>
 
     <div class="flex flex-col">
       <label class="flex mb-2" for="project-list"
