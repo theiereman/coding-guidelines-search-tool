@@ -42,8 +42,6 @@ export class MilestoneListComponent implements ControlValueAccessor {
   @Input() milestones: IGitlabMilestone[] = [];
   @Input() interactiveMode: boolean = true;
 
-  @Output() selectedMilestonesEvent = new EventEmitter<IGitlabMilestone[]>();
-
   lastClosedMilestones: IGitlabMilestone[] = [];
   private projetReintegration?: IGitlabProject = undefined;
 
@@ -83,7 +81,6 @@ export class MilestoneListComponent implements ControlValueAccessor {
     } else {
       this.selectedMilestones.splice(milestoneIndex, 1);
     }
-    this.selectedMilestonesEvent.emit([...this.selectedMilestones]);
     this.onChange(this.selectedMilestones);
     this.onTouched();
   }

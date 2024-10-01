@@ -78,7 +78,6 @@
       >
       <app-project-list
         id="project-list"
-        (selectedProjectEvent)="setSelectedProject($event)"
         formControlName="selectedProject"
         [ngClass]="{
           'border-red-500 border-2 rounded-lg':
@@ -145,7 +144,6 @@
       >
       <!-- diviser en 2 composants : milestone list (classique) et old milestone action choice -->
       <app-milestone-list
-        (selectedMilestonesEvent)="setSelectedMilestones($event)"
         [milestones]="milestones"
         formControlName="selectedMilestones"
         [ngClass]="{
