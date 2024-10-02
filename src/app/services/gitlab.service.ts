@@ -55,7 +55,7 @@ export class GitlabService {
         catchError((err) => {
           console.error(err);
           this.alertsService.addError(
-            'Impossible de récupérer les informations du projet'
+            `Impossible de récupérer les informations du projet ${projectId}`
           );
           return of();
         })
@@ -84,6 +84,34 @@ export class GitlabService {
             'Impossible de récupérer les labels du projet'
           );
           return of();
+        })
+      );
+  }
+
+  public getIssueFromProject(projectId: number, issueId: number) {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab')
+      );
+    }
+
+    return this.httpClient
+      .get<IGitlabIssue>(
+        `${environment.gitlab_api_base_uri}/projects/${projectId}/issues/${issueId}`,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          return throwError(
+            () =>
+              new Error(
+                `Impossible de récupérer l'issue ${issueId} du projet ${projectId}`
+              )
+          );
         })
       );
   }
