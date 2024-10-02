@@ -137,7 +137,10 @@ export class NewIssueComponent {
 
         if (!correspondingLabel) return;
 
-        this.issueCreationForm.controls.scope.setValue('');
+        //mise à jour du champ pour trigger les controles de modif dans le cas d'une modif d'analyse
+        this.issueCreationForm.controls.scope.setValue(
+          this.issueCreationForm.controls.scope.value
+        );
         this.updateFutureIssueTitle();
 
         //met à jour les labels de 'type de développement' sur l'aperçu de l'issue
