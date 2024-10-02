@@ -38,6 +38,7 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
 import { CustomInputComponent } from '../custom-input/custom-input.component';
 import { SelectOption } from 'src/app/interfaces/select-option';
+import { NewIssueInputSlotComponent } from "../new-issue-input-slot/new-issue-input-slot.component";
 
 @Component({
   selector: 'app-new-issue',
@@ -53,7 +54,8 @@ import { SelectOption } from 'src/app/interfaces/select-option';
     NewIssueActionsSummaryComponent,
     ConnectionRequiredComponent,
     CustomInputComponent,
-  ],
+    NewIssueInputSlotComponent
+],
   templateUrl: './new-issue.component.html',
 })
 export class NewIssueComponent {

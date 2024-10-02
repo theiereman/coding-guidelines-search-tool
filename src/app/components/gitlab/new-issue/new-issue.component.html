@@ -10,13 +10,13 @@
   class="mx-auto max-w-[700px]"
 >
   <div
-    class="mb-6 font-bold border-2 rounded-xl border-red-500 p-4 text-red-500"
+    class="mb-6 rounded-xl border-2 border-red-500 p-4 font-bold text-red-500"
   >
     <p>Attention : ce formulaire est une béta !</p>
     <p>
       Le formulaire officiel pour faire des issues de réintégration est
       <a
-        class="underline text-blue-500"
+        class="text-blue-500 underline"
         href="http://10.128.88.23:6969/reintegration/reintegration.html"
         >ici</a
       >
@@ -50,17 +50,13 @@
       [control]="issueCreationForm.controls['description']"
     ></app-custom-input>
 
-    <div class="flex flex-col">
-      <label class="flex mb-2" for="project-list"
-        >Projet
-        <p class="text-red-500">*</p></label
-      >
+    <app-new-issue-input-slot [label]="'Projet'" [required]="true">
       <app-project-list
         id="project-list"
         formControlName="selectedProject"
         [ngClass]="{
-          'border-red-500 border-2 rounded-lg':
-            formControlInvalid('selectedProject')
+          'rounded-lg border-2 border-red-500':
+            formControlInvalid('selectedProject'),
         }"
       ></app-project-list>
       <span
@@ -68,7 +64,7 @@
         *ngIf="formControlInvalid('selectedProject')"
         >Veuillez selectionner une valeur</span
       >
-    </div>
+    </app-new-issue-input-slot>
 
     <app-custom-input
       [label]="'Est une correction de bug ?'"
@@ -82,17 +78,13 @@
       [control]="issueCreationForm.controls['isQuoiDeNeuf']"
     ></app-custom-input>
 
-    <div class="flex flex-col">
-      <label class="flex mb-2" for="milestone"
-        >Milestone
-        <p class="text-red-500">*</p></label
-      >
+    <app-new-issue-input-slot [label]="'Milestone(s)'" [required]="true">
       <app-milestone-list
         [milestones]="milestones"
         formControlName="selectedMilestones"
         [ngClass]="{
-          'border-red-500 border-2 rounded-lg':
-            formControlInvalid('selectedMilestones')
+          'rounded-lg border-2 border-red-500':
+            formControlInvalid('selectedMilestones'),
         }"
       ></app-milestone-list>
       <span
@@ -100,9 +92,9 @@
         *ngIf="formControlInvalid('selectedMilestones')"
         >Veuillez sélectionner au moins une valeur</span
       >
-    </div>
+    </app-new-issue-input-slot>
 
-    <fieldset class="border-2 border-gray-400 rounded-md p-4">
+    <fieldset class="rounded-md border-2 border-gray-400 p-4">
       <legend class="p-2 text-lg font-semibold">
         Résumé de la réintégration
       </legend>
@@ -111,19 +103,19 @@
         [project]="selectedProject"
         [selectedMilestones]="selectedMilestones"
       ></app-new-issue-actions-summary>
-      <div class="flex gap-2 items-center justify-end mt-6">
+      <div class="mt-6 flex items-center justify-end gap-2">
         <span
-          class="text-sm text-gray-500 italic"
+          class="text-sm italic text-gray-500"
           *ngIf="!issueCreationForm.valid"
           >Veuillez remplir tous les champs obligatoires</span
         >
-        <span *ngIf="pendingCreationResult" class="text-sm text-gray-500 italic"
+        <span *ngIf="pendingCreationResult" class="text-sm italic text-gray-500"
           >Création en cours...</span
         >
         <button
           (click)="createNewIssue()"
           [disabled]="!issueCreationForm.valid"
-          class="p-2 float-end border-gray-400 rounded-md bg-purple-700 text-white disabled:bg-gray-200 disabled:text-gray-500"
+          class="float-end rounded-md border-gray-400 bg-purple-700 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
         >
           Créer une issue de réintégration
         </button>
