@@ -240,16 +240,27 @@ export class NewIssueComponent {
   //TODO: gérer le coller contenant "[ ] - blabla" qui met à jour automatiquement les autres variables
   private manageScopeValueUpdate() {
     this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
+      value = value ?? '';
       //uniquemnt des chiffres pour le numéro de l'analyse
       if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
-        const sanitizedValue =
-          this.issueCreationForm.controls.scope.value?.replace(/[^0-9]/g, '') ??
-          '';
+        const sanitizedValue = value.replace(/[^0-9]/g, '') ?? '';
         // Vérifiez si la valeur est différente pour éviter boucle infinie
         if (sanitizedValue !== value) {
           this.issueCreationForm.controls.scope.setValue(sanitizedValue, {
             emitEvent: false,
           });
+        }
+      } else {
+        //si la chaine commence par "[...] -"
+        if (/^\[.*].*-/g.test(value ?? '')) {
+          //scope = partie entre les [ ]
+          this.issueCreationForm.controls.scope.setValue(
+            value.substring(value.indexOf('[') + 1, value.indexOf(']'))
+          );
+          //titre = partie après le -
+          this.issueCreationForm.controls.title.setValue(
+            value.split('-')[1].trim()
+          );
         }
       }
       this.updateFutureIssueTitle();
