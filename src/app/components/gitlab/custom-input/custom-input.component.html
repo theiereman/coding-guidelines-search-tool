@@ -6,10 +6,10 @@
 
   @if (isSelectInput || yesNoSelector) {
   <select
-    class="p-1 border border-gray-400 rounded-md bg-transparent"
+    class="p-1 border border-gray-400 rounded-md bg-transparent transition duration-200 ease focus:outline-none focus:border-purple-700 hover:border-purple-600 focus:shadow"
     [formControl]="control"
     [ngClass]="{
-      'border-red-500 border-2': formControlInvalid()
+      'border-red-500 border-1': formControlInvalid()
     }"
   >
     <option
@@ -25,21 +25,21 @@
   } @else {
   <textarea
     *ngIf="isMultiline"
-    class="p-1 border border-gray-400 rounded-md"
+    class="p-1 border border-gray-400 rounded-md transition duration-200 ease focus:outline-none focus:border-purple-700 hover:border-purple-600 focus:shadow"
     type="text"
     [formControl]="control"
     [ngClass]="{
-      'border-red-500 border-2': formControlInvalid()
+      'border-red-500 border-1': formControlInvalid()
     }"
   ></textarea>
 
   <input
     *ngIf="!isMultiline"
-    class="p-1 border border-gray-400 rounded-md"
+    class="p-1 border border-gray-400 rounded-md transition duration-200 ease focus:outline-none focus:border-purple-700 hover:border-purple-600 focus:shadow"
     type="text"
     [formControl]="control"
     [ngClass]="{
-      'border-red-500 border-2': formControlInvalid()
+      'border-red-500 border-1': formControlInvalid()
     }"
   />
   <span class="text-sm text-red-500" *ngIf="formControlInvalid()"
