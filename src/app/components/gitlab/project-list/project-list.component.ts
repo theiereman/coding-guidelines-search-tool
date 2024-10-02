@@ -10,7 +10,7 @@ import { catchError, debounceTime, of, switchMap, tap } from 'rxjs';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
-import { ProjectIssueCardComponent } from '../project-issue-card/project-issue-card.component';
+import { ProjectIssueCardComponent } from './project-issue-card/project-issue-card.component';
 import { AlertsService } from 'src/app/services/alerts.service';
 
 @Component({
@@ -49,7 +49,7 @@ export class ProjectListComponent implements ControlValueAccessor {
 
   constructor(
     private gitlabService: GitlabService,
-    private alertsService: AlertsService
+    private alertsService: AlertsService,
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +60,7 @@ export class ProjectListComponent implements ControlValueAccessor {
         debounceTime(300),
         switchMap(() => {
           return this.startSearchingForIssues();
-        })
+        }),
       )
       .subscribe((issues) => {
         this.updateIssuesList(issues);
@@ -74,7 +74,7 @@ export class ProjectListComponent implements ControlValueAccessor {
         }),
         switchMap(() => {
           return this.startSearchingForIssues();
-        })
+        }),
       )
       .subscribe((issues) => {
         this.updateIssuesList(issues);
@@ -92,16 +92,16 @@ export class ProjectListComponent implements ControlValueAccessor {
     this.gitlabService
       .getIssueFromProject(
         environment.gitlab_id_projet_suivi_general,
-        environment.gitlab_id_projet_corrections_diverses
+        environment.gitlab_id_projet_corrections_diverses,
       )
       .pipe(
         catchError(() => {
           this.alertsService.addError(
-            "Impossible de récupérer le projet 'Développement divers'"
+            "Impossible de récupérer le projet 'Développement divers'",
           );
           this.noProjectControl.disable();
           return of(undefined);
-        })
+        }),
       )
       .subscribe((project) => {
         this.miscellaneousProject = project;
@@ -130,7 +130,7 @@ export class ProjectListComponent implements ControlValueAccessor {
       environment.gitlab_id_projet_suivi_general,
       this.searchValueControl.value,
       this.openOnlyControl.value,
-      6
+      6,
     );
   }
 
@@ -140,7 +140,7 @@ export class ProjectListComponent implements ControlValueAccessor {
       !(
         this.issues.some((issue) => issue.iid === this.selectedProject?.iid) ||
         this.recentIssues.some(
-          (issue) => issue.iid === this.selectedProject?.iid
+          (issue) => issue.iid === this.selectedProject?.iid,
         )
       )
     ) {
@@ -154,7 +154,7 @@ export class ProjectListComponent implements ControlValueAccessor {
       .getIssuesFromLocalStorage(3)
       .filter(
         (issue) =>
-          this.openOnlyControl.value === false || issue.state === 'opened'
+          this.openOnlyControl.value === false || issue.state === 'opened',
       );
   }
 

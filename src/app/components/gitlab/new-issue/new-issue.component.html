@@ -50,7 +50,7 @@
       [control]="issueCreationForm.controls['description']"
     ></app-custom-input>
 
-    <app-new-issue-input-slot [label]="'Projet'" [required]="true">
+    <app-input-slot [label]="'Projet'" [required]="true">
       <app-project-list
         id="project-list"
         formControlName="selectedProject"
@@ -64,7 +64,7 @@
         *ngIf="formControlInvalid('selectedProject')"
         >Veuillez selectionner une valeur</span
       >
-    </app-new-issue-input-slot>
+    </app-input-slot>
 
     <app-custom-input
       [label]="'Est une correction de bug ?'"
@@ -78,7 +78,7 @@
       [control]="issueCreationForm.controls['isQuoiDeNeuf']"
     ></app-custom-input>
 
-    <app-new-issue-input-slot [label]="'Milestone(s)'" [required]="true">
+    <app-input-slot [label]="'Milestone(s)'" [required]="true">
       <app-milestone-list
         [milestones]="milestones"
         formControlName="selectedMilestones"
@@ -92,17 +92,17 @@
         *ngIf="formControlInvalid('selectedMilestones')"
         >Veuillez sélectionner au moins une valeur</span
       >
-    </app-new-issue-input-slot>
+    </app-input-slot>
 
     <fieldset class="rounded-md border-2 border-gray-400 p-4">
       <legend class="p-2 text-lg font-semibold">
         Résumé de la réintégration
       </legend>
-      <app-new-issue-actions-summary
+      <app-actions-summary
         [issue]="futureIssue"
         [project]="selectedProject"
         [selectedMilestones]="selectedMilestones"
-      ></app-new-issue-actions-summary>
+      ></app-actions-summary>
       <div class="mt-6 flex items-center justify-end gap-2">
         <span
           class="text-sm italic text-gray-500"
