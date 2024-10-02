@@ -1,12 +1,28 @@
 <div class="flex flex-col gap-4 border rounded-lg border-gray-400 p-4">
   <div class="flex gap-2">
-    <div class="flex flex-col w-2/3 gap-1">
-      <input
-        [formControl]="searchValueControl"
-        type="text"
-        class="max-w-[400px] p-1 border border-gray-400 rounded-md"
-        placeholder="Rechercher des issues"
-      />
+    <div class="flex flex-col gap-1 w-full">
+      <div class="flex gap-2 w-full">
+        <input
+          [formControl]="searchValueControl"
+          type="text"
+          class="max-w-[400px] p-1 flex-1 border border-gray-400 rounded-md line-clamp-1"
+          placeholder="Rechercher des issues"
+        />
+        <div class="flex items-center gap-1 ms-2">
+          <input
+            type="checkbox"
+            class="p-1 border border-gray-400 rounded-md bg-transparent"
+            id="noProject"
+            [formControl]="noProjectControl"
+          />
+          <label
+            for="noProject"
+            class="line-clamp-1 text-ellipsis"
+            [ngClass]="{ 'text-gray-400': noProjectControl.disabled }"
+            >Développement lié à aucun projet</label
+          >
+        </div>
+      </div>
 
       <div class="flex items-center gap-1 ms-2">
         <input
