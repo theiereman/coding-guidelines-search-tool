@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SelectOption } from 'src/app/interfaces/select-option';
-import { NewIssueInputSlotComponent } from "../new-issue-input-slot/new-issue-input-slot.component";
+import { NewIssueInputSlotComponent } from '../new-issue-input-slot/new-issue-input-slot.component';
 
 @Component({
   selector: 'app-custom-input',
@@ -29,7 +29,7 @@ export class CustomInputComponent {
   constructor() {}
 
   get isSelectInput(): boolean {
-    return this.selectOptions.length > 0;
+    return this.selectOptions.length > 0 || this.yesNoSelector;
   }
 
   formControlRequired(): boolean {
