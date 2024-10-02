@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SelectOption } from 'src/app/interfaces/select-option';
-import { NewIssueInputSlotComponent } from '../new-issue-input-slot/new-issue-input-slot.component';
+import { NewIssueInputSlotComponent } from '../new-issue/input-slot/input-slot.component';
 
 @Component({
   selector: 'app-custom-input',

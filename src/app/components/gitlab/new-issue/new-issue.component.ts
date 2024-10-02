@@ -21,9 +21,9 @@ import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { ProjectListComponent } from '../project-list/project-list.component';
 import { MilestoneListComponent } from '../milestone-list/milestone-list.component';
-import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
+import { CommentPreviewComponent } from './comment-preview/comment-preview.component';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
-import { NewIssueActionsSummaryComponent } from '../new-issue-actions-summary/new-issue-actions-summary.component';
+import { NewIssueActionsSummaryComponent } from './actions-summary/actions-summary.component';
 import { AlertsService } from 'src/app/services/alerts.service';
 import { validateMilestonesSelection } from '../validators/milestones-selection-validator';
 import { validateProjectSelection } from '../validators/selected-project-validator';
@@ -38,7 +38,7 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
 import { CustomInputComponent } from '../custom-input/custom-input.component';
 import { SelectOption } from 'src/app/interfaces/select-option';
-import { NewIssueInputSlotComponent } from "../new-issue-input-slot/new-issue-input-slot.component";
+import { NewIssueInputSlotComponent } from './input-slot/input-slot.component';
 
 @Component({
   selector: 'app-new-issue',
@@ -54,8 +54,8 @@ import { NewIssueInputSlotComponent } from "../new-issue-input-slot/new-issue-in
     NewIssueActionsSummaryComponent,
     ConnectionRequiredComponent,
     CustomInputComponent,
-    NewIssueInputSlotComponent
-],
+    NewIssueInputSlotComponent,
+  ],
   templateUrl: './new-issue.component.html',
 })
 export class NewIssueComponent {
@@ -75,7 +75,7 @@ export class NewIssueComponent {
     description: new FormControl(''),
     selectedMilestones: new FormControl<IGitlabMilestone[]>(
       [],
-      [validateMilestonesSelection]
+      [validateMilestonesSelection],
     ),
     selectedProject: new FormControl<IGitlabIssue | null>(null, [
       validateProjectSelection,
@@ -92,7 +92,7 @@ export class NewIssueComponent {
   constructor(
     public gitlabAuthService: GitlabAuthService,
     private gitlabService: GitlabService,
-    private alertsService: AlertsService
+    private alertsService: AlertsService,
   ) {}
 
   ngOnInit(): void {
@@ -119,14 +119,14 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.selectedProject.valueChanges.subscribe(
       (value) => {
         this.selectedProject = value ?? undefined;
-      }
+      },
     );
   }
   manageMilestoneValueUpdate() {
     this.issueCreationForm.controls.selectedMilestones.valueChanges.subscribe(
       (value) => {
         this.selectedMilestones = value ?? [];
-      }
+      },
     );
   }
 
@@ -134,21 +134,21 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.developmentType.valueChanges.subscribe(
       (value) => {
         const correspondingLabel = this.labels.find(
-          (label) => label.id === Number(value)
+          (label) => label.id === Number(value),
         );
 
         if (!correspondingLabel) return;
 
         //mise à jour du champ pour trigger les controles de modif dans le cas d'une modif d'analyse
         this.issueCreationForm.controls.scope.setValue(
-          this.issueCreationForm.controls.scope.value
+          this.issueCreationForm.controls.scope.value,
         );
         this.updateFutureIssueTitle();
 
         //met à jour les labels de 'type de développement' sur l'aperçu de l'issue
         this.futureIssue.detailed_labels =
           this.futureIssue.detailed_labels.filter(
-            (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id
+            (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id,
           );
 
         this.lastDevelopmentTypeLabelUsed = correspondingLabel;
@@ -159,9 +159,9 @@ export class NewIssueComponent {
         ];
 
         this.futureIssue.labels = this.futureIssue.detailed_labels.map(
-          (label) => label.name
+          (label) => label.name,
         );
-      }
+      },
     );
   }
 
@@ -170,7 +170,7 @@ export class NewIssueComponent {
       this.labels.find(
         (label) =>
           label.id ===
-          Number(this.issueCreationForm.controls.developmentType.value)
+          Number(this.issueCreationForm.controls.developmentType.value),
       )?.name === MODIF_ANALYSE_LABEL_NAME
     );
   }
@@ -180,13 +180,13 @@ export class NewIssueComponent {
       (value) => {
         if (value === 'true') {
           const quoiDeNeufLabel = this.labels.find(
-            (label) => label.name === QUOI_DE_NEUF_LABEL_NAME
+            (label) => label.name === QUOI_DE_NEUF_LABEL_NAME,
           );
 
           if (
             quoiDeNeufLabel &&
             !this.futureIssue.detailed_labels.some(
-              (label) => label.name === QUOI_DE_NEUF_LABEL_NAME
+              (label) => label.name === QUOI_DE_NEUF_LABEL_NAME,
             )
           ) {
             this.futureIssue.detailed_labels.push(quoiDeNeufLabel);
@@ -194,13 +194,13 @@ export class NewIssueComponent {
         } else {
           this.futureIssue.detailed_labels =
             this.futureIssue.detailed_labels.filter(
-              (label) => label.name !== QUOI_DE_NEUF_LABEL_NAME
+              (label) => label.name !== QUOI_DE_NEUF_LABEL_NAME,
             );
         }
         this.futureIssue.labels = this.futureIssue.detailed_labels.map(
-          (label) => label.name
+          (label) => label.name,
         );
-      }
+      },
     );
   }
 
@@ -209,13 +209,13 @@ export class NewIssueComponent {
       (value) => {
         if (value === 'true') {
           const bugLabel = this.labels.find(
-            (label) => label.name === BUG_LABEL_NAME
+            (label) => label.name === BUG_LABEL_NAME,
           );
 
           if (
             bugLabel &&
             !this.futureIssue.detailed_labels.some(
-              (label) => label.name === BUG_LABEL_NAME
+              (label) => label.name === BUG_LABEL_NAME,
             )
           ) {
             this.futureIssue.detailed_labels.push(bugLabel);
@@ -223,14 +223,14 @@ export class NewIssueComponent {
         } else {
           this.futureIssue.detailed_labels =
             this.futureIssue.detailed_labels.filter(
-              (label) => label.name !== BUG_LABEL_NAME
+              (label) => label.name !== BUG_LABEL_NAME,
             );
         }
 
         this.futureIssue.labels = this.futureIssue.detailed_labels.map(
-          (label) => label.name
+          (label) => label.name,
         );
-      }
+      },
     );
   }
 
@@ -238,7 +238,7 @@ export class NewIssueComponent {
     this.issueCreationForm.controls.description.valueChanges.subscribe(
       (value) => {
         this.futureIssue.description = value ?? '';
-      }
+      },
     );
   }
 
@@ -259,11 +259,11 @@ export class NewIssueComponent {
         if (/^\[.*].*-/g.test(value ?? '')) {
           //scope = partie entre les [ ]
           this.issueCreationForm.controls.scope.setValue(
-            value.substring(value.indexOf('[') + 1, value.indexOf(']'))
+            value.substring(value.indexOf('[') + 1, value.indexOf(']')),
           );
           //titre = partie après le -
           this.issueCreationForm.controls.title.setValue(
-            value.split('-')[1].trim()
+            value.split('-')[1].trim(),
           );
         }
       }
@@ -305,7 +305,7 @@ export class NewIssueComponent {
             .filter(
               (label: IGitlabLabel) =>
                 label.name !== BUG_LABEL_NAME &&
-                label.name !== QUOI_DE_NEUF_LABEL_NAME
+                label.name !== QUOI_DE_NEUF_LABEL_NAME,
             )
             .map((label) => {
               return {
@@ -313,7 +313,7 @@ export class NewIssueComponent {
                 name: capitalizeFirstLetter(label.name),
               };
             });
-        })
+        }),
       )
       .subscribe((labels) => {
         this.labels = labels;
@@ -347,7 +347,7 @@ export class NewIssueComponent {
       // Vérifie si la milestone est fake (à créer) ou fermée (à ouvrir)
       if (this.gitlabService.milestoneIsFake(milestone)) {
         milestoneOperation$ = this.gitlabService.createMilestone(
-          milestone.title
+          milestone.title,
         );
       } else if (this.gitlabService.milestoneIsClosed(milestone)) {
         milestoneOperation$ = this.gitlabService.openMilestone(milestone);
@@ -367,14 +367,14 @@ export class NewIssueComponent {
               const commentOperation$ = this.gitlabService
                 .addCommentOfReintegrationInLinkedProjectIssue(
                   createdIssue,
-                  this.selectedProject!
+                  this.selectedProject!,
                 )
                 .pipe(
                   map(() => true),
                   catchError((err) => {
                     console.log(err);
                     return of(false);
-                  })
+                  }),
                 );
 
               const closeMilestoneOperation$ =
@@ -385,7 +385,7 @@ export class NewIssueComponent {
                       catchError((err) => {
                         console.log(err);
                         return of(false);
-                      })
+                      }),
                     )
                   : of(true);
 
@@ -395,16 +395,16 @@ export class NewIssueComponent {
               ]).pipe(
                 map(
                   ([commentOperationResult, closeMilestoneOperationResult]) =>
-                    commentOperationResult && closeMilestoneOperationResult
-                )
+                    commentOperationResult && closeMilestoneOperationResult,
+                ),
               );
-            })
+            }),
           );
         }),
         catchError((err) => {
           console.log(`Erreur lors de la création d'une issue : ${err}`);
           return of(false);
-        })
+        }),
       );
     });
 
@@ -412,11 +412,11 @@ export class NewIssueComponent {
       this.pendingCreationResult = false;
       if (results.every((success) => success)) {
         this.alertsService.addSuccess(
-          'Nouvelle(s) issue(s) créée(s) et mention(s) ajoutée(s)'
+          'Nouvelle(s) issue(s) créée(s) et mention(s) ajoutée(s)',
         );
       } else {
         this.alertsService.addError(
-          'Une erreur est survenue lors de la création de la(des) issue(s). Détails des erreurs dans la console.'
+          'Une erreur est survenue lors de la création de la(des) issue(s). Détails des erreurs dans la console.',
         );
       }
     });

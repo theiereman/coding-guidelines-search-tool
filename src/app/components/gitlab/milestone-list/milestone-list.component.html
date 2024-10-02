@@ -1,17 +1,17 @@
-<div class="border rounded-lg border-gray-400 p-4 flex flex-col">
-  <p class="text-center text-gray-500 flex-1" *ngIf="milestones.length === 0">
+<div class="flex flex-col rounded-lg border border-gray-400 p-4">
+  <p class="flex-1 text-center text-gray-500" *ngIf="milestones.length === 0">
     Aucune milestone {{ !interactiveMode ? "selectionnée" : "trouvée" }}
   </p>
   <span *ngIf="interactiveMode && milestones.length > 0" class="mb-2"
     >Dernières milestones</span
   >
-  <ul class="flex flex-col gap-2 list-none">
+  <ul class="flex list-none flex-col gap-2">
     <li
       class="flex items-center gap-2"
       *ngFor="let milestone of getSortedMilestones()"
     >
       <!-- TODO: faire un composant pour afficher les milestones entries -->
-      <div class="p-2 border-2 rounded-lg bg-gray-100 flex gap-2 w-full">
+      <div class="flex w-full gap-2 rounded-lg border-2 bg-gray-100 p-2">
         <label class="flex flex-1 items-center gap-2">
           <input
             *ngIf="interactiveMode"
@@ -20,7 +20,7 @@
             [checked]="isSelected(milestone)"
             (change)="toggleMilestone(milestone)"
           />
-          <span class="text-gray-700 leading-4">{{ milestone.title }}</span>
+          <span class="leading-4 text-gray-700">{{ milestone.title }}</span>
           <a
             *ngIf="getMilestoneURL(milestone)"
             href="{{ getMilestoneURL(milestone) }}"
@@ -40,7 +40,7 @@
   </ul>
   <div *ngIf="interactiveMode && lastClosedMilestones.length > 0" class="mt-2">
     <span>Anciennes versions</span>
-    <ul class="flex flex-col gap-2 list-none mt-2">
+    <ul class="mt-2 flex list-none flex-col gap-2">
       <li
         class="flex items-center gap-2"
         *ngFor="let milestone of lastClosedMilestones"
