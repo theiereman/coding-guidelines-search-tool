@@ -237,7 +237,6 @@ export class NewIssueComponent {
     );
   }
 
-  //TODO: gérer le coller contenant "[ ] - blabla" qui met à jour automatiquement les autres variables
   private manageScopeValueUpdate() {
     this.issueCreationForm.controls.scope.valueChanges.subscribe((value) => {
       value = value ?? '';
