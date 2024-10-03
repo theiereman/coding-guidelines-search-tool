@@ -151,7 +151,7 @@ export class ProjectListComponent implements ControlValueAccessor {
 
   getLocalStorageIssues() {
     return this.gitlabService
-      .getIssuesFromLocalStorage(3)
+      .getIssuesFromLocalStorage(6)
       .filter(
         (issue) =>
           this.openOnlyControl.value === false || issue.state === 'opened',
