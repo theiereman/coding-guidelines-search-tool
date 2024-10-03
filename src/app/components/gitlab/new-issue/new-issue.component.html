@@ -4,6 +4,13 @@
   externalServiceName="Gitlab"
 ></app-connection-required>
 
+<app-creation-summary-modal
+  [showModal]="isSummaryModalActive"
+  (showModalEvent)="showModalEventHandler($event)"
+  [closeButtonActivated]="actionsService.allActionsAreFinished()"
+  [selectedProject]="selectedProject"
+></app-creation-summary-modal>
+
 <form
   *ngIf="gitlabAuthService.isAuthenticated()"
   [formGroup]="issueCreationForm"
@@ -108,9 +115,6 @@
           class="text-sm italic text-gray-500"
           *ngIf="!issueCreationForm.valid"
           >Veuillez remplir tous les champs obligatoires</span
-        >
-        <span *ngIf="pendingCreationResult" class="text-sm italic text-gray-500"
-          >Création en cours...</span
         >
         <button
           (click)="createNewIssue()"
