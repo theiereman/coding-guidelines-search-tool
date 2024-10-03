@@ -15,6 +15,8 @@ import {
   of,
   switchMap,
   tap,
+  throwError,
+  timer,
 } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
@@ -39,6 +41,9 @@ import { ConnectionRequiredComponent } from '../../connection-required/connectio
 import { CustomInputComponent } from '../custom-input/custom-input.component';
 import { SelectOption } from 'src/app/interfaces/select-option';
 import { NewIssueInputSlotComponent } from './input-slot/input-slot.component';
+import { CreationSummaryModalComponent } from './creation-summary-modal/creation-summary-modal.component';
+import { IssueCreationActionsService } from 'src/app/services/issue-creation-actions.service';
+import { IIssueCreationAction } from 'src/app/interfaces/iissue-creation-action';
 
 @Component({
   selector: 'app-new-issue',
@@ -55,6 +60,7 @@ import { NewIssueInputSlotComponent } from './input-slot/input-slot.component';
     ConnectionRequiredComponent,
     CustomInputComponent,
     NewIssueInputSlotComponent,
+    CreationSummaryModalComponent,
   ],
   templateUrl: './new-issue.component.html',
 })
@@ -64,8 +70,9 @@ export class NewIssueComponent {
   developmentTypeOptions: SelectOption[] = [];
   lastDevelopmentTypeLabelUsed: IGitlabLabel | undefined = undefined;
 
-  pendingCreationResult: boolean = false;
+  isSummaryModalActive: boolean = false;
 
+  //tous les champs du formulaire
   issueCreationForm = new FormGroup({
     developmentType: new FormControl('', Validators.required),
     isBugCorrection: new FormControl('', Validators.required),
@@ -82,8 +89,13 @@ export class NewIssueComponent {
     ]),
   });
 
+  //projet dans le suivi général selectionné
   selectedProject?: IGitlabIssue = undefined;
+
+  //liste des milestones selectionnés
   selectedMilestones: IGitlabMilestone[] = [];
+
+  //données de l'issue à créer
   futureIssue: IGitlabIssue = {
     labels: [] as string[],
     detailed_labels: [] as IGitlabLabel[],
@@ -93,6 +105,7 @@ export class NewIssueComponent {
     public gitlabAuthService: GitlabAuthService,
     private gitlabService: GitlabService,
     private alertsService: AlertsService,
+    public actionsService: IssueCreationActionsService,
   ) {}
 
   ngOnInit(): void {
@@ -115,14 +128,218 @@ export class NewIssueComponent {
     this.manageDevelopmentTypeValueUpdate();
   }
 
-  manageProjectValueUpdate() {
+  createNewIssue() {
+    //? Il faudrait probablement déplacer cette maxi fonction dans le service gitlab
+
+    this.isSummaryModalActive = true; //affichage de la progression de la création en popup
+
+    const issueObservables = this.selectedMilestones.map((milestone) => {
+      let milestoneOperation$: Observable<IGitlabMilestone> = of(milestone);
+
+      // Vérifie si la milestone est fake (à créer) ou fermée (à ouvrir)
+      let milestoneOperationAction: IIssueCreationAction;
+      if (this.gitlabService.milestoneIsFake(milestone)) {
+        milestoneOperationAction = this.actionsService.addAction(
+          `Milestone '${milestone.title}' inexistante -> Création de la milestone`,
+        );
+        milestoneOperation$ = this.gitlabService
+          .createMilestone(milestone.title)
+          .pipe(
+            tap(() =>
+              this.actionsService.setActionsResult(
+                milestoneOperationAction,
+                true,
+              ),
+            ),
+            catchError((err) => {
+              this.actionsService.setActionsResult(
+                milestoneOperationAction,
+                false,
+              );
+              return throwError(() => new Error(err));
+            }),
+          );
+      } else if (this.gitlabService.milestoneIsClosed(milestone)) {
+        milestoneOperationAction = this.actionsService.addAction(
+          `Milestone  '${milestone.title}' fermée ->Ouverture de la milestone`,
+        );
+        milestoneOperation$ = this.gitlabService.openMilestone(milestone).pipe(
+          tap(() =>
+            this.actionsService.setActionsResult(
+              milestoneOperationAction,
+              true,
+            ),
+          ),
+          catchError((err) => {
+            this.actionsService.setActionsResult(
+              milestoneOperationAction,
+              false,
+            );
+            return throwError(() => new Error(err));
+          }),
+        );
+      }
+
+      // Crée l'issue une fois l'opération sur la milestone effectuée (si nécessaire)
+      return milestoneOperation$.pipe(
+        switchMap((milestoneResult) => {
+          const newIssue: IGitlabIssue = {
+            ...this.futureIssue,
+            milestone_id: milestoneResult.id ?? -1,
+          };
+
+          const newIssueOperationAction = this.actionsService.addAction(
+            `Milestone '${milestoneResult.title}' -> Création de l'issue de réintégration sur la milestone`,
+          );
+          return this.gitlabService.createNewIssue(newIssue).pipe(
+            mergeMap((createdIssue) => {
+              this.futureIssue.web_url = createdIssue.web_url;
+              const commentOperationAction = this.actionsService.addAction(
+                `Milestone '${milestoneResult.title}' -> Ajout d'un commentaire sur le projet '${this.selectedProject?.title} (#${this.selectedProject?.iid})'`,
+              );
+              const commentOperation$ = this.gitlabService
+                .addCommentOfReintegrationInLinkedProjectIssue(
+                  createdIssue,
+                  this.selectedProject!,
+                )
+                .pipe(
+                  map(() => {
+                    this.actionsService.setActionsResult(
+                      commentOperationAction,
+                      true,
+                    );
+                    return true;
+                  }),
+                  catchError((err) => {
+                    this.actionsService.setActionsResult(
+                      commentOperationAction,
+                      false,
+                    );
+                    console.log(err);
+                    return of(false);
+                  }),
+                );
+
+              let closeMilestoneOperation$ = of(true);
+              if (
+                this.gitlabService.milestoneIsFake(milestone) ||
+                this.gitlabService.milestoneIsClosed(milestone)
+              ) {
+                let closeMilestoneOperationAction =
+                  this.actionsService.addAction(
+                    `Milestone '${milestoneResult.title}' -> Fermeture de la milestone '${milestone.title}'`,
+                  );
+                closeMilestoneOperation$ = this.gitlabService
+                  .closeMilestone(milestoneResult)
+                  .pipe(
+                    map(() => {
+                      this.actionsService.setActionsResult(
+                        closeMilestoneOperationAction,
+                        true,
+                      );
+                      return true;
+                    }),
+                    catchError((err) => {
+                      this.actionsService.setActionsResult(
+                        closeMilestoneOperationAction,
+                        false,
+                      );
+                      console.log(err);
+                      return of(false);
+                    }),
+                  );
+              }
+
+              return forkJoin([
+                commentOperation$,
+                closeMilestoneOperation$,
+              ]).pipe(
+                map(
+                  ([commentOperationResult, closeMilestoneOperationResult]) =>
+                    commentOperationResult && closeMilestoneOperationResult,
+                ),
+              );
+            }),
+            tap(() => {
+              this.actionsService.setActionsResult(
+                newIssueOperationAction,
+                true,
+              );
+            }),
+            catchError((err) => {
+              this.actionsService.setActionsResult(
+                newIssueOperationAction,
+                false,
+              );
+              console.log(`Erreur lors de la création d'une issue : ${err}`);
+              return of(false);
+            }),
+          );
+        }),
+        catchError((err) => {
+          console.log(`Erreur lors de la création d'une issue : ${err}`);
+          return of(false);
+        }),
+      );
+    });
+
+    forkJoin(issueObservables).subscribe((results) => {
+      if (results.every((success) => success)) {
+        this.alertsService.addSuccess(
+          'Nouvelle(s) issue(s) créée(s) et mention(s) ajoutée(s)',
+        );
+      } else {
+        this.alertsService.addError(
+          'Une erreur est survenue lors de la création de la(des) issue(s). Détails des erreurs dans la console.',
+        );
+      }
+    });
+  }
+
+  reloadPage() {
+    window.location.reload();
+  }
+
+  formControlInvalid(controlName: string): boolean {
+    return (
+      (this.issueCreationForm.get(controlName)?.invalid &&
+        (this.issueCreationForm.get(controlName)?.dirty ||
+          this.issueCreationForm.get(controlName)?.touched)) ??
+      true
+    );
+  }
+
+  isCurrentDevelopmentTypeModificationAnalyse() {
+    return (
+      this.labels.find(
+        (label) =>
+          label.id ===
+          Number(this.issueCreationForm.controls.developmentType.value),
+      )?.name === MODIF_ANALYSE_LABEL_NAME
+    );
+  }
+
+  showSummaryModal() {
+    this.isSummaryModalActive = !this.isSummaryModalActive;
+  }
+
+  showModalEventHandler(value: boolean) {
+    this.isSummaryModalActive = value;
+    if (value === false) {
+      this.actionsService.reset();
+      this.reloadPage();
+    }
+  }
+
+  private manageProjectValueUpdate() {
     this.issueCreationForm.controls.selectedProject.valueChanges.subscribe(
       (value) => {
         this.selectedProject = value ?? undefined;
       },
     );
   }
-  manageMilestoneValueUpdate() {
+
+  private manageMilestoneValueUpdate() {
     this.issueCreationForm.controls.selectedMilestones.valueChanges.subscribe(
       (value) => {
         this.selectedMilestones = value ?? [];
@@ -162,16 +379,6 @@ export class NewIssueComponent {
           (label) => label.name,
         );
       },
-    );
-  }
-
-  isCurrentDevelopmentTypeModificationAnalyse() {
-    return (
-      this.labels.find(
-        (label) =>
-          label.id ===
-          Number(this.issueCreationForm.controls.developmentType.value),
-      )?.name === MODIF_ANALYSE_LABEL_NAME
     );
   }
 
@@ -333,108 +540,5 @@ export class NewIssueComponent {
       this.futureIssue.assignee = user;
       this.futureIssue.assignee_id = user?.id ?? 0;
     });
-  }
-
-  //TODO: faire un affichage pour résumé de la réintégration + lien vers la réintégration
-  createNewIssue() {
-    //? déplacer ce fonctionnement dans le service gitlab
-
-    this.pendingCreationResult = true;
-
-    const issueObservables = this.selectedMilestones.map((milestone) => {
-      let milestoneOperation$: Observable<IGitlabMilestone> = of(milestone);
-
-      // Vérifie si la milestone est fake (à créer) ou fermée (à ouvrir)
-      if (this.gitlabService.milestoneIsFake(milestone)) {
-        milestoneOperation$ = this.gitlabService.createMilestone(
-          milestone.title,
-        );
-      } else if (this.gitlabService.milestoneIsClosed(milestone)) {
-        milestoneOperation$ = this.gitlabService.openMilestone(milestone);
-      }
-
-      // Crée l'issue une fois l'opération sur la milestone effectuée (si nécessaire)
-      return milestoneOperation$.pipe(
-        switchMap((milestoneResult) => {
-          const newIssue: IGitlabIssue = {
-            ...this.futureIssue,
-            milestone_id: milestoneResult.id ?? -1,
-          };
-
-          return this.gitlabService.createNewIssue(newIssue).pipe(
-            mergeMap((createdIssue) => {
-              this.futureIssue.web_url = createdIssue.web_url;
-              const commentOperation$ = this.gitlabService
-                .addCommentOfReintegrationInLinkedProjectIssue(
-                  createdIssue,
-                  this.selectedProject!,
-                )
-                .pipe(
-                  map(() => true),
-                  catchError((err) => {
-                    console.log(err);
-                    return of(false);
-                  }),
-                );
-
-              const closeMilestoneOperation$ =
-                this.gitlabService.milestoneIsFake(milestone) ||
-                this.gitlabService.milestoneIsClosed(milestone)
-                  ? this.gitlabService.closeMilestone(milestoneResult).pipe(
-                      map(() => true),
-                      catchError((err) => {
-                        console.log(err);
-                        return of(false);
-                      }),
-                    )
-                  : of(true);
-
-              return forkJoin([
-                commentOperation$,
-                closeMilestoneOperation$,
-              ]).pipe(
-                map(
-                  ([commentOperationResult, closeMilestoneOperationResult]) =>
-                    commentOperationResult && closeMilestoneOperationResult,
-                ),
-              );
-            }),
-          );
-        }),
-        catchError((err) => {
-          console.log(`Erreur lors de la création d'une issue : ${err}`);
-          return of(false);
-        }),
-      );
-    });
-
-    forkJoin(issueObservables).subscribe((results) => {
-      this.pendingCreationResult = false;
-      if (results.every((success) => success)) {
-        this.alertsService.addSuccess(
-          'Nouvelle(s) issue(s) créée(s) et mention(s) ajoutée(s)',
-        );
-      } else {
-        this.alertsService.addError(
-          'Une erreur est survenue lors de la création de la(des) issue(s). Détails des erreurs dans la console.',
-        );
-      }
-    });
-  }
-
-  resetForm() {
-    this.issueCreationForm.reset();
-    this.futureIssue = {} as IGitlabIssue;
-    this.selectedProject = undefined;
-    this.selectedMilestones = [];
-  }
-
-  formControlInvalid(controlName: string): boolean {
-    return (
-      (this.issueCreationForm.get(controlName)?.invalid &&
-        (this.issueCreationForm.get(controlName)?.dirty ||
-          this.issueCreationForm.get(controlName)?.touched)) ??
-      true
-    );
   }
 }
