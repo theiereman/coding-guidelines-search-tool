@@ -9,41 +9,64 @@
   />
 
   <div class="flex flex-1 gap-4">
-    <button
-      class="text-xs hover:font-semibold"
-      (click)="openSharepointWorksheet()"
-    >
+    <button class="text-xs hover:font-semibold" routerLink="/">
       Charte de programmation
     </button>
+
     <button
       class="text-xs hover:font-semibold"
-      (click)="openRevolutionGuidelines()"
+      routerLink="/issue-reintegration"
     >
-      Charte IHM Révolution
-    </button>
-    <button class="text-xs hover:font-semibold" (click)="openNewIssueTooltip()">
-      Création d'une issue de réintégration
+      Issue de réintégration
     </button>
   </div>
 
-  <div class="flex items-center gap-2">
+  <div class="max-md:invisible flex items-center gap-2">
     <div class="flex flex-col gap-0 items-end">
-      <div class="text-sm" *ngIf="user">{{ user.displayName }}</div>
-      <button (click)="loginDisplay ? logout() : login()" class="text-xs">
+      <span class="text-sm">
+        {{
+          isAuthenticatedOnGitlab()
+            ? gitlabUser?.name + " (" + gitlabUser?.username + ")"
+            : "Gitlab"
+        }}
+      </span>
+      <button
+        class="text-xs"
+        (click)="isAuthenticatedOnGitlab() ? gitlabLogout() : gitlabLogin()"
+      >
+        {{ isAuthenticatedOnGitlab() ? "Se déconnecter" : "Se connecter" }}
+      </button>
+    </div>
+    <img
+      class="w-[35px] h-[35px] rounded-full bg-gray-400"
+      src="{{
+        isAuthenticatedOnGitlab()
+          ? gitlabUser?.avatar_url
+          : 'assets/gitlab-logo.png'
+      }}"
+      alt=""
+    />
+  </div>
+
+  <div class="max-md:invisible flex items-center gap-2">
+    <div class="flex flex-col gap-0 items-end">
+      <div class="text-sm">{{ user ? user.displayName : "Office 365" }}</div>
+      <button
+        (click)="loginDisplay ? microsoftLogout() : microsoftLogin()"
+        class="text-xs"
+      >
         {{ loginDisplay ? "Se déconnecter" : "Se connecter" }}
       </button>
     </div>
 
     <img
-      *ngIf="user?.profilePictureBase64"
       class="w-[35px] h-[35px] rounded-full bg-gray-400"
-      src="{{ user?.profilePictureBase64 }}"
+      src="{{
+        user?.profilePictureBase64
+          ? user?.profilePictureBase64
+          : 'assets/office-365-logo.png'
+      }}"
       alt=""
     />
-
-    <div
-      *ngIf="!user?.profilePictureBase64"
-      class="w-[35px] h-[35px] rounded-full bg-gray-400"
-    ></div>
   </div>
 </div>

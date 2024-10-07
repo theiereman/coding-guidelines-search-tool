@@ -1,0 +1,76 @@
+<div class="flex flex-col gap-4 border rounded-lg border-gray-400 p-4">
+  <div class="flex gap-2">
+    <div class="flex flex-col gap-1 w-full">
+      <div class="flex gap-2 w-full">
+        <input
+          [formControl]="searchValueControl"
+          type="text"
+          class="max-w-[400px] p-1 flex-1 border border-gray-400 rounded-md transition duration-200 ease focus:outline-none focus:border-purple-700 hover:border-purple-600 focus:shadow"
+          placeholder="Rechercher des issues"
+        />
+        <div class="flex items-center gap-1 ms-2">
+          <input
+            type="checkbox"
+            class="p-1 border border-gray-400 rounded-md bg-transparent"
+            id="noProject"
+            [formControl]="noProjectControl"
+          />
+          <label
+            for="noProject"
+            class="line-clamp-1 text-ellipsis"
+            [ngClass]="{ 'text-gray-400': noProjectControl.disabled }"
+            >Développement lié à aucun projet</label
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1 ms-1">
+        <input
+          type="checkbox"
+          class="p-1 border border-gray-400 rounded-md bg-transparent"
+          id="openOnly"
+          [formControl]="openOnlyControl"
+        />
+        <label for="openOnly">Ouvertes uniquement</label>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="searchValueControl.value !== ''">
+    <p *ngIf="loadingIssuesList" class="text-center text-gray-500">
+      Chargement...
+    </p>
+    <p
+      *ngIf="!loadingIssuesList && issues.length === 0"
+      class="text-center text-gray-500"
+    >
+      Aucun résultat trouvé
+    </p>
+    <div
+      *ngIf="!loadingIssuesList"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+    >
+      <app-project-issue-card
+        (click)="toggleSelectedProject(issue)"
+        *ngFor="let issue of issues"
+        [issue]="issue"
+        [selectedProject]="selectedProject"
+      ></app-project-issue-card>
+    </div>
+  </div>
+
+  <div class="p-3" *ngIf="recentIssues.length > 0">
+    <details open>
+      <summary class="cursor-pointer mb-2">Issues récentes</summary>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <app-project-issue-card
+          (click)="toggleSelectedProject(issue)"
+          *ngFor="let issue of recentIssues"
+          [issue]="issue"
+          [selectedProject]="selectedProject"
+          [hideDetails]="true"
+        ></app-project-issue-card>
+      </div>
+    </details>
+  </div>
+</div>

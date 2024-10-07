@@ -1,7 +1,16 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { AlertsService } from '../../services/alerts.service';
-import { IAlert } from '../../interfaces/ialert';
-import { trigger,query, transition, style, stagger, animate, animateChild } from '@angular/animations';
+import { IAlert, AlertType } from '../../interfaces/ialert';
+import {
+  trigger,
+  query,
+  transition,
+  style,
+  stagger,
+  animate,
+  animateChild,
+} from '@angular/animations';
+import { NgClass, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-alerts',
@@ -9,26 +18,32 @@ import { trigger,query, transition, style, stagger, animate, animateChild } from
   styleUrls: [],
   animations: [
     trigger('list', [
-      transition("* => *", [query("@animate", stagger(100, animateChild()), { optional: true })]),
+      transition('* => *', [
+        query('@animate', stagger(100, animateChild()), { optional: true }),
+      ]),
     ]),
     trigger('animate', [
-      transition(":enter", [
-        style({ opacity: 0, transform: "translateY(50%)" }),
-        animate(".5s ease", style({ opacity: 1, transform: "translateY(0))" }))
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(50%)' }),
+        animate('.5s ease', style({ opacity: 1, transform: 'translateY(0))' })),
       ]),
       transition(':leave', [
         style({ opacity: 1, transform: 'translateY(0)' }),
-        animate('.5s ease', style({ opacity: 0, transform: 'translateY(-50%)' }))
-      ])
-    ])
+        animate(
+          '.5s ease',
+          style({ opacity: 0, transform: 'translateY(-50%)' })
+        ),
+      ]),
+    ]),
   ],
+  standalone: true,
+  imports: [NgFor, NgClass],
 })
 export class AlertsComponent implements OnInit {
+  alertEnum = AlertType;
+  constructor(public alertsService: AlertsService) {}
 
-  constructor(public alertsService: AlertsService) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close(alert: IAlert) {
     this.alertsService.remove(alert);
