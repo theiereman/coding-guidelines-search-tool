@@ -29,7 +29,7 @@ export class OldMilestoneActionChoiceComponent {
 
   ngOnInit(): void {
     this.gitlabService
-      .getProject(environment.envVar.GITLAB_ID_PROJET_REINTEGRATION)
+      .getProject(environment.GITLAB_ID_PROJET_REINTEGRATION)
       .subscribe((projet) => {
         this.projetReintegration = projet;
       });

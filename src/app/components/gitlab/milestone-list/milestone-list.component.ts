@@ -56,7 +56,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
 
   ngOnInit(): void {
     this.gitlabService
-      .getProject(environment.envVar.GITLAB_ID_PROJET_REINTEGRATION)
+      .getProject(environment.GITLAB_ID_PROJET_REINTEGRATION)
       .pipe(takeUntil(this._destroy$))
       .subscribe((projet) => {
         this.projetReintegration = projet;
@@ -64,7 +64,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
 
     this.gitlabService
       .getLastClosedVersionsFromProject(
-        environment.envVar.GITLAB_ID_PROJET_REINTEGRATION,
+        environment.GITLAB_ID_PROJET_REINTEGRATION,
       )
       .pipe(takeUntil(this._destroy$))
       .subscribe((milestones) => {
