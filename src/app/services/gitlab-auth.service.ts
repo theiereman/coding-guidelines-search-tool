@@ -31,10 +31,10 @@ const GITLAB_CODE_VERIFIER = 'gitlab_code_verifier';
   providedIn: 'root',
 })
 export class GitlabAuthService implements AbstractAuthenticationServiceService {
-  private clientId = environment.GITLAB_APP_ID;
-  private redirectUri = environment.GITLAB_AUTH_REDIRECT_URI;
-  private authUrl = `${environment.GITLAB_APP_BASE_URI}/oauth/authorize`;
-  private tokenUrl = `${environment.GITLAB_APP_BASE_URI}/oauth/token`;
+  private clientId = environment.envVar.GITLAB_APP_ID;
+  private redirectUri = environment.envVar.GITLAB_AUTH_REDIRECT_URI;
+  private authUrl = `${environment.envVar.GITLAB_APP_BASE_URI}/oauth/authorize`;
+  private tokenUrl = `${environment.envVar.GITLAB_APP_BASE_URI}/oauth/token`;
 
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> =
@@ -224,7 +224,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
     if (!this.isAuthenticated()) return of(undefined);
 
-    const userInfoUrl = `${environment.GITLAB_API_BASE_URI}/user`;
+    const userInfoUrl = `${environment.envVar.GITLAB_API_BASE_URI}/user`;
     return this.http
       .get(userInfoUrl, {
         context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
