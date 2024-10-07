@@ -1,15 +1,20 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { Component, Input } from '@angular/core';
+import { AbstractAuthenticationServiceService } from 'src/app/services/abstract-authentication-service.service';
 
 @Component({
   selector: 'app-connection-required',
   templateUrl: './connection-required.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: true,
 })
 export class ConnectionRequiredComponent {
-  constructor(private authService: AuthService) {}
+  @Input({ required: true })
+  authenticationService!: AbstractAuthenticationServiceService;
+  @Input({ required: true }) externalServiceName!: string;
+
+  constructor() {}
 
   login(): void {
-    this.authService.login().subscribe();
+    this.authenticationService.login();
   }
 }

@@ -1,0 +1,58 @@
+<div
+  *ngIf="showModal"
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none"
+>
+  <div class="mx-auto max-h-screen w-auto max-w-6xl">
+    <div
+      class="m-6 flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none"
+    >
+      <div class="flex items-start justify-between rounded-t p-5">
+        <h3 class="justify-center text-3xl font-semibold">
+          Création de l'issue de réintégration
+        </h3>
+      </div>
+      <ul class="px-8 py-3">
+        <li
+          class="flex items-center gap-2"
+          *ngFor="
+            let action of actionsService.getActionsListObservable() | async
+          "
+        >
+          <div class="flex items-center gap-2">
+            <span
+              [ngClass]="{
+                'text-gray-500': !action.hasResult,
+                'text-green-500': action.hasResult && action.isOk,
+                'text-red-500': action.hasResult && !action.isOk,
+              }"
+              >{{ action.title }}</span
+            >
+          </div>
+          <span *ngIf="!action.hasResult" class="material-icons animate-spin"
+            >autorenew</span
+          >
+        </li>
+      </ul>
+      <div class="flex justify-end gap-2 p-6">
+        <button
+          type="button"
+          (click)="toggleModal()"
+          [disabled]="!closeButtonActivated"
+          class="rounded-md border-gray-400 bg-purple-700 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
+        >
+          Fermer
+        </button>
+        <button
+          *ngIf="selectedProject"
+          class="rounded-md border-gray-400 bg-emerald-500 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
+          type="button"
+          (click)="openProjectInNewTab()"
+          [disabled]="!selectedProject.web_url"
+        >
+          Ouvrir le projet Gitlab
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showModal" class="fixed inset-0 z-40 bg-black opacity-25"></div>

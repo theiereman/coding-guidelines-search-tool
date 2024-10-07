@@ -1,0 +1,25 @@
+name: Deploy to Firebase Hosting (test website) on merge
+"on":
+  push:
+    branches:
+      - test
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          export GITLAB_APP_BASE_URI=${{ vars.GITLAB_APP_BASE_URI }}
+          export GITLAB_API_BASE_URI=${{ vars.GITLAB_API_BASE_URI }}
+          export GITLAB_APP_ID=${{ secrets.GITLAB_APP_ID }}
+          export GITLAB_AUTH_REDIRECT_URI=${{ vars.GITLAB_AUTH_REDIRECT_URI }}
+          export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
+          export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
+          ng run my-app:collect-vars
+          npm ci && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CUSTYCODINGGUIDELINES }}"
+          channelId: live
+          projectId: custycodingguidelines-test

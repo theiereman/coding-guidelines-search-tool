@@ -1,0 +1,64 @@
+<fieldset
+  class="p-2 border-2 rounded-lg bg-gray-100 flex flex-col gap-2 w-full items-start"
+>
+  <!-- Derniere milestone de la version -->
+  <div class="flex items-center w-full justify-between">
+    <label class="flex flex-1 items-center gap-2">
+      <input
+        type="checkbox"
+        id="old-milestone"
+        class="size-4"
+        [checked]="isSelected(milestone)"
+        (click)="toggleMilestone(milestone)"
+        value="{{ milestone.id }}"
+      />
+      <span class="text-gray-700 leading-4">{{ milestone.title }}</span>
+      <a
+        href="{{ getMilestoneURL(milestone) }}"
+        target="_blank"
+        class="material-icons text-[1.2rem] text-blue-500"
+        >open_in_new</a
+      >
+    </label>
+    <div class="flex items-center space-x-2">
+      <span class="italic text-xs text-gray-700"
+        >Rouvrir la milestone puis la refermer</span
+      >
+      <span
+        class="rounded-full px-2 py-[2px] text-xs font-semibold ms-2"
+        [ngClass]="{
+          'bg-red-300 text-red-800': gitlabService.milestoneIsClosed(milestone),
+          'bg-green-300 text-green-800':
+            gitlabService.milestoneIsOpen(milestone)
+        }"
+      >
+        {{ gitlabService.milestoneIsClosed(milestone) ? "Fermée" : "Ouverte" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Prochaine milestone -->
+  <div class="flex items-center w-full justify-between">
+    <label class="flex flex-1 items-center gap-2">
+      <input
+        type="checkbox"
+        id="next-milestone"
+        value="-1"
+        [checked]="isSelected(nextMilestone)"
+        (click)="toggleMilestone(nextMilestone)"
+        class="size-4"
+      />
+      <span class="text-gray-700 leading-4">{{ nextMilestone.title }}</span>
+    </label>
+    <div class="flex items-center space-x-2">
+      <span class="italic text-xs text-gray-700"
+        >Créer la milestone puis la refermer</span
+      >
+    </div>
+    <span
+      class="rounded-full px-2 py-[2px] text-xs font-semibold bg-blue-300 text-blue-800 ms-2"
+    >
+      Nouvelle
+    </span>
+  </div>
+</fieldset>

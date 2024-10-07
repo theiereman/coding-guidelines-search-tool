@@ -1,24 +1,44 @@
 import { Component } from '@angular/core';
-import { ICodingGuidelineItem } from '../../interfaces/icoding-guideline-item';
-import { MicrosoftGraphService } from '../../services/microsoft-graph.service';
+import { ICodingGuidelineItem } from '../../../interfaces/icoding-guideline-item';
+import { MicrosoftGraphService } from '../../../services/microsoft-graph.service';
 import { BehaviorSubject, Subject, debounceTime, switchMap } from 'rxjs';
-import { normalize } from '../../helpers/strings-helper';
+import { normalize } from '../../../helpers/strings-helper';
+import { HighlightOnSearchDirective } from '../../../directives/highlight-on-search.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guideline-search.component';
+import { IUser } from '@microsoft/mgt';
+import { GRAPH_API } from 'src/app/constants/graph-api.constants';
+import { AuthService } from 'src/app/services/auth.service';
+import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
 
 @Component({
   selector: 'app-code-guideline-list',
   templateUrl: './code-guideline-list.component.html',
   styleUrls: [],
+  standalone: true,
+  imports: [
+    CodeGuidelineSearchComponent,
+    NgIf,
+    NgFor,
+    HighlightOnSearchDirective,
+    ConnectionRequiredComponent,
+  ],
 })
 export class CodeGuidelineListComponent {
   currentSearchValue: string = '';
   valuesInitialized: boolean = false;
   codingGuidelinesItems: ICodingGuidelineItem[] = [];
   filteredCodingGuidelinesItems: ICodingGuidelineItem[] = [];
+  user?: IUser;
+  contentLoaded: boolean = false;
 
   private codeguidelinesListTrigger$ = new Subject<void>();
   private searchValueChangedSubject$ = new BehaviorSubject<string>('');
 
-  constructor(private graphService: MicrosoftGraphService) {
+  constructor(
+    private graphService: MicrosoftGraphService,
+    public authService: AuthService
+  ) {
     //mise à jour de la recherche
     this.searchValueChangedSubject$
       .pipe(debounceTime(300))
@@ -40,6 +60,10 @@ export class CodeGuidelineListComponent {
         this.valuesInitialized = true;
         this.filterCodingGuidelines(this.currentSearchValue);
       });
+  }
+
+  openSharepointWorksheet() {
+    window.open(GRAPH_API.worksheetLink);
   }
 
   onSearchValueUpdated(searchValue: string) {
@@ -88,6 +112,17 @@ export class CodeGuidelineListComponent {
   }
 
   ngOnInit(): void {
-    this.codeguidelinesListTrigger$.next();
+    //permet de ne pas afficher le 'connection-required' component pendant le chargement de l'utilisateur
+    this.authService.loading$.subscribe((loading) => {
+      this.contentLoaded = !loading;
+    });
+
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+
+      if (this.user) {
+        this.codeguidelinesListTrigger$.next();
+      }
+    });
   }
 }
