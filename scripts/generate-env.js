@@ -1,4 +1,11 @@
 const fs = require("fs");
+const path = "./src/environments";
+
+// Vérifie si le répertoire existe, sinon le créer
+if (!fs.existsSync(path)) {
+  fs.mkdirSync(path, { recursive: true });
+}
+
 const environmentFileContent = `
 export const environment = {
   production: true,
@@ -11,5 +18,6 @@ export const environment = {
   GITLAB_ID_PROJET_CORRECTIONS_DIVERSES: ${process.env.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES || 0},
 };
 `;
-fs.writeFileSync("./src/environments/environment.ts", environmentFileContent);
-console.log("Environment file generated successfully.");
+
+// Écriture du fichier environment.ts
+fs.writeFileSync(`${path}/environment.ts`, environmentFileContent);
