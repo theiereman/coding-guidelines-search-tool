@@ -31,10 +31,10 @@ const GITLAB_CODE_VERIFIER = 'gitlab_code_verifier';
   providedIn: 'root',
 })
 export class GitlabAuthService implements AbstractAuthenticationServiceService {
-  private clientId = environment.gitlab_app_id;
-  private redirectUri = environment.gitlab_auth_redirect_uri;
-  private authUrl = `${environment.gitlab_app_base_uri}/oauth/authorize`;
-  private tokenUrl = `${environment.gitlab_app_base_uri}/oauth/token`;
+  private clientId = environment.GITLAB_APP_ID;
+  private redirectUri = environment.GITLAB_AUTH_REDIRECT_URI;
+  private authUrl = `${environment.GITLAB_APP_BASE_URI}/oauth/authorize`;
+  private tokenUrl = `${environment.GITLAB_APP_BASE_URI}/oauth/token`;
 
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> =
@@ -45,7 +45,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private alertService: AlertsService
+    private alertService: AlertsService,
   ) {}
 
   //The CODE_VERIFIER is a random string, between 43 and 128 characters in length, which use the characters A-Z, a-z, 0-9, -, ., _, and ~.
@@ -124,10 +124,10 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
             error: (err) => {
               this.alertService.addError(
                 'Erreur authentification Gitlab : ' +
-                  err.error.error_description
+                  err.error.error_description,
               );
             },
-          })
+          }),
         )
         .subscribe((response: any) => {
           this.setAccessToken(response.access_token);
@@ -176,8 +176,8 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
         filter((token) => token != null),
         take(1),
         switchMap((token) =>
-          of({ access_token: token } as IGitlabTokenResponse)
-        )
+          of({ access_token: token } as IGitlabTokenResponse),
+        ),
       );
     } else {
       //la première 401 va trigger le refresh qui va faire attendre les autres requêtes
@@ -216,7 +216,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
             this.refreshTokenSubject.next(null); // On réinitialise le subject
             console.log(error);
             return throwError(() => new Error(error));
-          })
+          }),
         );
     }
   }
@@ -224,7 +224,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
     if (!this.isAuthenticated()) return of(undefined);
 
-    const userInfoUrl = `${environment.gitlab_api_base_uri}/user`;
+    const userInfoUrl = `${environment.GITLAB_API_BASE_URI}/user`;
     return this.http
       .get(userInfoUrl, {
         context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
@@ -250,7 +250,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
         }),
         catchError(() => {
           return of(undefined);
-        })
+        }),
       );
   }
 

@@ -6,12 +6,13 @@ Outil de recherche charte de programmation Windev
 
 ```typescript
 export const environment = {
-  gitlab_app_base_uri: "https://gitlab.example.com",
-  gitlab_api_base_uri: "https://gitlab.example.com/api/v4",
-  gitlab_app_id: "app_id",
-  gitlab_auth_redirect_uri: "https://exemple.com/",
-  gitlab_id_projet_reintegration: 127, //id projet pour les issues de réintégration
-  gitlab_id_projet_suivi_general: 246, //id projet pour les issues de suivi général
+  GITLAB_APP_BASE_URI: "https://gitlab.example.com",
+  GITLAB_API_BASE_URI: "https://gitlab.example.com/api/v4",
+  GITLAB_APP_ID: "app_id",
+  GITLAB_AUTH_REDIRECT_URI: "https://exemple.com/",
+  GITLAB_ID_PROJET_REINTEGRATION: 127, //id projet pour les issues de réintégration
+  GITLAB_ID_PROJET_SUIVI_GENERAL: 246, //id projet pour les issues de suivi général
+  GITLAB_ID_PROJET_CORRECTIONS_DIVERSES: 999,
 };
 ```
 
