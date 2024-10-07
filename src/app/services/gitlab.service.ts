@@ -46,7 +46,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabProject>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${projectId}`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         },
@@ -72,7 +72,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabLabel[]>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/labels`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/labels`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         },
@@ -98,7 +98,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabIssue>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/issues/${issueId}`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/issues/${issueId}`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         },
@@ -140,12 +140,12 @@ export class GitlabService {
     if (isUrl) {
       const projectId = query.split('/').pop();
       if (!projectId || isNaN(+projectId)) return of([]);
-      url = `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/issues?iids[]=${projectId}`;
+      url = `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/issues?iids[]=${projectId}`;
     } else if (isIssueId || isNumber) {
       const issueId = query.replace('#', '');
-      url = `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/issues?iids[]=${issueId}`;
+      url = `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/issues?iids[]=${issueId}`;
     } else {
-      url = `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/issues?search=${query}&in=title`;
+      url = `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/issues?search=${query}&in=title`;
     }
 
     url = `${url}&per_page=${maxResults}&${
@@ -170,7 +170,8 @@ export class GitlabService {
   }
 
   public addIssueToLocalStorage(issue: IGitlabIssue) {
-    if (issue.iid === environment.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES) return;
+    if (issue.iid === environment.envVar.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES)
+      return;
     let issuesArray: IGitlabIssue[] = this.getIssuesFromLocalStorage(10); //on en stocke 10 max
     issuesArray.unshift(issue);
     localStorage.setItem('issues', JSON.stringify(issuesArray));
@@ -181,7 +182,7 @@ export class GitlabService {
     const uniqueIssues = issues.filter(
       (issue: IGitlabIssue, index: number, self: IGitlabIssue[]) =>
         index === self.findIndex((t) => t.iid === issue.iid) &&
-        issue.iid !== environment.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES,
+        issue.iid !== environment.envVar.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES,
     );
     return uniqueIssues.slice(0, size);
   }
@@ -200,7 +201,7 @@ export class GitlabService {
 
     return this.httpClient
       .post<IGitlabMilestone>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${environment.GITLAB_ID_PROJET_REINTEGRATION}/milestones`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${environment.envVar.GITLAB_ID_PROJET_REINTEGRATION}/milestones`,
         newMilestone,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
@@ -231,7 +232,7 @@ export class GitlabService {
 
     return this.httpClient
       .put<IGitlabMilestone>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${environment.GITLAB_ID_PROJET_REINTEGRATION}/milestones/${milestone.id}`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${environment.envVar.GITLAB_ID_PROJET_REINTEGRATION}/milestones/${milestone.id}`,
         milestone,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
@@ -279,7 +280,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabMilestone[]>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/milestones?order_by=title&state=${OPEN_STATUS}`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/milestones?order_by=title&state=${OPEN_STATUS}`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         },
@@ -313,7 +314,7 @@ export class GitlabService {
 
     return this.httpClient
       .post<IGitlabIssue>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${environment.GITLAB_ID_PROJET_REINTEGRATION}/issues`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${environment.envVar.GITLAB_ID_PROJET_REINTEGRATION}/issues`,
         issue,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
@@ -343,7 +344,7 @@ export class GitlabService {
 
     return this.httpClient
       .post<IGitlabIssue>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${environment.GITLAB_ID_PROJET_SUIVI_GENERAL}/issues/${linkedProjectIssue.iid}/notes`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${environment.envVar.GITLAB_ID_PROJET_SUIVI_GENERAL}/issues/${linkedProjectIssue.iid}/notes`,
         {
           body: `${reintegrationIssue.title} (${reintegrationIssue.web_url})`,
           resolved: false,
@@ -384,7 +385,7 @@ export class GitlabService {
 
     return this.httpClient
       .get<IGitlabMilestone[]>(
-        `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/milestones?order_by=due_date&sort=desc&per_page=100`,
+        `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/milestones?order_by=due_date&sort=desc&per_page=100`,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
         },
@@ -458,7 +459,7 @@ export class GitlabService {
 
     //empeche la recherche de sous versions pour forcer à trouver forcément la dernière milestone corrective
     const numericQuery = query.replace(/[^\d.]/g, '');
-    const url = `${environment.GITLAB_API_BASE_URI}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}&state=${CLOSED_STATUS}`;
+    const url = `${environment.envVar.GITLAB_API_BASE_URI}/projects/${projectId}/milestones?search=${numericQuery}&per_page=${maxResults}&state=${CLOSED_STATUS}`;
 
     return this.httpClient
       .get<IGitlabMilestone[]>(url, {
