@@ -91,8 +91,8 @@ export class ProjectListComponent implements ControlValueAccessor {
   getMiscellaneousDevelopmentProject() {
     this.gitlabService
       .getIssueFromProject(
-        environment.gitlab_id_projet_suivi_general,
-        environment.gitlab_id_projet_corrections_diverses,
+        environment.GITLAB_ID_PROJET_SUIVI_GENERAL,
+        environment.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES,
       )
       .pipe(
         catchError(() => {
@@ -127,7 +127,7 @@ export class ProjectListComponent implements ControlValueAccessor {
 
   startSearchingForIssues() {
     return this.gitlabService.searchIssuesFromProject(
-      environment.gitlab_id_projet_suivi_general,
+      environment.GITLAB_ID_PROJET_SUIVI_GENERAL,
       this.searchValueControl.value,
       this.openOnlyControl.value,
       6,

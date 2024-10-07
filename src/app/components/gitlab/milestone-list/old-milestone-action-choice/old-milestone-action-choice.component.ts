@@ -29,7 +29,7 @@ export class OldMilestoneActionChoiceComponent {
 
   ngOnInit(): void {
     this.gitlabService
-      .getProject(environment.gitlab_id_projet_reintegration)
+      .getProject(environment.GITLAB_ID_PROJET_REINTEGRATION)
       .subscribe((projet) => {
         this.projetReintegration = projet;
       });
@@ -37,7 +37,7 @@ export class OldMilestoneActionChoiceComponent {
     this.nextMilestone = {
       id: -1,
       title: this.gitlabService.incrementMilestoneBugFixVersion(
-        this.milestone.title
+        this.milestone.title,
       ),
       state: FAKE_STATUS,
     };

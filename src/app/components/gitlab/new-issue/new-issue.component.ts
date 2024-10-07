@@ -505,7 +505,7 @@ export class NewIssueComponent {
 
   private updateLabelList() {
     this.gitlabService
-      .getLabelsFromProject(environment.gitlab_id_projet_reintegration)
+      .getLabelsFromProject(environment.GITLAB_ID_PROJET_REINTEGRATION)
       .pipe(
         tap((labels) => {
           this.developmentTypeOptions = labels
@@ -529,7 +529,7 @@ export class NewIssueComponent {
 
   private updateMilestoneList() {
     this.gitlabService
-      .getOpenMilestonesFromProject(environment.gitlab_id_projet_reintegration)
+      .getOpenMilestonesFromProject(environment.GITLAB_ID_PROJET_REINTEGRATION)
       .subscribe((milestones: IGitlabMilestone[]) => {
         this.milestones = milestones;
       });
