@@ -9,14 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          npm ci
           export GITLAB_APP_BASE_URI=${{ vars.GITLAB_APP_BASE_URI }}
           export GITLAB_API_BASE_URI=${{ vars.GITLAB_API_BASE_URI }}
           export GITLAB_APP_ID=${{ secrets.GITLAB_APP_ID }}
           export GITLAB_AUTH_REDIRECT_URI=${{ vars.GITLAB_AUTH_REDIRECT_URI }}
           export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
-          npm ci && npm run ng run my-app:collect-vars
-          npm ci && npm run build -- --deployment
+          npm run ng run my-app:collect-vars
+          npm run build -- --deployment
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
