@@ -15,8 +15,8 @@ jobs:
           export GITLAB_AUTH_REDIRECT_URI=${{ vars.GITLAB_AUTH_REDIRECT_URI }}
           export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
-          npm run ng run my-app:collect-vars
-          npm ci && npm run build
+          npm ci && npm run ng run my-app:collect-vars
+          npm ci && npm run build -- --deployment
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
