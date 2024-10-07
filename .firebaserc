@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "custycodingguidelines"
-  }
+    "default": "custycodingguidelines",
+    "test": "custycodingguidelines-test"
+  },
+  "targets": {},
+  "etags": {}
 }
