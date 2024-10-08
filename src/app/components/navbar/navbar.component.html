@@ -1,5 +1,5 @@
 <div
-  class="h-14 px-4 border rounded-xl border-gray-400 bg-gray-100 flex items-center gap-8"
+  class="flex h-14 items-center gap-8 rounded-xl border border-gray-400 bg-gray-100 px-4"
 >
   <img
     title="Ouvrir le fichier Excel de la charte de programmation"
@@ -8,21 +8,26 @@
     alt="Icone Custy"
   />
 
-  <div class="flex flex-1 gap-4">
-    <button class="text-xs hover:font-semibold" routerLink="/">
+  <div class="flex h-full flex-1 gap-2">
+    <button
+      class="my-3 rounded-full px-6 font-semibold uppercase transition-all duration-200 hover:text-purple-700"
+      routerLink="charte-programmation"
+      routerLinkActive="bg-purple-700 text-white hover:text-white"
+    >
       Charte de programmation
     </button>
 
     <button
-      class="text-xs hover:font-semibold"
-      routerLink="/issue-reintegration"
+      class="my-3 rounded-full px-6 font-semibold uppercase transition-all duration-200 hover:text-purple-700"
+      routerLink="issue-reintegration"
+      routerLinkActive="bg-purple-700 text-white hover:text-white"
     >
       Issue de réintégration
     </button>
   </div>
 
-  <div class="max-md:invisible flex items-center gap-2">
-    <div class="flex flex-col gap-0 items-end">
+  <div class="flex items-center gap-2 max-md:invisible">
+    <div class="flex flex-col items-end gap-0">
       <span class="text-sm">
         {{
           isAuthenticatedOnGitlab()
@@ -38,7 +43,7 @@
       </button>
     </div>
     <img
-      class="w-[35px] h-[35px] rounded-full bg-gray-400"
+      class="h-[35px] w-[35px] rounded-full bg-gray-400"
       src="{{
         isAuthenticatedOnGitlab()
           ? gitlabUser?.avatar_url
@@ -48,8 +53,8 @@
     />
   </div>
 
-  <div class="max-md:invisible flex items-center gap-2">
-    <div class="flex flex-col gap-0 items-end">
+  <div class="flex items-center gap-2 max-md:invisible">
+    <div class="flex flex-col items-end gap-0">
       <div class="text-sm">{{ user ? user.displayName : "Office 365" }}</div>
       <button
         (click)="loginDisplay ? microsoftLogout() : microsoftLogin()"
@@ -60,7 +65,7 @@
     </div>
 
     <img
-      class="w-[35px] h-[35px] rounded-full bg-gray-400"
+      class="h-[35px] w-[35px] rounded-full bg-gray-400"
       src="{{
         user?.profilePictureBase64
           ? user?.profilePictureBase64
