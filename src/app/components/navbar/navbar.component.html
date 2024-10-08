@@ -1,6 +1,4 @@
-<div
-  class="flex h-14 items-center gap-8 rounded-xl border border-gray-400 bg-gray-100 px-4"
->
+<div class="flex h-16 items-center gap-8">
   <img
     title="Ouvrir le fichier Excel de la charte de programmation"
     class="h-8"
@@ -10,17 +8,17 @@
 
   <div class="flex h-full flex-1 gap-2">
     <button
-      class="my-3 rounded-full px-6 font-semibold uppercase transition-all duration-200 hover:text-purple-700"
+      class="my-3 rounded-xl px-6 font-semibold uppercase transition-all duration-200 hover:text-purple-600"
       routerLink="charte-programmation"
-      routerLinkActive="bg-purple-700 text-white hover:text-white"
+      routerLinkActive="bg-purple-100 text-purple-600"
     >
       Charte de programmation
     </button>
 
     <button
-      class="my-3 rounded-full px-6 font-semibold uppercase transition-all duration-200 hover:text-purple-700"
+      class="my-3 rounded-xl px-6 font-semibold uppercase transition-all duration-200 hover:text-purple-600"
       routerLink="issue-reintegration"
-      routerLinkActive="bg-purple-700 text-white hover:text-white"
+      routerLinkActive="bg-purple-100 text-purple-600"
     >
       Issue de réintégration
     </button>
@@ -43,7 +41,7 @@
       </button>
     </div>
     <img
-      class="h-[35px] w-[35px] rounded-full bg-gray-400"
+      class="h-[35px] w-[35px] rounded-full bg-gray-200"
       src="{{
         isAuthenticatedOnGitlab()
           ? gitlabUser?.avatar_url
@@ -65,7 +63,7 @@
     </div>
 
     <img
-      class="h-[35px] w-[35px] rounded-full bg-gray-400"
+      class="h-[35px] w-[35px] rounded-full bg-gray-200 p-1"
       src="{{
         user?.profilePictureBase64
           ? user?.profilePictureBase64
