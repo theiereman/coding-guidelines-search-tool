@@ -20,13 +20,21 @@ export class CustomInputComponent {
   @Input() yesNoSelector: boolean = false;
   @Input() control: FormControl = new FormControl('');
   @Input() isMultiline: boolean = false;
-
-  yesNoOptions: SelectOption[] = [
-    { value: true, name: 'Oui' },
-    { value: false, name: 'Non' },
-  ];
+  @Input() preselectedOption: any = undefined;
 
   constructor() {}
+
+  ngOnInit() {
+    if (this.yesNoSelector) {
+      this.selectOptions = [
+        { value: true, name: 'Oui' },
+        { value: false, name: 'Non' },
+      ];
+    }
+
+    if (this.preselectedOption !== undefined)
+      this.control.setValue(this.preselectedOption);
+  }
 
   get isSelectInput(): boolean {
     return this.selectOptions.length > 0 || this.yesNoSelector;
