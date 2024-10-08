@@ -350,36 +350,24 @@ export class NewIssueComponent {
   private manageDevelopmentTypeValueUpdate() {
     this.issueCreationForm.controls.developmentType.valueChanges.subscribe(
       (value) => {
-        const correspondingLabel = this.labels.find(
-          (label) => label.id === Number(value),
-        );
-
-        if (!correspondingLabel) return;
-
-        //mise à jour du champ pour trigger les controles de modif dans le cas d'une modif d'analyse
-        this.issueCreationForm.controls.scope.setValue(
-          this.issueCreationForm.controls.scope.value,
-        );
+        //mise à jour du champ pour parser la valeur dans le périmètre (uniquement chiffres quand modif d'analyse)
+        this.triggerScopeValueUpdateEvent();
         this.updateFutureIssueTitle();
 
-        //met à jour les labels de 'type de développement' sur l'aperçu de l'issue
-        this.futureIssue.detailed_labels =
-          this.futureIssue.detailed_labels.filter(
-            (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id,
-          );
+        //suppression des labels bug et quoi de neuf qui ne servent à rien si c'est une modif d'analyse
+        if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
+          this.resetBugAndQuoiDeNeufFields();
+        }
 
-        this.lastDevelopmentTypeLabelUsed = correspondingLabel;
-
-        this.futureIssue.detailed_labels = [
-          correspondingLabel,
-          ...this.futureIssue.detailed_labels,
-        ];
-
-        this.futureIssue.labels = this.futureIssue.detailed_labels.map(
-          (label) => label.name,
-        );
+        //met à jour les labels de 'type de développement' sur l'issue qui sera créée afin qu'il n'y en ait qu'un seul
+        this.updateFutureIssueDevelopmentTypeLabel(value);
       },
     );
+  }
+
+  private resetBugAndQuoiDeNeufFields() {
+    this.issueCreationForm.controls.isBugCorrection.setValue('false');
+    this.issueCreationForm.controls.isQuoiDeNeuf.setValue('false');
   }
 
   private manageQuoiDeNeufValueUpdate() {
@@ -484,6 +472,12 @@ export class NewIssueComponent {
     });
   }
 
+  private triggerScopeValueUpdateEvent() {
+    this.issueCreationForm.controls.scope.setValue(
+      this.issueCreationForm.controls.scope.value,
+    );
+  }
+
   private updateFutureIssueTitle() {
     if (
       this.issueCreationForm.controls.scope.value === '' &&
@@ -501,6 +495,32 @@ export class NewIssueComponent {
         }] - ${this.issueCreationForm.controls.title.value ?? ''}`;
       }
     }
+  }
+
+  private updateFutureIssueDevelopmentTypeLabel(selectedValue: string | null) {
+    const developmentTypeCorrespondingLabel = this.labels.find(
+      (label) => label.id === Number(selectedValue),
+    );
+    if (!developmentTypeCorrespondingLabel) return;
+
+    //on conserve tous les labels qui ne sont pas liés au type de développement
+    this.futureIssue.detailed_labels = this.futureIssue.detailed_labels.filter(
+      (label) => label.id !== this.lastDevelopmentTypeLabelUsed?.id,
+    );
+
+    //conservation de l'historique du dernier label utilisé pour ne pas l'ajouter en double
+    this.lastDevelopmentTypeLabelUsed = developmentTypeCorrespondingLabel;
+
+    //ajout du type de développement en premier
+    this.futureIssue.detailed_labels = [
+      developmentTypeCorrespondingLabel,
+      ...this.futureIssue.detailed_labels,
+    ];
+
+    //transformation des labels en string pour l'api gitlab
+    this.futureIssue.labels = this.futureIssue.detailed_labels.map(
+      (label) => label.name,
+    );
   }
 
   private updateLabelList() {
