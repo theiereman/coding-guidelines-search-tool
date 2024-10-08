@@ -24,10 +24,7 @@ export class CreationSummaryModalComponent {
 
   @Output() showModalEvent = new EventEmitter<boolean>();
 
-  constructor(
-    private alertsService: AlertsService,
-    public actionsService: IssueCreationActionsService,
-  ) {}
+  constructor(public actionsService: IssueCreationActionsService) {}
 
   ngOnInit(): void {}
 

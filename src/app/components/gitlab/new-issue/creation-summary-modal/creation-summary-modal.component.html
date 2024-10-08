@@ -38,13 +38,13 @@
           type="button"
           (click)="toggleModal()"
           [disabled]="!closeButtonActivated"
-          class="rounded-md border-gray-400 bg-purple-700 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
+          class="rounded-md border-gray-400 bg-purple-600 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
         >
           Fermer
         </button>
         <button
           *ngIf="selectedProject"
-          class="rounded-md border-gray-400 bg-emerald-500 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
+          class="rounded-md border-gray-400 bg-green-600 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
           type="button"
           (click)="openProjectInNewTab()"
           [disabled]="!selectedProject.web_url"
