@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { IUser } from 'src/app/interfaces/iuser';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { NgClass, NgIf } from '@angular/common';
 import { AuthService } from 'src/app/services/auth.service';
@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: [],
   standalone: true,
-  imports: [NgIf, RouterLink, NgClass],
+  imports: [NgIf, RouterLink, RouterLinkActive, NgClass],
 })
 export class NavbarComponent {
   user?: IUser;
@@ -21,7 +21,7 @@ export class NavbarComponent {
   constructor(
     private microsoftAuthService: AuthService,
     private gitlabAuthService: GitlabAuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
