@@ -74,6 +74,7 @@
     </app-input-slot>
 
     <app-custom-input
+      *ngIf="!isCurrentDevelopmentTypeModificationAnalyse()"
       [label]="'Est une correction de bug ?'"
       [yesNoSelector]="true"
       [preselectedOption]="false"
@@ -81,6 +82,7 @@
     ></app-custom-input>
 
     <app-custom-input
+      *ngIf="!isCurrentDevelopmentTypeModificationAnalyse()"
       [label]="'Doit être mentionné dans le \'quoi de neuf\' ?'"
       [yesNoSelector]="true"
       [preselectedOption]="false"
