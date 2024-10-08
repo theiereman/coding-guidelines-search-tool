@@ -15,9 +15,6 @@ jobs:
           export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
           export GITLAB_ID_PROJET_CORRECTIONS_DIVERSES=${{ vars.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES }}
-          echo 'id projet réintégration = '$GITLAB_ID_PROJET_REINTEGRATION
-          echo 'id projet suivi general = '$GITLAB_ID_PROJET_SUIVI_GENERAL
-          echo 'id projet réintégrations diverses = '$GITLAB_ID_PROJET_CORRECTIONS_DIVERSES
           npm ci && npm run deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
