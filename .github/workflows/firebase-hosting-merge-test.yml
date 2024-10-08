@@ -10,9 +10,8 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           export GITLAB_APP_BASE_URI=${{ vars.GITLAB_APP_BASE_URI }}
-          export GITLAB_API_BASE_URI=${{ vars.GITLAB_API_BASE_URI }}
           export GITLAB_APP_ID=${{ secrets.GITLAB_APP_ID }}
-          export GITLAB_AUTH_REDIRECT_URI=${{ vars.GITLAB_AUTH_REDIRECT_URI }}
+          export GITLAB_AUTH_REDIRECT_URI=${{ vars.GITLAB_TEST_AUTH_REDIRECT_URI }}
           export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
           export GITLAB_ID_PROJET_CORRECTIONS_DIVERSES=${{ vars.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES }}
