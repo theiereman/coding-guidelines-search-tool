@@ -7,19 +7,25 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { NewIssueActionsSummaryComponent } from '../actions-summary/actions-summary.component';
-import { AlertsService } from 'src/app/services/alerts.service';
 import { IssueCreationActionsService } from 'src/app/services/issue-creation-actions.service';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
+import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
 
 @Component({
   selector: 'app-creation-summary-modal',
   standalone: true,
-  imports: [CommonModule, NewIssueActionsSummaryComponent],
+  imports: [
+    CommonModule,
+    NewIssueActionsSummaryComponent,
+    CommentPreviewComponent,
+  ],
   templateUrl: './creation-summary-modal.component.html',
 })
 export class CreationSummaryModalComponent {
   @Input() showModal = false;
   @Input() closeButtonActivated = false;
+  @Input({ required: true }) issueReintegration: IGitlabIssue =
+    {} as IGitlabIssue;
   @Input() selectedProject?: IGitlabIssue = undefined;
 
   @Output() showModalEvent = new EventEmitter<boolean>();

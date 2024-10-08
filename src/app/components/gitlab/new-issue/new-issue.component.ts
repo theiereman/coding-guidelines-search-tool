@@ -16,14 +16,12 @@ import {
   switchMap,
   tap,
   throwError,
-  timer,
 } from 'rxjs';
 import { IGitlabMilestone } from 'src/app/interfaces/gitlab/igitlab-milestone';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { ProjectListComponent } from '../project-list/project-list.component';
 import { MilestoneListComponent } from '../milestone-list/milestone-list.component';
-import { CommentPreviewComponent } from './comment-preview/comment-preview.component';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { NewIssueActionsSummaryComponent } from './actions-summary/actions-summary.component';
 import { AlertsService } from 'src/app/services/alerts.service';
@@ -55,7 +53,6 @@ import { IIssueCreationAction } from 'src/app/interfaces/iissue-creation-action'
     NgIf,
     ProjectListComponent,
     MilestoneListComponent,
-    CommentPreviewComponent,
     NewIssueActionsSummaryComponent,
     ConnectionRequiredComponent,
     CustomInputComponent,
