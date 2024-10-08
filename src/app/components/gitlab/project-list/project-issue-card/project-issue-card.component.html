@@ -1,34 +1,28 @@
-<div
-  [ngClass]="{
-    'hover:cursor-pointer': !disableInteraction,
-    '!border-blue-500':
-      selectedProject?.iid === issue?.iid && !disableInteraction
-  }"
-  class="border-2 rounded-lg bg-gray-100 hover:cursor-pointer relative flex flex-col items-start p-4 h-full"
->
-  <div
-    class="absolute top-0 right-0 rounded-full size-2 m-2"
-    [ngClass]="{
-      'bg-green-500': issue?.state === 'opened',
-      'bg-red-500': issue?.state === 'closed'
-    }"
-  ></div>
-  <div [ngClass]="{ 'mb-2': !hideDetails }">
-    <div class="grid grid-cols-[1fr_auto] gap-1 items-start">
-      <h1 title="{{ issue?.title }}" class="text-md font-bold truncate">
+<div class="flex h-full flex-col items-start">
+  <div class="w-full" [ngClass]="{ 'mb-2': !hideDetails }">
+    <div class="grid grid-cols-[auto_auto_1fr] items-center gap-1">
+      <span
+        *ngIf="issue?.state === 'closed'"
+        class="-ms-1 mt-1 rounded-full px-2 py-[1px] text-xs font-semibold"
+        [ngClass]="{
+          'bg-red-300 text-red-800': issue?.state === 'closed',
+        }"
+        >Fermé</span
+      >
+      <h1 title="{{ issue?.title }}" class="text-md truncate font-bold">
         {{ issue === undefined ? "Aucun projet selectionné" : issue.title }}
       </h1>
-      <h1 class="text-md font-bold whitespace-nowrap">
+      <h1 class="text-md whitespace-nowrap font-bold">
         {{ issue === undefined ? "" : "(#" + issue.iid + ")" }}
       </h1>
     </div>
-    <p class="text-xs italic text-gray-600">
+    <span class="text-ellipsis text-xs italic text-gray-600">
       Assignee : {{ issue?.assignee?.name ?? "Aucun" }}
-    </p>
+    </span>
   </div>
   <p
     *ngIf="!hideDetails"
-    class="text-gray-600 flex-1 text-xs text-ellipsis line-clamp-3"
+    class="line-clamp-3 flex-1 text-ellipsis text-xs text-gray-600"
     [ngClass]="{ 'mb-4': issue && !hideDetails }"
   >
     {{ issue?.description || "Pas de description disponible" }}
@@ -37,7 +31,7 @@
     *ngIf="issue && !hideDetails"
     href="{{ getProjectDetailsUrl(issue.iid) }}"
     target="_blank"
-    class="text-blue-500 hover:underline text-xs font-medium"
+    class="text-xs font-medium text-blue-500 hover:underline"
   >
     Voir plus
   </a>

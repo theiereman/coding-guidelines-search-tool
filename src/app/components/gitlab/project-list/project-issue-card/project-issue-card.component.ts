@@ -12,9 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProjectIssueCardComponent {
   @Input() issue?: IGitlabIssue = undefined;
-  @Input() selectedProject?: IGitlabIssue = undefined;
   @Input() hideDetails: boolean = false;
-  @Input() disableInteraction: boolean = false;
 
   constructor(public gitlabService: GitlabService) {}
 
