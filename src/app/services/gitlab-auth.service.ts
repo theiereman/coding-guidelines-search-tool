@@ -1,7 +1,6 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpParams } from '@angular/common/http';
 import {
@@ -21,21 +20,12 @@ import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
 import { AbstractAuthenticationServiceService } from './abstract-authentication-service.service';
 import { IGitlabTokenResponse } from '../interfaces/gitlab/igitlab-token-response';
-
-const ACCESS_TOKEN = 'gitlab_access_token';
-const REFRESH_TOKEN = 'gitlab_refresh_token';
-const GITLAB_STATE = 'gitlab_state';
-const GITLAB_CODE_VERIFIER = 'gitlab_code_verifier';
+import { GITLAB } from '../constants/gitlab.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GitlabAuthService implements AbstractAuthenticationServiceService {
-  private clientId = environment.GITLAB_APP_ID;
-  private redirectUri = environment.GITLAB_AUTH_REDIRECT_URI;
-  private authUrl = `${environment.GITLAB_APP_BASE_URI}/oauth/authorize`;
-  private tokenUrl = `${environment.GITLAB_APP_BASE_URI}/oauth/token`;
-
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> =
     new BehaviorSubject<string | null>(null);
@@ -82,41 +72,41 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   login() {
     const codeVerifier = this.generateCodeVerifier();
     const state = uuidv4();
-    localStorage.setItem(GITLAB_STATE, state);
-    localStorage.setItem(GITLAB_CODE_VERIFIER, codeVerifier);
+    localStorage.setItem(GITLAB.STATE_ITEM, state);
+    localStorage.setItem(GITLAB.CODE_VERIFIER_ITEM, codeVerifier);
 
     this.generateCodeChallenge(codeVerifier).then((codeChallenge) => {
       const params = new HttpParams()
-        .set('client_id', this.clientId)
-        .set('redirect_uri', this.redirectUri)
+        .set('client_id', GITLAB.APP_ID)
+        .set('redirect_uri', GITLAB.REDIRECT_URI)
         .set('response_type', 'code')
         .set('state', state)
         .set('code_challenge', codeChallenge)
         .set('code_challenge_method', 'S256')
         .set('scope', 'api');
 
-      const authUrlWithParams = `${this.authUrl}?${params.toString()}`;
+      const authUrlWithParams = `${GITLAB.AUTH_URI}?${params.toString()}`;
       window.location.href = authUrlWithParams;
     });
   }
 
   handleRedirectCallback() {
     const params = new URLSearchParams(window.location.search);
-    const storedState = localStorage.getItem(GITLAB_STATE);
-    const codeVerifier = localStorage.getItem(GITLAB_CODE_VERIFIER);
+    const storedState = localStorage.getItem(GITLAB.STATE_ITEM);
+    const codeVerifier = localStorage.getItem(GITLAB.CODE_VERIFIER_ITEM);
     const code = params.get('code');
     const returnedState = params.get('state');
 
     if (code && returnedState === storedState) {
       const body = new URLSearchParams();
-      body.set('client_id', this.clientId);
-      body.set('redirect_uri', this.redirectUri);
+      body.set('client_id', GITLAB.APP_ID);
+      body.set('redirect_uri', GITLAB.REDIRECT_URI);
       body.set('grant_type', 'authorization_code');
       body.set('code', code);
       body.set('code_verifier', codeVerifier ?? '');
 
       this.http
-        .post(this.tokenUrl, body.toString(), {
+        .post(GITLAB.TOKEN_URI, body.toString(), {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
         .pipe(
@@ -150,23 +140,23 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(ACCESS_TOKEN);
+    return !!localStorage.getItem(GITLAB.ACCESS_TOKEN_ITEM);
   }
 
   getAccessToken(): string {
-    return localStorage.getItem(ACCESS_TOKEN) ?? '';
+    return localStorage.getItem(GITLAB.ACCESS_TOKEN_ITEM) ?? '';
   }
 
   getRefreshToken(): string {
-    return localStorage.getItem(REFRESH_TOKEN) ?? '';
+    return localStorage.getItem(GITLAB.REFRESH_TOKEN_ITEM) ?? '';
   }
 
   setAccessToken(accessToken: string) {
-    localStorage.setItem(ACCESS_TOKEN, accessToken);
+    localStorage.setItem(GITLAB.ACCESS_TOKEN_ITEM, accessToken);
   }
 
   setRefreshToken(refreshToken: string) {
-    localStorage.setItem(REFRESH_TOKEN, refreshToken);
+    localStorage.setItem(GITLAB.REFRESH_TOKEN_ITEM, refreshToken);
   }
 
   refreshAccessToken(): Observable<IGitlabTokenResponse> {
@@ -185,17 +175,17 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
       this.refreshTokenSubject.next(null);
 
       const refreshToken = this.getRefreshToken();
-      const codeVerifier = localStorage.getItem(GITLAB_CODE_VERIFIER);
+      const codeVerifier = localStorage.getItem(GITLAB.CODE_VERIFIER_ITEM);
 
       const body = new URLSearchParams();
       body.set('grant_type', 'refresh_token');
-      body.set('client_id', this.clientId);
+      body.set('client_id', GITLAB.APP_ID);
       body.set('refresh_token', refreshToken);
       body.set('code_verifier', codeVerifier ?? '');
-      body.set('redirect_uri', this.redirectUri);
+      body.set('redirect_uri', GITLAB.REDIRECT_URI);
 
       return this.http
-        .post<IGitlabTokenResponse>(this.tokenUrl, body.toString(), {
+        .post<IGitlabTokenResponse>(GITLAB.TOKEN_URI, body.toString(), {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
         .pipe(
@@ -224,7 +214,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   getAuthenticatedUser(): Observable<IGitlabUser | undefined> {
     if (!this.isAuthenticated()) return of(undefined);
 
-    const userInfoUrl = `${environment.GITLAB_API_BASE_URI}/user`;
+    const userInfoUrl = `${GITLAB.API_URI}/user`;
     return this.http
       .get(userInfoUrl, {
         context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
@@ -255,9 +245,9 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
   }
 
   private clearLocalStorage() {
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(REFRESH_TOKEN);
-    localStorage.removeItem(GITLAB_STATE);
-    localStorage.removeItem(GITLAB_CODE_VERIFIER);
+    localStorage.removeItem(GITLAB.ACCESS_TOKEN_ITEM);
+    localStorage.removeItem(GITLAB.REFRESH_TOKEN_ITEM);
+    localStorage.removeItem(GITLAB.STATE_ITEM);
+    localStorage.removeItem(GITLAB.CODE_VERIFIER_ITEM);
   }
 }

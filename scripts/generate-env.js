@@ -10,7 +10,6 @@ const environmentFileContent = `
 export const environment = {
   production: true,
   GITLAB_APP_BASE_URI: '${process.env.GITLAB_APP_BASE_URI || ""}',
-  GITLAB_API_BASE_URI: '${process.env.GITLAB_API_BASE_URI || ""}',
   GITLAB_APP_ID: '${process.env.GITLAB_APP_ID || ""}',
   GITLAB_AUTH_REDIRECT_URI: '${process.env.GITLAB_AUTH_REDIRECT_URI || ""}',
   GITLAB_ID_PROJET_REINTEGRATION: ${process.env.GITLAB_ID_PROJET_REINTEGRATION || 0},
