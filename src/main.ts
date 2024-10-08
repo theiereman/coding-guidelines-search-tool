@@ -16,12 +16,7 @@ import {
   MsalBroadcastService,
   MsalModule,
 } from '@azure/msal-angular';
-import {
-  HTTP_INTERCEPTORS,
-  withInterceptorsFromDi,
-  provideHttpClient,
-  withInterceptors,
-} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app/app.routes';
 import { provideRouter } from '@angular/router';
 import { gitlabAuthInterceptor } from './app/gitlab-auth.interceptor';
