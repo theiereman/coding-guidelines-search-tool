@@ -12,7 +12,7 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
   templateUrl: './comment-preview.component.html',
 })
 export class CommentPreviewComponent {
-  @Input() issue: IGitlabIssue = {} as IGitlabIssue;
+  @Input({ required: true }) issue: IGitlabIssue = {} as IGitlabIssue;
   connectedUser: IGitlabUser | undefined;
 
   private _destroy$ = new Subject<void>();
