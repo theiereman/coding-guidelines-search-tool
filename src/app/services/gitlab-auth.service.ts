@@ -78,7 +78,7 @@ export class GitlabAuthService implements AbstractAuthenticationServiceService {
     this.generateCodeChallenge(codeVerifier).then((codeChallenge) => {
       const params = new HttpParams()
         .set('client_id', GITLAB.APP_ID)
-        .set('redirect_uri', GITLAB.REDIRECT_URI)
+        .set('redirect_uri', GITLAB.REDIRECT_URI) //TODO: gérer le redirect avec le lien courant au lieu d'une variable d'environnement
         .set('response_type', 'code')
         .set('state', state)
         .set('code_challenge', codeChallenge)
