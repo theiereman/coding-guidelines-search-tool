@@ -1,22 +1,25 @@
 <ul aria-label="Activity feed" role="feed" class="flex flex-col gap-4">
   <li role="article" class="flex items-start">
     <span
-      class="flex items-center justify-center size-7 text-white rounded-full bg-orange-500"
+      class="flex size-7 items-center justify-center rounded-full bg-orange-500 text-white"
     >
       <i class="material-icons text-[1.2rem]">comment</i>
     </span>
-    <div class="ml-4 flex flex-col w-full gap-1">
+    <div class="ml-4 flex w-full flex-col gap-1">
       <h4 class="text-sm text-gray-700">Aperçu du commentaire</h4>
-      <app-comment-preview [issue]="issue"></app-comment-preview>
+      <app-comment-preview
+        class="rounded-lg border border-gray-400 p-4"
+        [issue]="issue"
+      ></app-comment-preview>
     </div>
   </li>
   <li role="article" class="flex items-start">
     <span
-      class="flex items-center justify-center size-7 text-white rounded-full bg-blue-500"
+      class="flex size-7 items-center justify-center rounded-full bg-blue-500 text-white"
     >
       <i class="material-icons text-[1.2rem]">stars</i>
     </span>
-    <div class="ml-4 flex flex-col w-full gap-1">
+    <div class="ml-4 flex w-full flex-col gap-1">
       <h4 class="text-sm text-gray-700">Milestones selectionnées</h4>
       <app-milestone-list
         [milestones]="selectedMilestones"
@@ -26,11 +29,11 @@
   </li>
   <li role="article" class="flex items-start">
     <span
-      class="flex items-center justify-center size-7 text-white rounded-full bg-green-500"
+      class="flex size-7 items-center justify-center rounded-full bg-green-500 text-white"
     >
       <i class="material-icons text-[1.2rem]">folder</i>
     </span>
-    <div class="ml-4 flex flex-col w-full gap-1">
+    <div class="ml-4 flex w-full flex-col gap-1">
       <h4 class="text-sm text-gray-700">Projet concerné</h4>
       <app-project-issue-card
         [issue]="project"
