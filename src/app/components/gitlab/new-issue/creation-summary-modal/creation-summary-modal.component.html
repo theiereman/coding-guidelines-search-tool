@@ -28,9 +28,11 @@
               >{{ action.title }}</span
             >
           </div>
-          <span *ngIf="!action.hasResult" class="material-icons animate-spin"
-            >autorenew</span
-          >
+          @if (!action.hasResult) {
+            <span class="material-icons animate-spin">autorenew</span>
+          } @else {
+            <span>{{ action.isOk ? "✅" : "❌" }}</span>
+          }
         </li>
       </ul>
       <app-comment-preview [issue]="issueReintegration"></app-comment-preview>
