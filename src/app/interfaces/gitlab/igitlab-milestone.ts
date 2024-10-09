@@ -1,11 +1,12 @@
 export interface IGitlabMilestone {
   id?: number;
+  iid?: number;
   title: string;
   description?: string;
   state?: string;
 }
 
-export interface IGitlabEditMilestone extends IGitlabMilestone {  
+export interface IGitlabEditMilestone extends IGitlabMilestone {
   state_event: string;
 }
 
