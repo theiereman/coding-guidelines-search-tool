@@ -58,6 +58,7 @@
         (click)="toggleSelectedProject(issue)"
         *ngFor="let issue of issues"
         [issue]="issue"
+        [isSelected]="selectedProject?.iid === issue?.iid"
       ></app-project-issue-card>
     </div>
   </div>
@@ -75,6 +76,7 @@
           *ngFor="let issue of recentIssues"
           [issue]="issue"
           [hideDetails]="true"
+          [isSelected]="selectedProject?.iid === issue?.iid"
         ></app-project-issue-card>
       </div>
     </details>
