@@ -9,10 +9,21 @@
         }"
         >Fermé</span
       >
-      <h1 title="{{ issue?.title }}" class="text-md truncate font-bold">
+      <h1
+        [ngClass]="{
+          'text-blue-500': isSelected,
+        }"
+        title="{{ issue?.title }}"
+        class="text-md truncate font-bold"
+      >
         {{ issue === undefined ? "Aucun projet selectionné" : issue.title }}
       </h1>
-      <h1 class="text-md whitespace-nowrap font-bold">
+      <h1
+        [ngClass]="{
+          'text-blue-500': isSelected,
+        }"
+        class="text-md whitespace-nowrap font-bold"
+      >
         {{ issue === undefined ? "" : "(#" + issue.iid + ")" }}
       </h1>
     </div>
