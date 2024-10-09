@@ -17,6 +17,6 @@ export class ProjectIssueCardComponent {
   constructor(public gitlabService: GitlabService) {}
 
   getProjectDetailsUrl(projectId: number) {
-    return `${environment.GITLAB_APP_BASE_URI}/adhoc/suivi-de-projets/-/issues/${projectId}`;
+    return `${environment.GITLAB_APP_BASE_URI}/adhoc-gti/suivi/-/issues/${projectId}`;
   }
 }
