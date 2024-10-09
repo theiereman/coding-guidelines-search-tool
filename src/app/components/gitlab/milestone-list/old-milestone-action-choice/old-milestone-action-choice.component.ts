@@ -47,7 +47,7 @@ export class OldMilestoneActionChoiceComponent {
 
   getMilestoneURL(milestone: IGitlabMilestone) {
     if (!this.projetReintegration) return '';
-    return `${this.projetReintegration.web_url}/-/milestones/${milestone.id}`;
+    return `${this.projetReintegration.web_url}/-/milestones/${milestone.iid}`;
   }
 
   toggleMilestone(milestone: IGitlabMilestone) {
