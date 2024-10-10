@@ -439,7 +439,7 @@ export class NewIssueComponent {
           );
           //titre = partie après le -
           this.issueCreationForm.controls.title.setValue(
-            value.split('-')[1].trim(),
+            value.substring(value.indexOf(']')).split('-')[1].trim(),
           );
         }
       }
