@@ -4,7 +4,10 @@ import { AlertsService } from './alerts.service';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
-import { IGitlabIssue } from '../interfaces/gitlab/igitlab-issue';
+import {
+  IGitlabEditIssue,
+  IGitlabIssue,
+} from '../interfaces/gitlab/igitlab-issue';
 import {
   CLOSED_STATUS,
   FAKE_STATUS,
@@ -215,7 +218,7 @@ export class GitlabService {
 
     return this.httpClient
       .put<IGitlabMilestone>(
-        `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/milestones/${milestone.id}`,
+        `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/milestones/${milestone.iid}`,
         milestone,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
@@ -312,6 +315,42 @@ export class GitlabService {
           );
         }),
       );
+  }
+
+  public editIssue(issue: IGitlabEditIssue): Observable<IGitlabIssue> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab'),
+      );
+    }
+
+    return this.httpClient
+      .put<IGitlabIssue>(
+        `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/issues/${issue.iid}`,
+        issue,
+        {
+          context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+        },
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            `Impossible de modifier l'issue ${issue.title}`,
+          );
+          return throwError(
+            () => new Error(`Impossible de modifier l'issue ${issue.title}`),
+          );
+        }),
+      );
+  }
+
+  public closeIssue(issue: IGitlabIssue): Observable<IGitlabIssue> {
+    return this.editIssue({
+      ...issue,
+      state_event: 'close',
+    });
   }
 
   public addCommentOfReintegrationInLinkedProjectIssue(

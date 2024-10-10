@@ -126,7 +126,7 @@ export class NewIssueComponent {
   }
 
   createNewIssue() {
-    //? Il faudrait probablement déplacer cette maxi fonction dans le service gitlab
+    //? Il faudrait probablement déplacer cette maxi fonction dans le service gitlab et la découper correctement pcq actuellement elle est horrible
 
     this.isSummaryModalActive = true; //affichage de la progression de la création en popup
 
@@ -191,6 +191,30 @@ export class NewIssueComponent {
           return this.gitlabService.createNewIssue(newIssue).pipe(
             mergeMap((createdIssue) => {
               this.futureIssue.web_url = createdIssue.web_url;
+
+              const closeIssueOperationAction = this.actionsService.addAction(
+                `Milestone '${milestoneResult.title}' -> Fermeture de l'issue de réintégration`,
+              );
+              const closeIssueOperation$ = this.gitlabService
+                .closeIssue(createdIssue)
+                .pipe(
+                  map(() => {
+                    this.actionsService.setActionsResult(
+                      closeIssueOperationAction,
+                      true,
+                    );
+                    return true;
+                  }),
+                  catchError((err) => {
+                    this.actionsService.setActionsResult(
+                      closeIssueOperationAction,
+                      false,
+                    );
+                    console.log(err);
+                    return of(false);
+                  }),
+                );
+
               const commentOperationAction = this.actionsService.addAction(
                 `Milestone '${milestoneResult.title}' -> Ajout d'un commentaire sur le projet '${this.selectedProject?.title} (#${this.selectedProject?.iid})'`,
               );
@@ -250,10 +274,17 @@ export class NewIssueComponent {
               return forkJoin([
                 commentOperation$,
                 closeMilestoneOperation$,
+                closeIssueOperation$,
               ]).pipe(
                 map(
-                  ([commentOperationResult, closeMilestoneOperationResult]) =>
-                    commentOperationResult && closeMilestoneOperationResult,
+                  ([
+                    commentOperationResult,
+                    closeMilestoneOperationResult,
+                    closeIssueOperationResult,
+                  ]) =>
+                    commentOperationResult &&
+                    closeMilestoneOperationResult &&
+                    closeIssueOperationResult,
                 ),
               );
             }),
