@@ -1,5 +1,4 @@
 import { IGitlabLabel } from './igitlab-label';
-import { IGitlabMilestone } from './igitlab-milestone';
 import { IGitlabUser } from './igitlab-user';
 
 export interface IGitlabIssue {
@@ -18,4 +17,8 @@ export interface IGitlabIssue {
   closed_at: string;
   web_url: string;
   milestone_id: number;
+}
+
+export interface IGitlabEditIssue extends IGitlabIssue {
+  state_event: string;
 }
