@@ -399,7 +399,7 @@ export class GitlabService {
             //permet de filtrer les versions qui ne contiennent pas de points comme "Dev" qui ne sera jamais une vieille version
             if (baseTitle.split('.').length < 3) return acc;
             if (isVersionPresent) return acc;
-            if (acc.length >= maxResults) return acc;
+            if (acc.length > maxResults) return acc;
 
             acc.push(milestone);
 
