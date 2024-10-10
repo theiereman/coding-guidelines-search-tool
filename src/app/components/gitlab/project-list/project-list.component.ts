@@ -37,12 +37,12 @@ export class ProjectListComponent implements ControlValueAccessor {
   openOnlyControl: FormControl = new FormControl(true);
   noProjectControl: FormControl = new FormControl(false);
 
-  issues: IGitlabIssue[] = [];
-  recentIssues: IGitlabIssue[] = [];
-  loadingIssuesList: boolean = false;
+  issues: IGitlabIssue[] = []; //listes des projets
+  recentIssues: IGitlabIssue[] = []; //listes des issues récentes dans le local storage
+  loadingIssuesList: boolean = false; //indique si les issues sont en tran d'être récupérées pour affichage de chargement
 
-  miscellaneousProject?: IGitlabIssue = undefined;
-  selectedProject?: IGitlabIssue = undefined;
+  miscellaneousProject?: IGitlabIssue = undefined; //projet développements divers
+  selectedProject?: IGitlabIssue = undefined; //projet actuellement selectionné
 
   private onChange: (value: IGitlabIssue | undefined) => void = () => {};
   private onTouched: () => void = () => {};
@@ -80,14 +80,16 @@ export class ProjectListComponent implements ControlValueAccessor {
         this.updateIssuesList(issues);
       });
 
-    this.noProjectControl.valueChanges.subscribe((value) => {
+    //développement lié à aucun projet
+    this.noProjectControl.valueChanges.subscribe((_) => {
       if (!this.miscellaneousProject) return;
-      this.setSelectedProject(value ? this.miscellaneousProject : undefined);
+      this.toggleSelectedProject(this.miscellaneousProject);
     });
 
     this.getMiscellaneousDevelopmentProject();
   }
 
+  //récupération du projet 'Développement divers'
   getMiscellaneousDevelopmentProject() {
     this.gitlabService
       .getIssueFromProject(
@@ -108,23 +110,15 @@ export class ProjectListComponent implements ControlValueAccessor {
       });
   }
 
-  setSelectedProject(project: IGitlabIssue | undefined) {
-    this.selectedProject = project;
-    this.onChange(this.selectedProject);
-    this.onTouched();
-  }
-
+  //active / desactive le projet selectionné
   toggleSelectedProject(project: IGitlabIssue) {
-    this.noProjectControl.setValue(false);
-    if (this.selectedProject?.iid === project.iid) {
-      this.selectedProject = undefined;
-    } else {
-      this.selectedProject = project;
-    }
+    this.selectedProject =
+      this.selectedProject?.iid === project.iid ? undefined : project;
     this.onChange(this.selectedProject);
     this.onTouched();
   }
 
+  //recherche des issues avec la valeur dans l'input de recherche
   startSearchingForIssues() {
     return this.gitlabService.searchIssuesFromProject(
       environment.GITLAB_ID_PROJET_SUIVI_GENERAL,
@@ -134,6 +128,7 @@ export class ProjectListComponent implements ControlValueAccessor {
     );
   }
 
+  //mise à jour de la liste des issues
   updateIssuesList(issues: IGitlabIssue[]) {
     this.issues = issues;
     if (
