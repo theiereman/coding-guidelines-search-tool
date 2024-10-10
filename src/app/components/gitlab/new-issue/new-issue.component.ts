@@ -133,44 +133,22 @@ export class NewIssueComponent {
     const issueObservables = this.selectedMilestones.map((milestone) => {
       let milestoneOperation$: Observable<IGitlabMilestone> = of(milestone);
 
-      // Vérifie si la milestone est fake (à créer) ou fermée (à ouvrir)
-      let milestoneOperationAction: IIssueCreationAction;
       if (this.gitlabService.milestoneIsFake(milestone)) {
-        milestoneOperationAction = this.actionsService.addAction(
-          `Milestone '${milestone.title}' inexistante -> Création de la milestone`,
-        );
         milestoneOperation$ = this.gitlabService
           .createMilestone(milestone.title)
           .pipe(
-            tap(() =>
-              this.actionsService.setActionsResult(
-                milestoneOperationAction,
-                true,
-              ),
-            ),
             catchError((err) => {
-              this.actionsService.setActionsResult(
-                milestoneOperationAction,
-                false,
+              this.actionsService.addErrorResult(
+                `Milestone '${milestone.title}' inexistante -> Création de la milestone`,
               );
               return throwError(() => new Error(err));
             }),
           );
       } else if (this.gitlabService.milestoneIsClosed(milestone)) {
-        milestoneOperationAction = this.actionsService.addAction(
-          `Milestone  '${milestone.title}' fermée ->Ouverture de la milestone`,
-        );
         milestoneOperation$ = this.gitlabService.openMilestone(milestone).pipe(
-          tap(() =>
-            this.actionsService.setActionsResult(
-              milestoneOperationAction,
-              true,
-            ),
-          ),
           catchError((err) => {
-            this.actionsService.setActionsResult(
-              milestoneOperationAction,
-              false,
+            this.actionsService.addErrorResult(
+              `Milestone  '${milestone.title}' fermée -> Ouverture de la milestone`,
             );
             return throwError(() => new Error(err));
           }),
@@ -186,38 +164,27 @@ export class NewIssueComponent {
           };
 
           const newIssueOperationAction = this.actionsService.addAction(
-            `Milestone '${milestoneResult.title}' -> Création de l'issue de réintégration sur la milestone`,
+            `Milestone '${milestoneResult.title}' -> Création de l'issue de réintégration`,
           );
           return this.gitlabService.createNewIssue(newIssue).pipe(
             mergeMap((createdIssue) => {
               this.futureIssue.web_url = createdIssue.web_url;
 
-              const closeIssueOperationAction = this.actionsService.addAction(
-                `Milestone '${milestoneResult.title}' -> Fermeture de l'issue de réintégration`,
-              );
               const closeIssueOperation$ = this.gitlabService
                 .closeIssue(createdIssue)
                 .pipe(
                   map(() => {
-                    this.actionsService.setActionsResult(
-                      closeIssueOperationAction,
-                      true,
-                    );
                     return true;
                   }),
                   catchError((err) => {
-                    this.actionsService.setActionsResult(
-                      closeIssueOperationAction,
-                      false,
+                    this.actionsService.addErrorResult(
+                      `Milestone '${milestoneResult.title}' -> Fermeture de l'issue de réintégration`,
                     );
                     console.log(err);
                     return of(false);
                   }),
                 );
 
-              const commentOperationAction = this.actionsService.addAction(
-                `Milestone '${milestoneResult.title}' -> Ajout d'un commentaire sur le projet '${this.selectedProject?.title} (#${this.selectedProject?.iid})'`,
-              );
               const commentOperation$ = this.gitlabService
                 .addCommentOfReintegrationInLinkedProjectIssue(
                   createdIssue,
@@ -225,16 +192,11 @@ export class NewIssueComponent {
                 )
                 .pipe(
                   map(() => {
-                    this.actionsService.setActionsResult(
-                      commentOperationAction,
-                      true,
-                    );
                     return true;
                   }),
                   catchError((err) => {
-                    this.actionsService.setActionsResult(
-                      commentOperationAction,
-                      false,
+                    this.actionsService.addErrorResult(
+                      `Milestone '${milestoneResult.title}' -> Ajout d'un commentaire sur le projet '${this.selectedProject?.title} (#${this.selectedProject?.iid})'`,
                     );
                     console.log(err);
                     return of(false);
@@ -246,24 +208,15 @@ export class NewIssueComponent {
                 this.gitlabService.milestoneIsFake(milestone) ||
                 this.gitlabService.milestoneIsClosed(milestone)
               ) {
-                let closeMilestoneOperationAction =
-                  this.actionsService.addAction(
-                    `Milestone '${milestoneResult.title}' -> Fermeture de la milestone '${milestone.title}'`,
-                  );
                 closeMilestoneOperation$ = this.gitlabService
                   .closeMilestone(milestoneResult)
                   .pipe(
                     map(() => {
-                      this.actionsService.setActionsResult(
-                        closeMilestoneOperationAction,
-                        true,
-                      );
                       return true;
                     }),
                     catchError((err) => {
-                      this.actionsService.setActionsResult(
-                        closeMilestoneOperationAction,
-                        false,
+                      this.actionsService.addErrorResult(
+                        `Milestone '${milestoneResult.title}' -> Fermeture de la milestone '${milestone.title}'`,
                       );
                       console.log(err);
                       return of(false);

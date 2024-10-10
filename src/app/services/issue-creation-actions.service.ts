@@ -35,6 +35,17 @@ export class IssueCreationActionsService {
     return action;
   }
 
+  addErrorResult(title: string): IIssueCreationAction {
+    const action: IIssueCreationAction = {
+      title,
+      hasResult: true,
+      isOk: false,
+    };
+
+    this.actionsList = [...this.actionsList, action];
+    return action;
+  }
+
   setActionsResult(action: IIssueCreationAction, isOk: boolean) {
     action.hasResult = true;
     action.isOk = isOk;
