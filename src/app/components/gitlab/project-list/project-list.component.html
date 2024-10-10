@@ -64,8 +64,8 @@
 
   <div *ngIf="recentIssues.length > 0">
     <details open>
-      <summary class="mb-2 cursor-pointer">Issues récentes</summary>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <summary class="cursor-pointer">Issues récentes</summary>
+      <div class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <app-project-issue-card
           [ngClass]="{
             '!border-blue-500': selectedProject?.iid === issue?.iid,
