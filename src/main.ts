@@ -16,7 +16,12 @@ import {
   MsalBroadcastService,
   MsalModule,
 } from '@azure/msal-angular';
-import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  withInterceptorsFromDi,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { routes } from './app/app.routes';
 import { provideRouter } from '@angular/router';
 import { gitlabAuthInterceptor } from './app/gitlab-auth.interceptor';
@@ -40,7 +45,7 @@ bootstrapApplication(AppComponent, {
           },
           cache: {
             cacheLocation: BrowserCacheLocation.LocalStorage,
-            storeAuthStateInCookie: true, // set to true for IE 11
+            storeAuthStateInCookie: isIE, // set to true for IE 11
           },
           system: {
             loggerOptions: {
@@ -60,8 +65,8 @@ bootstrapApplication(AppComponent, {
               ['User.Read', 'Sites.Read.All', 'Files.Read.All'],
             ],
           ]),
-        }
-      )
+        },
+      ),
     ),
     provideRouter(routes),
     {
