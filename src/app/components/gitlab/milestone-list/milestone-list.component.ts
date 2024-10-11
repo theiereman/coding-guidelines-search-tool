@@ -88,7 +88,7 @@ export class MilestoneListComponent implements ControlValueAccessor {
   getMilestoneURL(milestone: IGitlabMilestone) {
     if (!this.projetReintegration) return '';
     if (this.gitlabService.milestoneIsFake(milestone)) return '';
-    return `${this.projetReintegration.web_url}/-/milestones/${milestone.id}`;
+    return `${this.projetReintegration.web_url}/-/milestones/${milestone.iid}`;
   }
 
   isSelected(milestone: IGitlabMilestone): boolean {
