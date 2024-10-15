@@ -4,8 +4,9 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { NgClass, NgIf } from '@angular/common';
-import { AuthService } from 'src/app/services/auth.service';
+import { MicrosoftGraphAuthService } from 'src/app/services/microsoft-graph-auth.service';
 
+//barre de navigation
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -19,7 +20,7 @@ export class NavbarComponent {
   loginDisplay = false;
 
   constructor(
-    private microsoftAuthService: AuthService,
+    private microsoftAuthService: MicrosoftGraphAuthService,
     private gitlabAuthService: GitlabAuthService,
     private route: ActivatedRoute,
   ) {}

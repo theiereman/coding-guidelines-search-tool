@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input } from '@angular/core';
 import { normalize } from '../helpers/strings-helper';
 
+//directive qui met en gras le résultat d'une recherche
 @Directive({
   selector: '[appHighlightOnSearch]',
   standalone: true,

@@ -1,10 +1,10 @@
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
-import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 
+//card contenant les informations d'un projet
 @Component({
   selector: 'app-project-issue-card',
   standalone: true,
