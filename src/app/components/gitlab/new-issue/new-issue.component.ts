@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   FormControl,
@@ -35,22 +35,20 @@ import {
 } from 'src/app/interfaces/gitlab/igitlab-label';
 import { capitalizeFirstLetter } from 'src/app/helpers/strings-helper';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
-import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
+import { ConnectionRequiredComponent } from '../../common/connection-required/connection-required.component';
 import { CustomInputComponent } from '../custom-input/custom-input.component';
 import { SelectOption } from 'src/app/interfaces/select-option';
 import { NewIssueInputSlotComponent } from './input-slot/input-slot.component';
 import { CreationSummaryModalComponent } from './creation-summary-modal/creation-summary-modal.component';
 import { IssueCreationActionsService } from 'src/app/services/issue-creation-actions.service';
-import { IIssueCreationAction } from 'src/app/interfaces/iissue-creation-action';
 
+//formulaire complet pour créer une nouvelle issue de réintégration
 @Component({
   selector: 'app-new-issue',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgClass,
-    NgFor,
-    NgIf,
+    CommonModule,
     ProjectListComponent,
     MilestoneListComponent,
     NewIssueActionsSummaryComponent,
@@ -62,12 +60,12 @@ import { IIssueCreationAction } from 'src/app/interfaces/iissue-creation-action'
   templateUrl: './new-issue.component.html',
 })
 export class NewIssueComponent {
-  milestones: IGitlabMilestone[] = [];
-  labels: IGitlabLabel[] = [];
-  developmentTypeOptions: SelectOption[] = [];
-  lastDevelopmentTypeLabelUsed: IGitlabLabel | undefined = undefined;
+  milestones: IGitlabMilestone[] = []; //liste des milestones
+  labels: IGitlabLabel[] = []; //liste des labels
+  developmentTypeOptions: SelectOption[] = []; //liste des types de développements possibles (dev standard, spé, modif d'analyse)
+  lastDevelopmentTypeLabelUsed: IGitlabLabel | undefined = undefined; //historique du dernier type de développement utilisé
 
-  isSummaryModalActive: boolean = false;
+  isSummaryModalActive: boolean = false; //popup de résumé des actions effectuées actuellement affichée
 
   //tous les champs du formulaire
   issueCreationForm = new FormGroup({

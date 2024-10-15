@@ -4,22 +4,20 @@ import { MicrosoftGraphService } from '../../../services/microsoft-graph.service
 import { BehaviorSubject, Subject, debounceTime, switchMap } from 'rxjs';
 import { normalize } from '../../../helpers/strings-helper';
 import { HighlightOnSearchDirective } from '../../../directives/highlight-on-search.directive';
-import { NgIf, NgFor } from '@angular/common';
-import { CodeGuidelineSearchComponent } from '../code-guideline-search/code-guideline-search.component';
+import { CommonModule } from '@angular/common';
 import { IUser } from '@microsoft/mgt';
 import { GRAPH_API } from 'src/app/constants/graph-api.constants';
-import { AuthService } from 'src/app/services/auth.service';
-import { ConnectionRequiredComponent } from '../../connection-required/connection-required.component';
+import { MicrosoftGraphAuthService } from 'src/app/services/microsoft-graph-auth.service';
+import { ConnectionRequiredComponent } from '../../common/connection-required/connection-required.component';
 
+//interface de recherche + affichage dans la charte de programmation Sharepoint Custy
 @Component({
   selector: 'app-code-guideline-list',
   templateUrl: './code-guideline-list.component.html',
   styleUrls: [],
   standalone: true,
   imports: [
-    CodeGuidelineSearchComponent,
-    NgIf,
-    NgFor,
+    CommonModule,
     HighlightOnSearchDirective,
     ConnectionRequiredComponent,
   ],
@@ -37,7 +35,7 @@ export class CodeGuidelineListComponent {
 
   constructor(
     private graphService: MicrosoftGraphService,
-    public authService: AuthService
+    public authService: MicrosoftGraphAuthService,
   ) {
     //mise à jour de la recherche
     this.searchValueChangedSubject$
@@ -52,7 +50,7 @@ export class CodeGuidelineListComponent {
         debounceTime(1000),
         switchMap(() => {
           return this.graphService.getAllCodingGuidelines();
-        })
+        }),
       )
       .subscribe((res) => {
         this.codingGuidelinesItems = res;
@@ -107,7 +105,7 @@ export class CodeGuidelineListComponent {
         }
 
         return containsSearchedTerms;
-      }
+      },
     );
   }
 

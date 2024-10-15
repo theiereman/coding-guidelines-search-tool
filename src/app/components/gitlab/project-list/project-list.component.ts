@@ -32,6 +32,8 @@ import { AlertsService } from 'src/app/services/alerts.service';
     },
   ],
 })
+
+//liste des projets de suivi général
 export class ProjectListComponent implements ControlValueAccessor {
   searchValueControl: FormControl = new FormControl('');
   openOnlyControl: FormControl = new FormControl(true);

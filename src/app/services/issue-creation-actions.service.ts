@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IIssueCreationAction } from '../interfaces/iissue-creation-action';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
+//liste des actions effectuées lors de la création d'une issue de réintégration
 @Injectable({
   providedIn: 'root',
 })

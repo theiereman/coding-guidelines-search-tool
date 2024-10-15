@@ -1,6 +1,6 @@
-import { Component, OnInit, Optional } from '@angular/core';
-import { AlertsService } from '../../services/alerts.service';
-import { IAlert, AlertType } from '../../interfaces/ialert';
+import { Component, OnInit } from '@angular/core';
+import { AlertsService } from '../../../services/alerts.service';
+import { IAlert, AlertType } from '../../../interfaces/ialert';
 import {
   trigger,
   query,
@@ -12,6 +12,7 @@ import {
 } from '@angular/animations';
 import { NgClass, NgFor } from '@angular/common';
 
+//affiche des alertes en haut de l'écran
 @Component({
   selector: 'app-alerts',
   templateUrl: './alerts.component.html',
@@ -31,7 +32,7 @@ import { NgClass, NgFor } from '@angular/common';
         style({ opacity: 1, transform: 'translateY(0)' }),
         animate(
           '.5s ease',
-          style({ opacity: 0, transform: 'translateY(-50%)' })
+          style({ opacity: 0, transform: 'translateY(-50%)' }),
         ),
       ]),
     ]),

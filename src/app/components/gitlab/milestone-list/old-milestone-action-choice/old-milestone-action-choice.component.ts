@@ -1,4 +1,4 @@
-import { NgClass, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   FAKE_STATUS,
@@ -8,21 +8,22 @@ import { IGitlabProject } from 'src/app/interfaces/gitlab/igitlab-project';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 
+//élément qui affiche une ancienne milestone (fermée) et la potentielle milestone suivante (à ouvrir)
 @Component({
   selector: 'app-old-milestone-action-choice',
   standalone: true,
-  imports: [NgClass, NgIf],
+  imports: [CommonModule],
   templateUrl: './old-milestone-action-choice.component.html',
 })
 export class OldMilestoneActionChoiceComponent {
   @Input({ required: true }) milestone: IGitlabMilestone =
-    {} as IGitlabMilestone;
-  nextMilestone: IGitlabMilestone = {} as IGitlabMilestone;
+    {} as IGitlabMilestone; //ancienne milestone d'une version fermée
+  nextMilestone: IGitlabMilestone = {} as IGitlabMilestone; //milestone non existante avec le numéro de version suivant
+  selectedMilestone?: IGitlabMilestone = undefined; //milestone actuellement selectionnée
 
   private projetReintegration?: IGitlabProject = undefined;
-  uniqueName: string = '';
-  selectedMilestone?: IGitlabMilestone = undefined;
   private lastSelectedMilestone?: IGitlabMilestone = undefined;
+
   @Output() selectedMilestoneEvent = new EventEmitter<IGitlabMilestone>();
 
   constructor(public gitlabService: GitlabService) {}
@@ -34,6 +35,7 @@ export class OldMilestoneActionChoiceComponent {
         this.projetReintegration = projet;
       });
 
+    //création d'une fausse milestone avec un numéro de version suivant la milestone passée en entrée
     this.nextMilestone = {
       id: -1,
       title: this.gitlabService.incrementMilestoneBugFixVersion(
@@ -41,8 +43,6 @@ export class OldMilestoneActionChoiceComponent {
       ),
       state: FAKE_STATUS,
     };
-
-    this.uniqueName = 'milestone_' + Math.random().toString(36).substring(2);
   }
 
   getMilestoneURL(milestone: IGitlabMilestone) {
