@@ -153,6 +153,14 @@ export class ProjectListComponent implements ControlValueAccessor {
       );
   }
 
+  numberOfRecentIssueSelected() {
+    return this.recentIssues.find(
+      (issue) => issue.iid === this.selectedProject?.iid,
+    )
+      ? '(1 selectionné)'
+      : '';
+  }
+
   writeValue(project: IGitlabIssue | undefined): void {
     this.selectedProject = project;
   }
