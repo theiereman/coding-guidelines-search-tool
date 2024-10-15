@@ -120,6 +120,22 @@ export class MilestoneListComponent implements ControlValueAccessor {
       .reverse();
   }
 
+  getNumberOfOldSelectedMilestones() {
+    return this.selectedMilestones.filter(
+      (milestone) =>
+        this.lastClosedMilestones.find(
+          (oldMilestone) => milestone.iid === oldMilestone.iid,
+        ) || this.gitlabService.milestoneIsFake(milestone),
+    ).length;
+  }
+
+  numberOfOldSelectedMilestones() {
+    const numOfMsSelected = this.getNumberOfOldSelectedMilestones();
+    return numOfMsSelected === 0
+      ? ''
+      : `(${numOfMsSelected} sélectionnée${numOfMsSelected > 1 ? 's' : ''})`;
+  }
+
   writeValue(value: IGitlabMilestone[]): void {
     this.selectedMilestones = value ?? [];
   }

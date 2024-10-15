@@ -39,18 +39,23 @@
     </li>
   </ul>
   <div *ngIf="interactiveMode && lastClosedMilestones.length > 0" class="mt-2">
-    <span>Anciennes versions</span>
-    <ul class="mt-2 flex list-none flex-col gap-2">
-      <li
-        class="flex items-center gap-2"
-        *ngFor="let milestone of lastClosedMilestones"
-      >
-        <app-old-milestone-action-choice
-          class="w-full"
-          [milestone]="milestone"
-          (selectedMilestoneEvent)="toggleMilestone($event)"
-        ></app-old-milestone-action-choice>
-      </li>
-    </ul>
+    <details class="overflow-hidden rounded-lg border-2">
+      <summary class="cursor-pointer bg-gray-100 p-2 text-gray-700">
+        Anciennes versions
+        {{ numberOfOldSelectedMilestones() }}
+      </summary>
+      <ul class="flex list-none flex-col gap-2 p-2">
+        <li
+          class="flex items-center gap-2"
+          *ngFor="let milestone of lastClosedMilestones"
+        >
+          <app-old-milestone-action-choice
+            class="w-full"
+            [milestone]="milestone"
+            (selectedMilestoneEvent)="toggleMilestone($event)"
+          ></app-old-milestone-action-choice>
+        </li>
+      </ul>
+    </details>
   </div>
 </div>
