@@ -47,7 +47,7 @@
     </p>
     <div
       *ngIf="!loadingIssuesList"
-      class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+      class="grid grid-cols-1 gap-3 sm:grid-cols-2"
     >
       <app-project-issue-card
         [ngClass]="{
@@ -63,9 +63,11 @@
   </div>
 
   <div *ngIf="recentIssues.length > 0">
-    <details open>
-      <summary class="cursor-pointer">Issues récentes</summary>
-      <div class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <details class="overflow-hidden rounded-lg border-2 border-gray-200">
+      <summary class="cursor-pointer bg-gray-200 p-2 text-gray-700">
+        Issues récentes {{ numberOfRecentIssueSelected() }}
+      </summary>
+      <div class="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2">
         <app-project-issue-card
           [ngClass]="{
             '!border-blue-500': selectedProject?.iid === issue?.iid,
