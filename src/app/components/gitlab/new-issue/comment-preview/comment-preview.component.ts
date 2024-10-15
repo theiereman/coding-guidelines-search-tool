@@ -5,6 +5,7 @@ import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 
+//imitation de commentaire Gitlab avec le contenu d'une issue de réintégration
 @Component({
   selector: 'app-comment-preview',
   standalone: true,

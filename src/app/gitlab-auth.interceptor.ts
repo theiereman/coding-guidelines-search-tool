@@ -6,6 +6,8 @@ import { IGitlabTokenResponse } from './interfaces/gitlab/igitlab-token-response
 
 export const GITLAB_REQUEST_HEADER = new HttpContextToken<boolean>(() => false);
 
+//http interceptor qui refresh le token gitlab lorsqu'il n'est plus valide
+//attention: pour qu'il soit utilisé, il faut ajouter le contexte GITLAB_REQUEST_HEADER dans la requête http
 export const gitlabAuthInterceptor: HttpInterceptorFn = (req, next) => {
   if (!req.context.get(GITLAB_REQUEST_HEADER)) {
     return next(req);
@@ -39,10 +41,10 @@ export const gitlabAuthInterceptor: HttpInterceptorFn = (req, next) => {
           catchError((refreshError) => {
             authService.logout();
             return throwError(() => new Error(refreshError.message));
-          })
+          }),
         );
       }
       return throwError(() => new Error(error.message));
-    })
+    }),
   );
 };

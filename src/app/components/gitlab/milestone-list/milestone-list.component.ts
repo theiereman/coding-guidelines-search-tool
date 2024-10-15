@@ -1,11 +1,5 @@
 import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  forwardRef,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import {
   NG_VALUE_ACCESSOR,
   ControlValueAccessor,
@@ -18,6 +12,7 @@ import { environment } from 'src/environments/environment';
 import { OldMilestoneActionChoiceComponent } from './old-milestone-action-choice/old-milestone-action-choice.component';
 import { Subject, takeUntil } from 'rxjs';
 
+//liste des milestones (actuelles et anciennes) pour selection lors de la création d'une nouvelle issue
 @Component({
   selector: 'app-milestone-list',
   standalone: true,
@@ -39,8 +34,8 @@ import { Subject, takeUntil } from 'rxjs';
   ],
 })
 export class MilestoneListComponent implements ControlValueAccessor {
-  @Input() milestones: IGitlabMilestone[] = [];
-  @Input() interactiveMode: boolean = true;
+  @Input() milestones: IGitlabMilestone[] = []; //liste des milestones à afficher
+  @Input() interactiveMode: boolean = true; //affichage uniquement ou non
 
   lastClosedMilestones: IGitlabMilestone[] = [];
   private projetReintegration?: IGitlabProject = undefined;

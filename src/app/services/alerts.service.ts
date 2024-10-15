@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IAlert, AlertType } from '../interfaces/ialert';
 
+//contient la liste des alertes
 @Injectable({
   providedIn: 'root',
 })

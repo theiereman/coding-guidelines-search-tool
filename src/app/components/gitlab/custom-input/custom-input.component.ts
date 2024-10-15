@@ -8,6 +8,7 @@ import {
 import { SelectOption } from 'src/app/interfaces/select-option';
 import { NewIssueInputSlotComponent } from '../new-issue/input-slot/input-slot.component';
 
+//input normalisé pour le formulaire Gitlab
 @Component({
   selector: 'app-custom-input',
   standalone: true,
@@ -15,12 +16,12 @@ import { NewIssueInputSlotComponent } from '../new-issue/input-slot/input-slot.c
   templateUrl: './custom-input.component.html',
 })
 export class CustomInputComponent {
-  @Input({ required: true }) label: string = '';
-  @Input() selectOptions: SelectOption[] = [];
-  @Input() yesNoSelector: boolean = false;
-  @Input() control: FormControl = new FormControl('');
-  @Input() isMultiline: boolean = false;
-  @Input() preselectedOption: any = undefined;
+  @Input({ required: true }) label: string = ''; //libellé de l'input
+  @Input() selectOptions: SelectOption[] = []; //option pour un input de type "combo"
+  @Input() yesNoSelector: boolean = false; //combo "oui" / "non"
+  @Input() control: FormControl = new FormControl(''); //form control qui permet de valider la saisie
+  @Input() isMultiline: boolean = false; //input multi lignes
+  @Input() preselectedOption: any = undefined; //option préselectionnée
 
   constructor() {}
 

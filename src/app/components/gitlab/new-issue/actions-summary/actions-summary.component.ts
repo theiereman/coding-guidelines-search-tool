@@ -5,6 +5,7 @@ import { MilestoneListComponent } from '../../milestone-list/milestone-list.comp
 import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
 import { ProjectIssueCardComponent } from '../../project-list/project-issue-card/project-issue-card.component';
 
+//résumé des actions qui seront effecutées lors de la création de l'issue de réintégration
 @Component({
   selector: 'app-actions-summary',
   standalone: true,

@@ -11,6 +11,7 @@ import { IssueCreationActionsService } from 'src/app/services/issue-creation-act
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
 
+//popup affichant les informations des actions effectuées lors de la création d'une issue de réintégration
 @Component({
   selector: 'app-creation-summary-modal',
   standalone: true,
@@ -22,11 +23,11 @@ import { CommentPreviewComponent } from '../comment-preview/comment-preview.comp
   templateUrl: './creation-summary-modal.component.html',
 })
 export class CreationSummaryModalComponent {
-  @Input() showModal = false;
-  @Input() closeButtonActivated = false;
-  @Input({ required: true }) issueReintegration: IGitlabIssue =
+  @Input() showModal = false; //afficher la popup ou non
+  @Input() closeButtonActivated = false; //activer le bouton de fermeture ou non
+  @Input({ required: true }) issueReintegration: IGitlabIssue = //issue de réintégration entrain d'être créée
     {} as IGitlabIssue;
-  @Input() selectedProject?: IGitlabIssue = undefined;
+  @Input() selectedProject?: IGitlabIssue = undefined; //projet selectionné
 
   @Output() showModalEvent = new EventEmitter<boolean>();
 

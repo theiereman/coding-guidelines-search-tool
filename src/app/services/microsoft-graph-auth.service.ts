@@ -28,7 +28,9 @@ import { AbstractAuthenticationServiceService } from './abstract-authentication-
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements AbstractAuthenticationServiceService {
+export class MicrosoftGraphAuthService
+  implements AbstractAuthenticationServiceService
+{
   public graphClient?: Client;
   private readonly _destroying$ = new Subject<void>();
 
@@ -41,15 +43,15 @@ export class AuthService implements AbstractAuthenticationServiceService {
   constructor(
     private msalService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
   ) {
     //vérifie le statut de interactions
     this.msalBroadcastService.inProgress$
       .pipe(
         filter(
-          (status: InteractionStatus) => status === InteractionStatus.None
+          (status: InteractionStatus) => status === InteractionStatus.None,
         ),
-        takeUntil(this._destroying$)
+        takeUntil(this._destroying$),
       )
       .subscribe(() => {
         this.checkAndSetActiveAccount();
@@ -63,7 +65,7 @@ export class AuthService implements AbstractAuthenticationServiceService {
         console.error(err);
         this.alertService.addError(err);
         return of();
-      })
+      }),
     );
   }
 
@@ -72,7 +74,7 @@ export class AuthService implements AbstractAuthenticationServiceService {
       tap((_) => {
         this.graphClient = undefined;
         this.userSubject.next(undefined);
-      })
+      }),
     );
   }
 
@@ -115,7 +117,7 @@ export class AuthService implements AbstractAuthenticationServiceService {
           'Files.Read.All',
         ],
         interactionType: InteractionType.Redirect,
-      }
+      },
     );
 
     // Initialize the Graph client
@@ -128,7 +130,7 @@ export class AuthService implements AbstractAuthenticationServiceService {
       this.graphClient
         .api('/me')
         .select('displayName,mail,mailboxSettings,userPrincipalName')
-        .get()
+        .get(),
     )
       .pipe(
         tap((user) => {
@@ -146,7 +148,7 @@ export class AuthService implements AbstractAuthenticationServiceService {
                   });
                   this.loadingSubject.next(false);
                 };
-              })
+              }),
             )
             .subscribe();
         }),
@@ -154,7 +156,7 @@ export class AuthService implements AbstractAuthenticationServiceService {
           console.error(err);
           this.alertService.addError(err);
           return of();
-        })
+        }),
       )
       .subscribe();
   }
