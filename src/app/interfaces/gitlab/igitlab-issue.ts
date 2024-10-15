@@ -6,6 +6,7 @@ export interface IGitlabIssue {
   description: string;
   state: string;
   assignee?: IGitlabUser;
+  assignees?: IGitlabUser[];
   assignee_id: number;
   labels: string[];
   detailed_labels: IGitlabLabel[];

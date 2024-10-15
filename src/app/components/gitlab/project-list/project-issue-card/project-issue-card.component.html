@@ -29,7 +29,7 @@
         </h1>
       </div>
       <span class="text-ellipsis text-xs italic text-gray-600">
-        Assignee : {{ issue.assignee?.name ?? "Aucun" }}
+        Assignee(s) : {{ getIssueAssigneesNames() }}
       </span>
     </div>
     <p

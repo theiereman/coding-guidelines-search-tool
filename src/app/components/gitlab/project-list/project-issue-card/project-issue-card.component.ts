@@ -1,6 +1,7 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
+import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 
@@ -19,5 +20,12 @@ export class ProjectIssueCardComponent {
 
   getProjectDetailsUrl(projectId: number) {
     return `${environment.GITLAB_APP_BASE_URI}/adhoc-gti/suivi/-/issues/${projectId}`;
+  }
+
+  getIssueAssigneesNames(): string {
+    return (
+      this.issue?.assignees?.map((assignee) => assignee.name).join(', ') ||
+      'Aucun'
+    );
   }
 }
