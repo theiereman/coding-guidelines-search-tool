@@ -12,7 +12,6 @@ export const GITLAB = {
   API_URI: `${environment.GITLAB_APP_BASE_URI}/api/v4`,
   AUTH_URI: `${environment.GITLAB_APP_BASE_URI}/oauth/authorize`,
   TOKEN_URI: `${environment.GITLAB_APP_BASE_URI}/oauth/token`,
-  REDIRECT_URI: environment.GITLAB_AUTH_REDIRECT_URI,
 
   ACCESS_TOKEN_ITEM: 'gitlab_access_token',
   REFRESH_TOKEN_ITEM: 'gitlab_refresh_token',
