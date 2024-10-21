@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 import { GitlabAuthService } from './gitlab-auth.service';
 import { AlertsService } from './alerts.service';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
+import {
+  catchError,
+  finalize,
+  forkJoin,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
 import {
   IGitlabEditIssue,
@@ -13,11 +23,14 @@ import {
   FAKE_STATUS,
   IGitlabEditMilestone,
   IGitlabMilestone,
+  IGitlabPreparedMilestone,
   OPEN_STATUS,
 } from '../interfaces/gitlab/igitlab-milestone';
 import { GITLAB_REQUEST_HEADER } from '../gitlab-auth.interceptor';
 import { IGitlabProject } from '../interfaces/gitlab/igitlab-project';
 import { GITLAB } from '../constants/gitlab.constants';
+import { IssueCreationActionsService } from './issue-creation-actions.service';
+import { createStandardPublicClientApplication } from '@azure/msal-browser';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +39,7 @@ export class GitlabService {
   constructor(
     private authService: GitlabAuthService,
     private alertsService: AlertsService,
+    private issueCreationActionService: IssueCreationActionsService,
     private httpClient: HttpClient,
   ) {}
 
@@ -216,6 +230,8 @@ export class GitlabService {
       );
     }
 
+    console.log('closing milestone');
+
     return this.httpClient
       .put<IGitlabMilestone>(
         `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/milestones/${milestone.iid}`,
@@ -254,6 +270,32 @@ export class GitlabService {
     });
   }
 
+  //ouvre ou crée une milestone si elle n'est pas valide pour recevoir de nouvelles issues
+  private prepareMilestoneForIssueCreation(
+    milestone: IGitlabMilestone,
+  ): Observable<IGitlabPreparedMilestone> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab'),
+      );
+    }
+
+    if (this.milestoneIsFake(milestone)) {
+      return this.createMilestone(milestone.title).pipe(
+        map((milestone) => ({ ...milestone, needsToBeClosed: true })),
+      );
+    } else if (this.milestoneIsClosed(milestone)) {
+      return this.openMilestone(milestone).pipe(
+        map((milestone) => ({ ...milestone, needsToBeClosed: true })),
+      );
+    }
+
+    return of(milestone).pipe(
+      map((milestone) => ({ ...milestone, needsToBeClosed: false })),
+    );
+  }
+
   public getOpenMilestonesFromProject(
     projectId: number,
   ): Observable<IGitlabMilestone[]> {
@@ -290,6 +332,96 @@ export class GitlabService {
       );
   }
 
+  public createIssueReintegration(
+    reintegrationIssue: IGitlabIssue,
+    selectedMilestones: IGitlabMilestone[],
+    selectedProject: IGitlabIssue,
+  ): Observable<IGitlabIssue[]> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab'),
+      );
+    }
+
+    return forkJoin(
+      selectedMilestones.map((milestone: IGitlabMilestone) => {
+        const issueCreationAction = this.issueCreationActionService.addAction(
+          `Milestone '${milestone.title}' -> Création de l'issue de réintégration`,
+        );
+        return this.prepareMilestoneForIssueCreation(milestone).pipe(
+          mergeMap((preparedMilestone) => {
+            return this.createNewIssue({
+              ...reintegrationIssue,
+              milestone_id: preparedMilestone.id!,
+            }).pipe(
+              mergeMap((createdIssue) =>
+                this.closeIssue(createdIssue).pipe(
+                  catchError(() => {
+                    this.issueCreationActionService.addErrorResult(
+                      `Milestone ${preparedMilestone.title} - Impossible de refermer l'issue de réintégration`,
+                    );
+                    return of(createdIssue);
+                  }),
+                ),
+              ),
+              //création de l"issue ok
+              tap(() => {
+                this.issueCreationActionService.setActionsResult(
+                  issueCreationAction,
+                  true,
+                );
+              }),
+              //erreur création de l'issue
+              catchError((err) => {
+                console.log('milestone error ' + milestone);
+
+                this.issueCreationActionService.setActionsResult(
+                  issueCreationAction,
+                  false,
+                );
+                throw new Error(err);
+              }),
+              //TODO : déplacer à l'exterieur pour que ça se lancer à chaque fois même en cas d'erreur
+              mergeMap((createdIssue) => {
+                console.log('close milestone in merge map');
+
+                // Fermer la milestone si nécessaire
+                if (preparedMilestone.needsToBeClosed) {
+                  return this.closeMilestone(preparedMilestone).pipe(
+                    catchError(() => {
+                      this.issueCreationActionService.addErrorResult(
+                        `Milestone ${preparedMilestone.title} - Impossible de refermer la milestone`,
+                      );
+                      return of(createdIssue); // Retourner la milestone même en cas d'erreur
+                    }),
+                    map(() => createdIssue),
+                  );
+                }
+                return of(createdIssue);
+              }),
+            );
+          }),
+        );
+      }),
+    ).pipe(
+      mergeMap((issues) => {
+        return this.addCommentOfReintegrationInLinkedProjectIssue(
+          issues,
+          selectedProject,
+        ).pipe(
+          catchError(() => {
+            this.issueCreationActionService.addErrorResult(
+              "Impossible d'ajouter un commentaire sur le projet selectionné.",
+            );
+            return of(issues);
+          }),
+          map(() => issues),
+        );
+      }),
+    );
+  }
+
   public createNewIssue(issue: IGitlabIssue): Observable<IGitlabIssue> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
@@ -297,6 +429,9 @@ export class GitlabService {
         () => new Error('Utilisateur non authentifié sur Gitlab'),
       );
     }
+
+    //TODO : remove
+    return throwError(() => new Error('create issue error test'));
 
     return this.httpClient
       .post<IGitlabIssue>(
@@ -354,7 +489,7 @@ export class GitlabService {
   }
 
   public addCommentOfReintegrationInLinkedProjectIssue(
-    reintegrationIssue: IGitlabIssue,
+    reintegrationIssues: IGitlabIssue[],
     linkedProjectIssue: IGitlabIssue,
   ): Observable<void> {
     if (!this.authService.isAuthenticated()) {
@@ -364,11 +499,26 @@ export class GitlabService {
       );
     }
 
+    //if array on reintegrationIssues is empty return
+    if (reintegrationIssues.length === 0) return of();
+
+    const title = reintegrationIssues[0].title; //tous les titres sont les mêmes logiquement
+    const reintegrationLinks = reintegrationIssues
+      .filter((issue) => issue.web_url && issue.web_url.trim() !== '')
+      .map((issue) => {
+        return issue.web_url;
+      })
+      .join(' ; ');
+
+    console.log(
+      `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_SUIVI_GENERAL}/issues/${linkedProjectIssue.iid}/notes`,
+    );
+
     return this.httpClient
       .post<IGitlabIssue>(
         `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_SUIVI_GENERAL}/issues/${linkedProjectIssue.iid}/notes`,
         {
-          body: `${reintegrationIssue.title} (${reintegrationIssue.web_url})`,
+          body: `${title} (${reintegrationLinks})`,
           resolved: false,
         },
         {
