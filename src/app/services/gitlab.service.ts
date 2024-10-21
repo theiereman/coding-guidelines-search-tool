@@ -332,17 +332,20 @@ export class GitlabService {
       );
   }
 
+  //? on pourrait probablement réduire la complexité mais je suis pas assez intelligent pour le faire
   public createIssueReintegration(
     reintegrationIssue: IGitlabIssue,
     selectedMilestones: IGitlabMilestone[],
     selectedProject: IGitlabIssue,
-  ): Observable<IGitlabIssue[]> {
+  ): Observable<boolean> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
       return throwError(
         () => new Error('Utilisateur non authentifié sur Gitlab'),
       );
     }
+
+    let createdIssues: IGitlabIssue[] = [];
 
     return forkJoin(
       selectedMilestones.map((milestone: IGitlabMilestone) => {
@@ -355,13 +358,19 @@ export class GitlabService {
               ...reintegrationIssue,
               milestone_id: preparedMilestone.id!,
             }).pipe(
+              //on stocke les issues créées pour les ajouter dans le commentaire
+              tap((createdIssue) => {
+                createdIssues.push(createdIssue);
+              }),
+              //fermeture des issues de réintégration
               mergeMap((createdIssue) =>
                 this.closeIssue(createdIssue).pipe(
+                  map(() => preparedMilestone),
                   catchError(() => {
                     this.issueCreationActionService.addErrorResult(
                       `Milestone ${preparedMilestone.title} - Impossible de refermer l'issue de réintégration`,
                     );
-                    return of(createdIssue);
+                    return of(preparedMilestone);
                   }),
                 ),
               ),
@@ -374,49 +383,43 @@ export class GitlabService {
               }),
               //erreur création de l'issue
               catchError((err) => {
-                console.log('milestone error ' + milestone);
-
                 this.issueCreationActionService.setActionsResult(
                   issueCreationAction,
                   false,
                 );
-                throw new Error(err);
-              }),
-              //TODO : déplacer à l'exterieur pour que ça se lancer à chaque fois même en cas d'erreur
-              mergeMap((createdIssue) => {
-                console.log('close milestone in merge map');
-
-                // Fermer la milestone si nécessaire
-                if (preparedMilestone.needsToBeClosed) {
-                  return this.closeMilestone(preparedMilestone).pipe(
-                    catchError(() => {
-                      this.issueCreationActionService.addErrorResult(
-                        `Milestone ${preparedMilestone.title} - Impossible de refermer la milestone`,
-                      );
-                      return of(createdIssue); // Retourner la milestone même en cas d'erreur
-                    }),
-                    map(() => createdIssue),
-                  );
-                }
-                return of(createdIssue);
+                return of(preparedMilestone); //on renvoie quand même la milestone pour pouvoir la fermer
               }),
             );
+          }),
+          mergeMap((preparedMilestone) => {
+            // Fermer la milestone si nécessaire
+            if (preparedMilestone.needsToBeClosed) {
+              return this.closeMilestone(preparedMilestone).pipe(
+                catchError(() => {
+                  this.issueCreationActionService.addErrorResult(
+                    `Milestone ${preparedMilestone.title} - Impossible de refermer la milestone`,
+                  );
+                  return of(false);
+                }),
+              );
+            }
+            return of(true);
           }),
         );
       }),
     ).pipe(
-      mergeMap((issues) => {
+      mergeMap(() => {
         return this.addCommentOfReintegrationInLinkedProjectIssue(
-          issues,
+          createdIssues,
           selectedProject,
         ).pipe(
           catchError(() => {
             this.issueCreationActionService.addErrorResult(
               "Impossible d'ajouter un commentaire sur le projet selectionné.",
             );
-            return of(issues);
+            return of(false);
           }),
-          map(() => issues),
+          map(() => true),
         );
       }),
     );
@@ -429,9 +432,6 @@ export class GitlabService {
         () => new Error('Utilisateur non authentifié sur Gitlab'),
       );
     }
-
-    //TODO : remove
-    return throwError(() => new Error('create issue error test'));
 
     return this.httpClient
       .post<IGitlabIssue>(
@@ -499,7 +499,6 @@ export class GitlabService {
       );
     }
 
-    //if array on reintegrationIssues is empty return
     if (reintegrationIssues.length === 0) return of();
 
     const title = reintegrationIssues[0].title; //tous les titres sont les mêmes logiquement
