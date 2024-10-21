@@ -436,8 +436,9 @@ export class NewIssueComponent {
             value.substring(value.indexOf('[') + 1, value.indexOf(']')),
           );
           //titre = partie après le -
+
           this.issueCreationForm.controls.title.setValue(
-            value.substring(value.indexOf(']')).split('-')[1].trim(),
+            value.split('] - ')[1].trim(),
           );
         }
       }
