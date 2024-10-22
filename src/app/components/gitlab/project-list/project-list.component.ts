@@ -12,6 +12,8 @@ import { GitlabService } from 'src/app/services/gitlab.service';
 import { environment } from 'src/environments/environment';
 import { ProjectIssueCardComponent } from './project-issue-card/project-issue-card.component';
 import { AlertsService } from 'src/app/services/alerts.service';
+import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
+import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 
 @Component({
   selector: 'app-project-list',
@@ -37,7 +39,10 @@ import { AlertsService } from 'src/app/services/alerts.service';
 export class ProjectListComponent implements ControlValueAccessor {
   searchValueControl: FormControl = new FormControl('');
   openOnlyControl: FormControl = new FormControl(true);
+  assignedToMeControl: FormControl = new FormControl(false);
   noProjectControl: FormControl = new FormControl(false);
+
+  authenticatedUser: IGitlabUser | undefined = undefined;
 
   issues: IGitlabIssue[] = []; //listes des projets
   recentIssues: IGitlabIssue[] = []; //listes des issues récentes dans le local storage
@@ -51,6 +56,7 @@ export class ProjectListComponent implements ControlValueAccessor {
 
   constructor(
     private gitlabService: GitlabService,
+    private gitlabAuthService: GitlabAuthService,
     private alertsService: AlertsService,
   ) {}
 
@@ -71,6 +77,7 @@ export class ProjectListComponent implements ControlValueAccessor {
     //uniquement les issues ouvertes
     this.openOnlyControl.valueChanges
       .pipe(
+        tap(() => (this.loadingIssuesList = true)),
         tap(() => {
           this.recentIssues = this.getLocalStorageIssues();
         }),
@@ -87,6 +94,26 @@ export class ProjectListComponent implements ControlValueAccessor {
       if (!this.miscellaneousProject) return;
       this.toggleSelectedProject(this.miscellaneousProject);
     });
+
+    //récupération de l'utilisateur connecté
+    this.gitlabAuthService.getAuthenticatedUser().subscribe((user) => {
+      this.authenticatedUser = user;
+    });
+
+    //uniquement assignées à l'utilisateur connecté
+    this.assignedToMeControl.valueChanges
+      .pipe(
+        tap(() => (this.loadingIssuesList = true)),
+        tap(() => {
+          this.recentIssues = this.getLocalStorageIssues();
+        }),
+        switchMap(() => {
+          return this.startSearchingForIssues();
+        }),
+      )
+      .subscribe((issues) => {
+        this.updateIssuesList(issues);
+      });
 
     this.getMiscellaneousDevelopmentProject();
   }
@@ -127,6 +154,7 @@ export class ProjectListComponent implements ControlValueAccessor {
       this.searchValueControl.value,
       this.openOnlyControl.value,
       6,
+      this.assignedToMeControl.value ? this.authenticatedUser : undefined,
     );
   }
 
@@ -151,7 +179,9 @@ export class ProjectListComponent implements ControlValueAccessor {
       .getIssuesFromLocalStorage(6)
       .filter(
         (issue) =>
-          this.openOnlyControl.value === false || issue.state === 'opened',
+          (this.openOnlyControl.value === false || issue.state === 'opened') &&
+          (!this.assignedToMeControl.value ||
+            issue.assignee?.id === this.authenticatedUser?.id),
       );
   }
 
