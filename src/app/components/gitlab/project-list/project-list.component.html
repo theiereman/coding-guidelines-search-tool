@@ -24,14 +24,25 @@
       </div>
     </div>
 
-    <div class="ms-1 flex items-center gap-1">
-      <input
-        type="checkbox"
-        class="rounded-md border border-gray-400 bg-transparent p-1"
-        id="openOnly"
-        [formControl]="openOnlyControl"
-      />
-      <label for="openOnly">Ouvertes uniquement</label>
+    <div class="ms-1 flex items-center gap-2">
+      <div>
+        <input
+          type="checkbox"
+          class="rounded-md border border-gray-400 bg-transparent p-1"
+          id="openOnly"
+          [formControl]="openOnlyControl"
+        />
+        <label class="ms-1" for="openOnly">Ouvertes uniquement</label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          class="rounded-md border border-gray-400 bg-transparent p-1"
+          id="assignedToMe"
+          [formControl]="assignedToMeControl"
+        />
+        <label class="ms-1" for="assignedToMe">Assignées à moi uniq.</label>
+      </div>
     </div>
   </div>
 

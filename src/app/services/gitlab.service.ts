@@ -31,6 +31,7 @@ import { IGitlabProject } from '../interfaces/gitlab/igitlab-project';
 import { GITLAB } from '../constants/gitlab.constants';
 import { IssueCreationActionsService } from './issue-creation-actions.service';
 import { createStandardPublicClientApplication } from '@azure/msal-browser';
+import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
 
 @Injectable({
   providedIn: 'root',
@@ -122,6 +123,7 @@ export class GitlabService {
     query: string,
     openOnly: boolean = true,
     maxResults: number = 20,
+    assignedToUser: IGitlabUser | undefined = undefined,
   ): Observable<IGitlabIssue[]> {
     if (!this.authService.isAuthenticated()) {
       this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
@@ -152,6 +154,12 @@ export class GitlabService {
     url = `${url}&per_page=${maxResults}&${
       openOnly === true ? 'state=opened' : ''
     }`;
+
+    if (assignedToUser) {
+      url = `${url}&assignee_id=${assignedToUser.id}`;
+    }
+
+    console.log(url);
 
     //note : ajout '&with_labels_details=true' dans l'url pour récupérer les labels en détail
 
