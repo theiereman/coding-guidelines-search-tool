@@ -34,7 +34,7 @@
     </div>
     <p
       *ngIf="!hideDetails"
-      class="line-clamp-3 w-full flex-1 text-ellipsis text-xs text-gray-600"
+      class="line-clamp-3 w-full flex-1 text-ellipsis break-all text-xs text-gray-600"
       [ngClass]="{ 'mb-4': issue && !hideDetails }"
     >
       {{ issue.description || "Pas de description disponible" }}
