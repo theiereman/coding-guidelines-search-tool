@@ -1,8 +1,9 @@
 export interface IAlert {
-    message: string
-    type: AlertType,
+  message: string;
+  type: AlertType;
 }
 
 export enum AlertType {
-    Error
+  Success,
+  Error,
 }

@@ -1,0 +1,60 @@
+<div class="flex flex-col rounded-lg border border-gray-400 p-4">
+  <p class="flex-1 text-center text-gray-500" *ngIf="milestones.length === 0">
+    Aucune milestone {{ !interactiveMode ? "selectionnée" : "trouvée" }}
+  </p>
+  <span *ngIf="interactiveMode && milestones.length > 0" class="mb-2"
+    >Dernières milestones</span
+  >
+  <ul class="flex list-none flex-col gap-2">
+    <li
+      class="flex items-center gap-2"
+      *ngFor="let milestone of getSortedMilestones()"
+    >
+      <div class="flex w-full gap-2 rounded-lg border-2 bg-gray-100 p-2">
+        <label class="flex flex-1 items-center gap-2">
+          <input
+            *ngIf="interactiveMode"
+            type="checkbox"
+            class="size-4"
+            [checked]="isSelected(milestone)"
+            (change)="toggleMilestone(milestone)"
+          />
+          <span class="leading-4 text-gray-700">{{ milestone.title }}</span>
+          <a
+            *ngIf="getMilestoneURL(milestone)"
+            href="{{ getMilestoneURL(milestone) }}"
+            target="_blank"
+            class="material-icons text-[1.2rem] text-blue-500"
+            >open_in_new</a
+          >
+        </label>
+        <span
+          class="rounded-full px-2 py-[2px] text-xs font-semibold"
+          [ngClass]="getMilestoneStateColorClasses(milestone)"
+        >
+          {{ getMilestoneStateLabel(milestone) }}
+        </span>
+      </div>
+    </li>
+  </ul>
+  <div *ngIf="interactiveMode && lastClosedMilestones.length > 0" class="mt-2">
+    <details class="overflow-hidden rounded-lg border-2 border-gray-200">
+      <summary class="cursor-pointer bg-gray-200 p-2 text-gray-700">
+        Anciennes versions
+        {{ numberOfOldSelectedMilestones() }}
+      </summary>
+      <ul class="flex list-none flex-col gap-2 p-3">
+        <li
+          class="flex items-center gap-2"
+          *ngFor="let milestone of lastClosedMilestones"
+        >
+          <app-old-milestone-action-choice
+            class="w-full"
+            [milestone]="milestone"
+            (selectedMilestoneEvent)="toggleMilestone($event)"
+          ></app-old-milestone-action-choice>
+        </li>
+      </ul>
+    </details>
+  </div>
+</div>

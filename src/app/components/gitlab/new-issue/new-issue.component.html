@@ -1,0 +1,134 @@
+<app-connection-required
+  *ngIf="!gitlabAuthService.isAuthenticated()"
+  [authenticationService]="gitlabAuthService"
+  externalServiceName="Gitlab"
+></app-connection-required>
+
+<app-creation-summary-modal
+  [showModal]="isSummaryModalActive"
+  (showModalEvent)="showModalEventHandler($event)"
+  [closeButtonActivated]="actionsService.allActionsAreFinished()"
+  [selectedProject]="selectedProject"
+  [issueReintegration]="futureIssue"
+></app-creation-summary-modal>
+
+<form
+  *ngIf="gitlabAuthService.isAuthenticated()"
+  [formGroup]="issueCreationForm"
+  class="mx-auto max-w-[700px]"
+>
+  <div
+    class="mb-6 rounded-xl border-2 border-red-500 p-4 font-bold text-red-500"
+  >
+    <p>Attention : ce formulaire est une béta !</p>
+    <p>
+      Le formulaire officiel pour faire des issues de réintégration est
+      <a
+        class="text-blue-500 underline"
+        href="http://10.128.88.23:6969/reintegration/reintegration.html"
+        >ici</a
+      >
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <app-custom-input
+      [label]="'Type de développement'"
+      [selectOptions]="developmentTypeOptions"
+      [control]="issueCreationForm.controls['developmentType']"
+    ></app-custom-input>
+
+    <app-custom-input
+      [label]="
+        isCurrentDevelopmentTypeModificationAnalyse()
+          ? 'Numéro de l\'analyse'
+          : 'Périmètre'
+      "
+      [control]="issueCreationForm.controls['scope']"
+    ></app-custom-input>
+
+    <app-custom-input
+      [label]="'Titre'"
+      [control]="issueCreationForm.controls['title']"
+    ></app-custom-input>
+
+    <app-custom-input
+      [label]="'Description'"
+      [isMultiline]="true"
+      [control]="issueCreationForm.controls['description']"
+    ></app-custom-input>
+
+    <app-input-slot [label]="'Projet'" [required]="true">
+      <app-project-list
+        id="project-list"
+        formControlName="selectedProject"
+        [ngClass]="{
+          'rounded-lg border-2 border-red-500':
+            formControlInvalid('selectedProject'),
+        }"
+      ></app-project-list>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('selectedProject')"
+        >Veuillez selectionner une valeur</span
+      >
+    </app-input-slot>
+
+    <app-custom-input
+      *ngIf="!isCurrentDevelopmentTypeModificationAnalyse()"
+      [label]="'Est une correction de bug ?'"
+      [yesNoSelector]="true"
+      [preselectedOption]="false"
+      [control]="issueCreationForm.controls['isBugCorrection']"
+    ></app-custom-input>
+
+    <app-custom-input
+      *ngIf="!isCurrentDevelopmentTypeModificationAnalyse()"
+      [label]="'Doit être mentionné dans le \'quoi de neuf\' ?'"
+      [yesNoSelector]="true"
+      [preselectedOption]="false"
+      [control]="issueCreationForm.controls['isQuoiDeNeuf']"
+    ></app-custom-input>
+
+    <app-input-slot [label]="'Milestone(s)'" [required]="true">
+      <app-milestone-list
+        [milestones]="milestones"
+        formControlName="selectedMilestones"
+        [ngClass]="{
+          'rounded-lg border-2 border-red-500':
+            formControlInvalid('selectedMilestones'),
+        }"
+      ></app-milestone-list>
+      <span
+        class="text-sm text-red-500"
+        *ngIf="formControlInvalid('selectedMilestones')"
+        >Veuillez sélectionner au moins une valeur</span
+      >
+    </app-input-slot>
+
+    <fieldset class="rounded-md border-2 border-gray-400 p-4">
+      <legend class="p-2 text-lg font-semibold">
+        Résumé de la réintégration
+      </legend>
+      <app-actions-summary
+        [issue]="futureIssue"
+        [project]="selectedProject"
+        [selectedMilestones]="selectedMilestones"
+      ></app-actions-summary>
+      <div class="mt-6 flex items-center justify-end gap-2">
+        <span
+          class="text-sm italic text-gray-500"
+          *ngIf="!issueCreationForm.valid"
+          >Veuillez remplir tous les champs obligatoires</span
+        >
+        <button
+          (click)="createNewIssue()"
+          [disabled]="!issueCreationForm.valid"
+          class="float-end rounded-md border-gray-400 bg-purple-700 p-2 text-white disabled:bg-gray-200 disabled:text-gray-500"
+        >
+          Créer une issue de réintégration
+        </button>
+      </div>
+    </fieldset>
+  </div>
+</form>

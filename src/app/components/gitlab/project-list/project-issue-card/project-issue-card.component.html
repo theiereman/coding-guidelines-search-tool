@@ -1,0 +1,55 @@
+<div class="flex h-full flex-col items-start">
+  @if (issue) {
+    <div class="w-full" [ngClass]="{ 'mb-2': !hideDetails }">
+      <div class="grid grid-cols-[auto_auto_1fr] items-center gap-1">
+        <span
+          *ngIf="issue?.state === 'closed'"
+          class="-ms-1 mt-1 rounded-full px-2 py-[1px] text-xs font-semibold"
+          [ngClass]="{
+            'bg-red-300 text-red-800': issue.state === 'closed',
+          }"
+          >Fermé</span
+        >
+        <h1
+          [ngClass]="{
+            'text-blue-500': isSelected,
+          }"
+          title="{{ issue.title }}"
+          class="text-md truncate font-bold"
+        >
+          {{ issue.title }}
+        </h1>
+        <h1
+          [ngClass]="{
+            'text-blue-500': isSelected,
+          }"
+          class="text-md whitespace-nowrap font-bold"
+        >
+          {{ "(#" + issue.iid + ")" }}
+        </h1>
+      </div>
+      <span class="text-ellipsis text-xs italic text-gray-600">
+        Assignee(s) : {{ getIssueAssigneesNames() }}
+      </span>
+    </div>
+    <p
+      *ngIf="!hideDetails"
+      class="line-clamp-3 w-full flex-1 text-ellipsis break-all text-xs text-gray-600"
+      [ngClass]="{ 'mb-4': issue && !hideDetails }"
+    >
+      {{ issue.description || "Pas de description disponible" }}
+    </p>
+    <a
+      *ngIf="issue && !hideDetails"
+      href="{{ getProjectDetailsUrl(issue.iid) }}"
+      target="_blank"
+      class="text-xs font-medium text-blue-500 hover:underline"
+    >
+      Voir plus
+    </a>
+  } @else {
+    <p class="flex-1 self-center text-center text-gray-500">
+      Aucun projet selectionné
+    </p>
+  }
+</div>
