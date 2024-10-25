@@ -1,3 +1,4 @@
+//TODO : déclarer dans les variables d'environnement
 export const GRAPH_API = {
   siteId:
     'custyburrus.sharepoint.com,63756e78-963f-4d88-b223-d59fbe37f706,071b9c7a-e181-4a2e-a512-0a1fa7611824',

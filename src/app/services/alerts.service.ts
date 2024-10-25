@@ -1,20 +1,30 @@
 import { Injectable } from '@angular/core';
 import { IAlert, AlertType } from '../interfaces/ialert';
 
+//contient la liste des alertes
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class AlertsService {
   alerts: IAlert[] = [];
 
-  addError(message: string, autoRemove: boolean = true) {
-    let newAlert = {message: message, type: AlertType.Error};
+  addSuccess(message: string, autoRemove: boolean = true) {
+    let newAlert = { message: message, type: AlertType.Success };
     this.alerts.push(newAlert);
-    if(autoRemove) {
+    if (autoRemove) {
       setTimeout(() => {
         this.remove(newAlert);
-      }, 3000);
+      }, 5000);
+    }
+  }
+
+  addError(message: string, autoRemove: boolean = true) {
+    let newAlert = { message: message, type: AlertType.Error };
+    this.alerts.push(newAlert);
+    if (autoRemove) {
+      setTimeout(() => {
+        this.remove(newAlert);
+      }, 5000);
     }
   }
 

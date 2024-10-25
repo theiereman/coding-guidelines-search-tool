@@ -1,11 +1,7 @@
 {
   "hosting": {
-    "public": "dist/coding-guidelines-search-tool",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "public": "dist/coding-guidelines-search-tool/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",

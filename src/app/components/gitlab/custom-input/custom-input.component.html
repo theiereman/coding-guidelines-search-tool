@@ -1,0 +1,38 @@
+<app-input-slot [label]="label" [required]="formControlRequired()">
+  @if (isSelectInput) {
+    <select
+      class="ease rounded-md border border-gray-400 bg-transparent p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+      [formControl]="control"
+      [ngClass]="{
+        'border-1 border-red-500': formControlInvalid(),
+      }"
+    >
+      <option *ngFor="let option of selectOptions" [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+  } @else {
+    <textarea
+      *ngIf="isMultiline"
+      class="ease rounded-md border border-gray-400 p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+      type="text"
+      [formControl]="control"
+      [ngClass]="{
+        'border-1 border-red-500': formControlInvalid(),
+      }"
+    ></textarea>
+
+    <input
+      *ngIf="!isMultiline"
+      class="ease rounded-md border border-gray-400 p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+      type="text"
+      [formControl]="control"
+      [ngClass]="{
+        'border-1 border-red-500': formControlInvalid(),
+      }"
+    />
+  }
+  <span class="text-sm text-red-500" *ngIf="formControlInvalid()"
+    >Veuillez {{ isSelectInput ? "sélectionner" : "saisir" }} une valeur</span
+  >
+</app-input-slot>
