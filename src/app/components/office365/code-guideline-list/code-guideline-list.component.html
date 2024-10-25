@@ -1,0 +1,88 @@
+<app-connection-required
+  *ngIf="!user && contentLoaded"
+  [authenticationService]="authService"
+  externalServiceName="Office365"
+></app-connection-required>
+
+<div class="flex h-full flex-col items-center" *ngIf="user">
+  <div class="flex w-2/3 items-baseline gap-2">
+    <input
+      #searchInput
+      (input)="onSearchValueUpdated(searchInput.value)"
+      class="ease w-full rounded-md border border-gray-400 bg-transparent px-3 py-2 text-sm text-gray-700 transition duration-200 placeholder:text-gray-400 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+      placeholder="Rechercher..."
+    />
+
+    <button
+      class="size-9 rounded-full border border-gray-400 text-gray-400 shadow-sm transition-colors hover:border-purple-600 hover:text-gray-700 hover:shadow"
+      (click)="updateList()"
+      title="Recharger la liste"
+    >
+      ⭯
+    </button>
+    <button
+      class="size-9 rounded-full border border-gray-400 text-gray-400 shadow-sm transition-colors hover:border-purple-600 hover:text-gray-700 hover:shadow"
+      (click)="openSharepointWorksheet()"
+      title="Ouvrir le document Excel"
+    >
+      ✎
+    </button>
+  </div>
+
+  <div class="loader-container" *ngIf="!valuesInitialized">
+    <div class="loader">
+      <div class="loader-square bg-purple-700"></div>
+      <div class="loader-square bg-purple-700"></div>
+      <div class="loader-square bg-purple-700"></div>
+      <div class="loader-square bg-purple-700"></div>
+      <div class="loader-square bg-purple-700"></div>
+      <div class="loader-square bg-purple-700"></div>
+      <div class="loader-square bg-purple-700"></div>
+    </div>
+    <p>Récupération des valeurs depuis Sharepoint...</p>
+  </div>
+
+  <div
+    class="my-4 w-full overflow-x-auto rounded-xl border border-gray-400"
+    *ngIf="valuesInitialized"
+  >
+    <table class="w-full text-left text-sm text-gray-700">
+      <thead class="bg-gray-200 text-left text-xs uppercase text-gray-600">
+        <tr>
+          <th class="px-6 py-3">Nom de l'élément</th>
+          <th class="px-6 py-3">Préfixe</th>
+          <th class="px-6 py-3">Format / Casse</th>
+          <th class="px-6 py-3">Catégorie</th>
+        </tr>
+      </thead>
+      <ng-container
+        *ngFor="let codingGuidelineItem of filteredCodingGuidelinesItems"
+      >
+        <tbody class="border-b border-gray-300 odd:bg-white even:bg-gray-100">
+          <tr>
+            <td class="px-6 py-4">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.name
+              }}</span>
+            </td>
+            <td class="px-6 py-4">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.prefix
+              }}</span>
+            </td>
+            <td class="px-6 py-4">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.case
+              }}</span>
+            </td>
+            <td class="px-6 py-4">
+              <span [appHighlightOnSearch]="currentSearchValue">{{
+                codingGuidelineItem.sheetName
+              }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+  </div>
+</div>

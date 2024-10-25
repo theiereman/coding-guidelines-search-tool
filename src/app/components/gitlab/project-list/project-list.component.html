@@ -1,0 +1,96 @@
+<div class="flex flex-col gap-4 rounded-lg border border-gray-400 p-4">
+  <div class="flex w-full flex-col gap-1">
+    <div class="flex w-full gap-2">
+      <input
+        [formControl]="searchValueControl"
+        type="text"
+        class="ease max-w-[400px] flex-1 rounded-md border border-gray-400 p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+        placeholder="Rechercher des issues"
+      />
+      <div class="ms-2 flex items-center gap-1">
+        <input
+          type="checkbox"
+          class="rounded-md border border-gray-400 bg-transparent p-1"
+          id="noProject"
+          [formControl]="noProjectControl"
+          [checked]="selectedProject?.iid === miscellaneousProject?.iid"
+        />
+        <label
+          for="noProject"
+          class="line-clamp-1 text-ellipsis"
+          [ngClass]="{ 'text-gray-400': noProjectControl.disabled }"
+          >Développement lié à aucun projet</label
+        >
+      </div>
+    </div>
+
+    <div class="ms-1 flex items-center gap-2">
+      <div>
+        <input
+          type="checkbox"
+          class="rounded-md border border-gray-400 bg-transparent p-1"
+          id="openOnly"
+          [formControl]="openOnlyControl"
+        />
+        <label class="ms-1" for="openOnly">Ouvertes uniquement</label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          class="rounded-md border border-gray-400 bg-transparent p-1"
+          id="assignedToMe"
+          [formControl]="assignedToMeControl"
+        />
+        <label class="ms-1" for="assignedToMe">Assignées à moi uniq.</label>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="searchValueControl.value !== ''">
+    <p *ngIf="loadingIssuesList" class="text-center text-gray-500">
+      Chargement...
+    </p>
+    <p
+      *ngIf="!loadingIssuesList && issues.length === 0"
+      class="text-center text-gray-500"
+    >
+      Aucun résultat trouvé
+    </p>
+    <div
+      *ngIf="!loadingIssuesList"
+      class="grid grid-cols-1 gap-3 sm:grid-cols-2"
+    >
+      <app-project-issue-card
+        [ngClass]="{
+          '!border-blue-500': selectedProject?.iid === issue?.iid,
+        }"
+        class="rounded-lg border-2 bg-gray-100 p-4 hover:cursor-pointer"
+        (click)="toggleSelectedProject(issue)"
+        *ngFor="let issue of issues"
+        [issue]="issue"
+        [isSelected]="selectedProject?.iid === issue?.iid"
+      ></app-project-issue-card>
+    </div>
+  </div>
+
+  <div *ngIf="recentIssues.length > 0">
+    <details open class="overflow-hidden rounded-lg border-2 border-gray-200">
+      <summary class="cursor-pointer bg-gray-200 p-2 text-gray-700">
+        Issues récentes {{ numberOfRecentIssueSelected() }}
+      </summary>
+      <div class="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2">
+        <app-project-issue-card
+          [ngClass]="{
+            '!border-blue-500': selectedProject?.iid === issue?.iid,
+          }"
+          class="rounded-lg border-2 bg-gray-100 p-4 hover:cursor-pointer"
+          (click)="toggleSelectedProject(issue)"
+          *ngFor="let issue of recentIssues"
+          [issue]="issue"
+          [hideDetails]="true"
+          [isSelected]="selectedProject?.iid === issue?.iid"
+        ></app-project-issue-card>
+      </div>
+    </details>
+  </div>
+</div>
