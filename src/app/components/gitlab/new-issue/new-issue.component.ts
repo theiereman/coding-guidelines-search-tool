@@ -283,7 +283,7 @@ export class NewIssueComponent {
       value = value ?? '';
       //uniquemnt des chiffres pour le numéro de l'analyse
       if (this.isCurrentDevelopmentTypeModificationAnalyse()) {
-        const sanitizedValue = value.replace(/[^0-9]/g, '') ?? '';
+        const sanitizedValue = value.replace(/[^0-9-]/g, '') ?? '';
         // Vérifiez si la valeur est différente pour éviter boucle infinie
         if (sanitizedValue !== value) {
           this.issueCreationForm.controls.scope.setValue(sanitizedValue, {

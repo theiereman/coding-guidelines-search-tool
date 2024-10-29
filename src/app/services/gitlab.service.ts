@@ -141,9 +141,9 @@ export class GitlabService {
     if (query.trim() === '') return of([]);
 
     if (isUrl) {
-      const projectId = query.split('/').pop();
+      const issueId = query.split('/').pop();
       if (!projectId || isNaN(+projectId)) return of([]);
-      url = `${GITLAB.API_URI}/projects/${projectId}/issues?iids[]=${projectId}`;
+      url = `${GITLAB.API_URI}/projects/${projectId}/issues?iids[]=${issueId}`;
     } else if (isIssueId || isNumber) {
       const issueId = query.replace('#', '');
       url = `${GITLAB.API_URI}/projects/${projectId}/issues?iids[]=${issueId}`;
