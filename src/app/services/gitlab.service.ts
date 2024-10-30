@@ -13,7 +13,10 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { IGitlabLabel } from '../interfaces/gitlab/igitlab-label';
+import {
+  IGitlabLabel,
+  MODIF_ANALYSE_LABEL_NAME,
+} from '../interfaces/gitlab/igitlab-label';
 import {
   IGitlabEditIssue,
   IGitlabIssue,
@@ -32,6 +35,7 @@ import { GITLAB } from '../constants/gitlab.constants';
 import { IssueCreationActionsService } from './issue-creation-actions.service';
 import { createStandardPublicClientApplication } from '@azure/msal-browser';
 import { IGitlabUser } from '../interfaces/gitlab/igitlab-user';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +69,16 @@ export class GitlabService {
           return of();
         }),
       );
+  }
+
+  //! TODO : mettre les noms de projets utilisés dans des variables d'environnement
+  getIssueReintegrationUrl(issueId: number) {
+    return `${environment.GITLAB_APP_BASE_URI}/adhoc/adhoc/-/issues/${issueId}`;
+  }
+
+  //! TODO : mettre les noms de projets utilisés dans des variables d'environnement
+  getSuiviGeneralIssueUrl(projectId: number) {
+    return `${environment.GITLAB_APP_BASE_URI}/adhoc-gti/suivi/-/issues/${projectId}`;
   }
 
   public getLabelsFromProject(projectId: number): Observable<IGitlabLabel[]> {
@@ -159,8 +173,6 @@ export class GitlabService {
       url = `${url}&assignee_id=${assignedToUser.id}`;
     }
 
-    console.log(url);
-
     //note : ajout '&with_labels_details=true' dans l'url pour récupérer les labels en détail
 
     return this.httpClient
@@ -174,6 +186,37 @@ export class GitlabService {
             'Impossible de récupérer les issues du projet',
           );
           return of([]);
+        }),
+      );
+  }
+
+  public getLastModifAnalyse(): Observable<IGitlabIssue | undefined> {
+    if (!this.authService.isAuthenticated()) {
+      this.alertsService.addError('Utilisateur non authentifié sur Gitlab');
+      return throwError(
+        () => new Error('Utilisateur non authentifié sur Gitlab'),
+      );
+    }
+
+    //url pour lister uniquement la dernière modif d'analyse
+    const url = `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/issues?labels=${MODIF_ANALYSE_LABEL_NAME}&order_by=created_at&sort=desc&per_page=1`;
+
+    return this.httpClient
+      .get<IGitlabIssue[]>(url, {
+        context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
+      })
+      .pipe(
+        //logiquement un tableau de 1 seule issue
+        map((issues) => {
+          if (issues.length === 0) return undefined;
+          return issues[0];
+        }),
+        catchError((err) => {
+          console.error(err);
+          this.alertsService.addError(
+            'Impossible de récupérer la dernière issue de réintégration',
+          );
+          return of(undefined);
         }),
       );
   }

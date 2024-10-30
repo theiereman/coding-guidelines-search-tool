@@ -16,10 +16,10 @@ export class ProjectIssueCardComponent {
   @Input() hideDetails: boolean = false;
   @Input() isSelected: boolean = false;
 
-  constructor(public gitlabService: GitlabService) {}
+  constructor(private gitlabService: GitlabService) {}
 
   getProjectDetailsUrl(projectId: number) {
-    return `${environment.GITLAB_APP_BASE_URI}/adhoc-gti/suivi/-/issues/${projectId}`;
+    return this.gitlabService.getSuiviGeneralIssueUrl(projectId);
   }
 
   getIssueAssigneesNames(): string {
