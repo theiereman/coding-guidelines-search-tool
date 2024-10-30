@@ -1,13 +1,16 @@
-<div class="fixed inset-x-0 mx-auto w-2/3 z-50" @list>
+<div class="fixed inset-x-0 z-50 mx-auto w-2/3" @list>
   <div @animate *ngFor="let alert of alertsService.alerts">
     <div
       (click)="close(alert)"
-      [ngClass]="
-        alert.type === alertEnum.Success
-          ? 'bg-green-100 hover:bg-green-200 border-green-500 text-green-600'
-          : 'bg-red-100 hover:bg-red-200 border-red-500 text-red-600'
-      "
-      class="text-center m-2 transition-colors cursor-pointer border-2 rounded-xl p-4"
+      [ngClass]="{
+        'border-green-500 bg-green-100 text-green-600 hover:bg-green-200':
+          alert.type === alertEnum.Success,
+        'border-red-500 bg-red-100 text-red-600 hover:bg-red-200':
+          alert.type === alertEnum.Error,
+        'border-yellow-500 bg-yellow-100 text-yellow-600 hover:bg-yellow-200':
+          alert.type === alertEnum.Warning,
+      }"
+      class="m-2 cursor-pointer rounded-xl border-2 p-4 text-center transition-colors"
       @animate
     >
       <span class="flex-1" [innerHTML]="alert.message"></span>

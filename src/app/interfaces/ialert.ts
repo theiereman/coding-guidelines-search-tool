@@ -6,4 +6,5 @@ export interface IAlert {
 export enum AlertType {
   Success,
   Error,
+  Warning,
 }
