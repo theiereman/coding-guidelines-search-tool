@@ -47,6 +47,10 @@
       [control]="issueCreationForm.controls['scope']"
     ></app-custom-input>
 
+    @if (isCurrentDevelopmentTypeModificationAnalyse()) {
+      <app-last-modif-analyse></app-last-modif-analyse>
+    }
+
     <app-custom-input
       [label]="'Titre'"
       [control]="issueCreationForm.controls['title']"

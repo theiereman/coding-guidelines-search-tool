@@ -28,6 +28,16 @@ export class AlertsService {
     }
   }
 
+  addWarning(message: string, autoRemove: boolean = true) {
+    let newAlert = { message: message, type: AlertType.Warning };
+    this.alerts.push(newAlert);
+    if (autoRemove) {
+      setTimeout(() => {
+        this.remove(newAlert);
+      }, 5000);
+    }
+  }
+
   remove(alert: IAlert) {
     this.alerts.splice(this.alerts.indexOf(alert), 1);
   }
