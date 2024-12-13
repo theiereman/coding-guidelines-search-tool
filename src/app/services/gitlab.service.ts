@@ -281,11 +281,9 @@ export class GitlabService {
       );
     }
 
-    console.log('closing milestone');
-
     return this.httpClient
       .put<IGitlabMilestone>(
-        `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/milestones/${milestone.iid}`,
+        `${GITLAB.API_URI}/projects/${GITLAB.ID_PROJET_REINTEGRATION}/milestones/${milestone.id}`,
         milestone,
         {
           context: new HttpContext().set(GITLAB_REQUEST_HEADER, true),
