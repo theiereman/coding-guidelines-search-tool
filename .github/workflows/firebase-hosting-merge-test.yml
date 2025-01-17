@@ -8,8 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set FLAG_VERSION
-        run: echo "FLAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - name: Build and Deploy
         env:
           GITLAB_APP_BASE_URI: ${{ vars.GITLAB_APP_BASE_URI }}
