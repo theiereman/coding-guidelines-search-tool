@@ -3,17 +3,14 @@ name: Deploy to Firebase Hosting (test website) on version flag creation
   push:
     branches:
       - test
-    tags:
-      - "v*"
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v3
-      - name: Set FLAG_VERSION
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: echo "FLAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - run: |
+          echo "FLAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           export GITLAB_APP_BASE_URI=${{ vars.GITLAB_APP_BASE_URI }}
           export GITLAB_APP_ID=${{ secrets.GITLAB_APP_ID }}
           export GITLAB_AUTH_REDIRECT_URI=${{ vars.GITLAB_TEST_AUTH_REDIRECT_URI }}
@@ -21,7 +18,7 @@ jobs:
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
           export GITLAB_ID_PROJET_CORRECTIONS_DIVERSES=${{ vars.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES }}
           npm ci
-          npm run update-version-date
+          npm run update-version-and-date
           npm run deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
