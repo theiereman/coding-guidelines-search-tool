@@ -1,13 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-if (!process.env.FLAG_VERSION) {
-  console.log("La variable d'env. FLAG_VERSION est introuvable.");
-  process.exit(0);
-}
-
 const appComponentPath = path.join(__dirname, "../src/app/app.component.html");
-const version = process.env.FLAG_VERSION;
+const version = process.env.FLAG_VERSION ?? "test";
 const date = new Date().toLocaleDateString("fr-FR");
 
 fs.readFile(appComponentPath, "utf8", (err, data) => {
@@ -18,7 +13,7 @@ fs.readFile(appComponentPath, "utf8", (err, data) => {
 
   const updatedData = data.replace(
     /%%%VERSION AND DATE%%%/,
-    `Custy ${new Date().getFullYear()} - v${version} - ${date}`,
+    `Custy ${new Date().getFullYear()} - ${version} - ${date}`,
   );
 
   fs.writeFile(appComponentPath, updatedData, "utf8", (err) => {
