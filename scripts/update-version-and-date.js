@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 if (!process.env.FLAG_VERSION) {
-  console.log("FLAG_VERSION flag not set. Skipping version and date update.");
+  console.log("La variable d'env. FLAG_VERSION est introuvable.");
   process.exit(0);
 }
 
@@ -12,7 +12,7 @@ const date = new Date().toLocaleDateString("fr-FR");
 
 fs.readFile(appComponentPath, "utf8", (err, data) => {
   if (err) {
-    console.error("Error reading app.component.html:", err);
+    console.error("Impossible de lire le fichier app.component.html:", err);
     return;
   }
 
@@ -23,9 +23,9 @@ fs.readFile(appComponentPath, "utf8", (err, data) => {
 
   fs.writeFile(appComponentPath, updatedData, "utf8", (err) => {
     if (err) {
-      console.error("Error writing app.component.html:", err);
+      console.error("Impossible d'écrire le fichier app.component.html:", err);
       return;
     }
-    console.log("app.component.html updated successfully.");
+    console.log("app.component.html mis à jour avec succès.");
   });
 });
