@@ -8,7 +8,8 @@
     "deploy": "npm run generate-env && npm run build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate-env": "node scripts/generate-env.js"
+    "generate-env": "node scripts/generate-env.js",
+    "update-version-and-date": "node scripts/update-version-and-date.js"
   },
   "private": true,
   "dependencies": {
