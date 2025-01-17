@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting (test website) on merge
+name: Deploy to Firebase Hosting (test website) on push to test branch
 "on":
   push:
     branches:
@@ -15,7 +15,9 @@ jobs:
           export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
           export GITLAB_ID_PROJET_CORRECTIONS_DIVERSES=${{ vars.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES }}
-          npm ci && npm run deploy
+          npm ci
+          npm run update-version-and-date
+          npm run deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
