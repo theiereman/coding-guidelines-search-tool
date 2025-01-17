@@ -1,13 +1,18 @@
-name: Deploy to Firebase Hosting (test website) on merge
+name: Deploy to Firebase Hosting (test website) on version flag creation
 "on":
   push:
     branches:
       - test
+    tags:
+      - "v*"
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Set FLAG_VERSION
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "FLAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - run: |
           export GITLAB_APP_BASE_URI=${{ vars.GITLAB_APP_BASE_URI }}
           export GITLAB_APP_ID=${{ secrets.GITLAB_APP_ID }}
@@ -15,7 +20,9 @@ jobs:
           export GITLAB_ID_PROJET_REINTEGRATION=${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           export GITLAB_ID_PROJET_SUIVI_GENERAL=${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
           export GITLAB_ID_PROJET_CORRECTIONS_DIVERSES=${{ vars.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES }}
-          npm ci && npm run deploy
+          npm ci
+          npm run update-version-date
+          npm run deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
