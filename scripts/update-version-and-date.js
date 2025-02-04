@@ -15,7 +15,7 @@ fs.readFile(appComponentPath, "utf8", (err, data) => {
 
   const updatedData = data.replace(
     /%%%VERSION AND DATE%%%/,
-    `Custy ${now.getFullYear()} - ${version} - ${date} ${time}`,
+    `Custy ${now.getFullYear()} - ${version} - ${date}${process.env.FLAG_VERSION ? "" : " " + time}`,
   );
 
   fs.writeFile(appComponentPath, updatedData, "utf8", (err) => {
