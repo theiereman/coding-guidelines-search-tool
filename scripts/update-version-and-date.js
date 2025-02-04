@@ -3,7 +3,9 @@ const path = require("path");
 
 const appComponentPath = path.join(__dirname, "../src/app/app.component.html");
 const version = process.env.FLAG_VERSION ?? "test";
-const date = new Date().toLocaleDateString("fr-FR");
+const now = new Date();
+const date = now.toLocaleDateString("fr-FR");
+const time = now.toLocaleTimeString("fr-FR");
 
 fs.readFile(appComponentPath, "utf8", (err, data) => {
   if (err) {
@@ -13,7 +15,7 @@ fs.readFile(appComponentPath, "utf8", (err, data) => {
 
   const updatedData = data.replace(
     /%%%VERSION AND DATE%%%/,
-    `Custy ${new Date().getFullYear()} - ${version} - ${date}`,
+    `Custy ${now.getFullYear()} - ${version} - ${date}${process.env.FLAG_VERSION ? "" : " " + time}`,
   );
 
   fs.writeFile(appComponentPath, updatedData, "utf8", (err) => {
