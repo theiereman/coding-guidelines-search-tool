@@ -12,15 +12,14 @@ import { ConnectionRequiredComponent } from '../../common/connection-required/co
 
 //interface de recherche + affichage dans la charte de programmation Sharepoint Custy
 @Component({
-  selector: 'app-code-guideline-list',
-  templateUrl: './code-guideline-list.component.html',
-  styleUrls: [],
-  standalone: true,
-  imports: [
-    CommonModule,
-    HighlightOnSearchDirective,
-    ConnectionRequiredComponent,
-  ],
+    selector: 'app-code-guideline-list',
+    templateUrl: './code-guideline-list.component.html',
+    styleUrls: [],
+    imports: [
+        CommonModule,
+        HighlightOnSearchDirective,
+        ConnectionRequiredComponent,
+    ]
 })
 export class CodeGuidelineListComponent {
   currentSearchValue: string = '';

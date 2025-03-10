@@ -35,21 +35,20 @@ import { LastModifAnalyseComponent } from '../last-modif-analyse/last-modif-anal
 
 //formulaire complet pour créer une nouvelle issue de réintégration
 @Component({
-  selector: 'app-new-issue',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    CommonModule,
-    ProjectListComponent,
-    MilestoneListComponent,
-    NewIssueActionsSummaryComponent,
-    ConnectionRequiredComponent,
-    CustomInputComponent,
-    NewIssueInputSlotComponent,
-    CreationSummaryModalComponent,
-    LastModifAnalyseComponent,
-  ],
-  templateUrl: './new-issue.component.html',
+    selector: 'app-new-issue',
+    imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        ProjectListComponent,
+        MilestoneListComponent,
+        NewIssueActionsSummaryComponent,
+        ConnectionRequiredComponent,
+        CustomInputComponent,
+        NewIssueInputSlotComponent,
+        CreationSummaryModalComponent,
+        LastModifAnalyseComponent,
+    ],
+    templateUrl: './new-issue.component.html'
 })
 export class NewIssueComponent {
   milestones: IGitlabMilestone[] = []; //liste des milestones
