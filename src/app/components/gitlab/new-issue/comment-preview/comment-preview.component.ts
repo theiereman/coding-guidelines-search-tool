@@ -7,10 +7,9 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 
 //imitation de commentaire Gitlab avec le contenu d'une issue de réintégration
 @Component({
-  selector: 'app-comment-preview',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './comment-preview.component.html',
+    selector: 'app-comment-preview',
+    imports: [CommonModule],
+    templateUrl: './comment-preview.component.html'
 })
 export class CommentPreviewComponent {
   @Input({ required: true }) issue: IGitlabIssue = {} as IGitlabIssue;

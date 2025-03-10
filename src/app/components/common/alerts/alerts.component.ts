@@ -14,31 +14,27 @@ import { NgClass, NgFor } from '@angular/common';
 
 //affiche des alertes en haut de l'écran
 @Component({
-  selector: 'app-alerts',
-  templateUrl: './alerts.component.html',
-  styleUrls: [],
-  animations: [
-    trigger('list', [
-      transition('* => *', [
-        query('@animate', stagger(100, animateChild()), { optional: true }),
-      ]),
-    ]),
-    trigger('animate', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(50%)' }),
-        animate('.5s ease', style({ opacity: 1, transform: 'translateY(0))' })),
-      ]),
-      transition(':leave', [
-        style({ opacity: 1, transform: 'translateY(0)' }),
-        animate(
-          '.5s ease',
-          style({ opacity: 0, transform: 'translateY(-50%)' }),
-        ),
-      ]),
-    ]),
-  ],
-  standalone: true,
-  imports: [NgFor, NgClass],
+    selector: 'app-alerts',
+    templateUrl: './alerts.component.html',
+    styleUrls: [],
+    animations: [
+        trigger('list', [
+            transition('* => *', [
+                query('@animate', stagger(100, animateChild()), { optional: true }),
+            ]),
+        ]),
+        trigger('animate', [
+            transition(':enter', [
+                style({ opacity: 0, transform: 'translateY(50%)' }),
+                animate('.5s ease', style({ opacity: 1, transform: 'translateY(0))' })),
+            ]),
+            transition(':leave', [
+                style({ opacity: 1, transform: 'translateY(0)' }),
+                animate('.5s ease', style({ opacity: 0, transform: 'translateY(-50%)' })),
+            ]),
+        ]),
+    ],
+    imports: [NgFor, NgClass]
 })
 export class AlertsComponent implements OnInit {
   alertEnum = AlertType;

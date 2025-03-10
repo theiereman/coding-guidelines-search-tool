@@ -11,8 +11,7 @@ import { MicrosoftGraphAuthService } from 'src/app/services/microsoft-graph-auth
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: [],
-  standalone: true,
-  imports: [NgIf, RouterLink, RouterLinkActive, NgClass],
+  imports: [RouterLink, RouterLinkActive, NgClass],
 })
 export class NavbarComponent {
   user?: IUser;

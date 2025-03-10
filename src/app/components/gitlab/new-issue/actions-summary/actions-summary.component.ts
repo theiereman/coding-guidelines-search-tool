@@ -7,14 +7,13 @@ import { ProjectIssueCardComponent } from '../../project-list/project-issue-card
 
 //résumé des actions qui seront effecutées lors de la création de l'issue de réintégration
 @Component({
-  selector: 'app-actions-summary',
-  standalone: true,
-  imports: [
-    MilestoneListComponent,
-    CommentPreviewComponent,
-    ProjectIssueCardComponent,
-  ],
-  templateUrl: './actions-summary.component.html',
+    selector: 'app-actions-summary',
+    imports: [
+        MilestoneListComponent,
+        CommentPreviewComponent,
+        ProjectIssueCardComponent,
+    ],
+    templateUrl: './actions-summary.component.html'
 })
 export class NewIssueActionsSummaryComponent {
   @Input() issue: IGitlabIssue = {} as IGitlabIssue;

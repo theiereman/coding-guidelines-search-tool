@@ -10,10 +10,9 @@ import { NewIssueInputSlotComponent } from '../new-issue/input-slot/input-slot.c
 
 //input normalisé pour le formulaire Gitlab
 @Component({
-  selector: 'app-custom-input',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NewIssueInputSlotComponent],
-  templateUrl: './custom-input.component.html',
+    selector: 'app-custom-input',
+    imports: [CommonModule, ReactiveFormsModule, NewIssueInputSlotComponent],
+    templateUrl: './custom-input.component.html'
 })
 export class CustomInputComponent {
   @Input({ required: true }) label: string = ''; //libellé de l'input

@@ -6,7 +6,6 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { NewIssueActionsSummaryComponent } from '../actions-summary/actions-summary.component';
 import { IssueCreationActionsService } from 'src/app/services/issue-creation-actions.service';
 import { IGitlabIssue } from 'src/app/interfaces/gitlab/igitlab-issue';
 import { CommentPreviewComponent } from '../comment-preview/comment-preview.component';
@@ -14,12 +13,7 @@ import { CommentPreviewComponent } from '../comment-preview/comment-preview.comp
 //popup affichant les informations des actions effectuées lors de la création d'une issue de réintégration
 @Component({
   selector: 'app-creation-summary-modal',
-  standalone: true,
-  imports: [
-    CommonModule,
-    NewIssueActionsSummaryComponent,
-    CommentPreviewComponent,
-  ],
+  imports: [CommonModule, CommentPreviewComponent],
   templateUrl: './creation-summary-modal.component.html',
 })
 export class CreationSummaryModalComponent {

@@ -10,10 +10,9 @@ import { environment } from 'src/environments/environment';
 
 //élément qui affiche une ancienne milestone (fermée) et la potentielle milestone suivante (à ouvrir)
 @Component({
-  selector: 'app-old-milestone-action-choice',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './old-milestone-action-choice.component.html',
+    selector: 'app-old-milestone-action-choice',
+    imports: [CommonModule],
+    templateUrl: './old-milestone-action-choice.component.html'
 })
 export class OldMilestoneActionChoiceComponent {
   @Input({ required: true }) milestone: IGitlabMilestone =
