@@ -31,7 +31,7 @@ import { SelectOption } from 'src/app/interfaces/select-option';
 import { NewIssueInputSlotComponent } from './input-slot/input-slot.component';
 import { CreationSummaryModalComponent } from './creation-summary-modal/creation-summary-modal.component';
 import { IssueCreationActionsService } from 'src/app/services/issue-creation-actions.service';
-import { LastModifAnalyseComponent } from "../last-modif-analyse/last-modif-analyse.component";
+import { LastModifAnalyseComponent } from '../last-modif-analyse/last-modif-analyse.component';
 
 //formulaire complet pour créer une nouvelle issue de réintégration
 @Component({
@@ -47,8 +47,8 @@ import { LastModifAnalyseComponent } from "../last-modif-analyse/last-modif-anal
     CustomInputComponent,
     NewIssueInputSlotComponent,
     CreationSummaryModalComponent,
-    LastModifAnalyseComponent
-],
+    LastModifAnalyseComponent,
+  ],
   templateUrl: './new-issue.component.html',
 })
 export class NewIssueComponent {

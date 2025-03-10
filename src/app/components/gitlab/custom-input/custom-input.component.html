@@ -1,16 +1,28 @@
 <app-input-slot [label]="label" [required]="formControlRequired()">
   @if (isSelectInput) {
-    <select
-      class="ease rounded-md border border-gray-400 bg-transparent p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
-      [formControl]="control"
-      [ngClass]="{
-        'border-1 border-red-500': formControlInvalid(),
-      }"
-    >
-      <option *ngFor="let option of selectOptions" [value]="option.value">
-        {{ option.name }}
-      </option>
-    </select>
+    @if (selectOptions?.length === 0) {
+      <select
+        class="ease rounded-md border border-gray-400 bg-transparent p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+        [formControl]="control"
+        [ngClass]="{
+          'border-1 border-red-500': formControlInvalid(),
+        }"
+      >
+        <option value="" disabled selected>Chargement des options...</option>
+      </select>
+    } @else {
+      <select
+        class="ease rounded-md border border-gray-400 bg-transparent p-1 transition duration-200 hover:border-purple-600 focus:border-purple-700 focus:shadow focus:outline-none"
+        [formControl]="control"
+        [ngClass]="{
+          'border-1 border-red-500': formControlInvalid(),
+        }"
+      >
+        <option *ngFor="let option of selectOptions" [value]="option.value">
+          {{ option.name }}
+        </option>
+      </select>
+    }
   } @else {
     <textarea
       *ngIf="isMultiline"
