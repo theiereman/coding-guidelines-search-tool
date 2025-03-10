@@ -17,7 +17,7 @@ import { NewIssueInputSlotComponent } from '../new-issue/input-slot/input-slot.c
 })
 export class CustomInputComponent {
   @Input({ required: true }) label: string = ''; //libellé de l'input
-  @Input() selectOptions: SelectOption[] = []; //option pour un input de type "combo"
+  @Input() selectOptions: SelectOption[] | undefined = undefined; //option pour un input de type "combo"
   @Input() yesNoSelector: boolean = false; //combo "oui" / "non"
   @Input() control: FormControl = new FormControl(''); //form control qui permet de valider la saisie
   @Input() isMultiline: boolean = false; //input multi lignes
@@ -38,7 +38,9 @@ export class CustomInputComponent {
   }
 
   get isSelectInput(): boolean {
-    return this.selectOptions.length > 0 || this.yesNoSelector;
+    return (
+      this.selectOptions !== undefined && Array.isArray(this.selectOptions)
+    );
   }
 
   formControlRequired(): boolean {
