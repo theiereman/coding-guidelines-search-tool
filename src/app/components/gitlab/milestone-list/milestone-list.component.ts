@@ -14,23 +14,23 @@ import { Subject, takeUntil } from 'rxjs';
 
 //liste des milestones (actuelles et anciennes) pour selection lors de la création d'une nouvelle issue
 @Component({
-    selector: 'app-milestone-list',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        NgFor,
-        NgIf,
-        NgClass,
-        OldMilestoneActionChoiceComponent,
-    ],
-    templateUrl: './milestone-list.component.html',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => MilestoneListComponent),
-            multi: true,
-        },
-    ]
+  selector: 'app-milestone-list',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgFor,
+    NgIf,
+    NgClass,
+    OldMilestoneActionChoiceComponent,
+  ],
+  templateUrl: './milestone-list.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MilestoneListComponent),
+      multi: true,
+    },
+  ],
 })
 export class MilestoneListComponent implements ControlValueAccessor {
   @Input() milestones: IGitlabMilestone[] = []; //liste des milestones à afficher
