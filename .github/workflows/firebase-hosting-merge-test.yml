@@ -16,6 +16,12 @@ jobs:
           GITLAB_ID_PROJET_REINTEGRATION: ${{ vars.GITLAB_ID_PROJET_REINTEGRATION }}
           GITLAB_ID_PROJET_SUIVI_GENERAL: ${{ vars.GITLAB_ID_PROJET_SUIVI_GENERAL }}
           GITLAB_ID_PROJET_CORRECTIONS_DIVERSES: ${{ vars.GITLAB_ID_PROJET_CORRECTIONS_DIVERSES }}
+          MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+          MS_DRIVE_ID: ${{ secrets.MS_DRIVE_ID }}
+          MS_SITE_ID: ${{ secrets.MS_SITE_ID }}
+          MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+          MS_WORKBOOK_ID: ${{ secrets.MS_WORKBOOK_ID }}
+          MS_WORKSHEET_LINK: ${{ vars.MS_WORKSHEET_LINK }}
         run: |
           npm ci
           npm run update-version-and-date
