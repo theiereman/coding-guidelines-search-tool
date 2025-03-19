@@ -19,7 +19,7 @@
 
 ### Angular
 
-Le projet utilise [Angular](https://angular.dev/) en version 18. Les différents composants / services sont standalone, ce qui permet de faciliter la réutilisabilité. Utilisation de `@angular/router` pour la navigation entre les pages définies dans `app.routes.ts`. Tous les composants sont écrits en `typescript (.ts)` pour garantir une meilleure gestion du typage.
+Le projet utilise [Angular](https://angular.dev/) en version 19. Les différents composants / services sont standalone, ce qui permet de faciliter la réutilisabilité. Utilisation de `@angular/router` pour la navigation entre les pages définies dans `app.routes.ts`. Tous les composants sont écrits en `typescript (.ts)` pour garantir une meilleure gestion du typage.
 
 ### CSS et styles
 
