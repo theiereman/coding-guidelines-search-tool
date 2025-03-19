@@ -15,7 +15,6 @@ import { Subject, takeUntil } from 'rxjs';
 //liste des milestones (actuelles et anciennes) pour selection lors de la création d'une nouvelle issue
 @Component({
   selector: 'app-milestone-list',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

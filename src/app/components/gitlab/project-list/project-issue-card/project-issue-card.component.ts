@@ -6,10 +6,9 @@ import { environment } from 'src/environments/environment';
 
 //card contenant les informations d'un projet
 @Component({
-  selector: 'app-project-issue-card',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './project-issue-card.component.html',
+    selector: 'app-project-issue-card',
+    imports: [CommonModule],
+    templateUrl: './project-issue-card.component.html'
 })
 export class ProjectIssueCardComponent {
   @Input() issue?: IGitlabIssue = undefined;

@@ -66,6 +66,15 @@ export const environment = {
   GITLAB_ID_PROJET_REINTEGRATION: 999, //id projet pour les issues de réintégration
   GITLAB_ID_PROJET_SUIVI_GENERAL: 999, //id projet pour les issues de suivi général
   GITLAB_ID_PROJET_CORRECTIONS_DIVERSES: 999, //id du projet pour les corrections diverses
+
+  //ms secrets
+  MS_CLIENT_ID: "abc-def-ghi", //id client pour authentifier l'application Entra
+  MS_DRIVE_ID: "abc-def-ghi", //id du stockage Sharepoint
+  MS_SITE_ID: "abc-def-ghi", //id du site Sharepoint
+  MS_TENANT_ID: "abc-def-ghi", //id du Tenant concerné par l'application
+  MS_WORKBOOK_ID: "ABCDEF123", //id de la feuille Excel de la charte de programmation sur le Sharepoint
+
+  MS_WORKSHEET_LINK: "https://example.com", //lien vers la charte de programmation Excel
 };
 ```
 

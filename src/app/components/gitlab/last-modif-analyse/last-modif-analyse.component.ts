@@ -6,10 +6,9 @@ import { AlertsService } from 'src/app/services/alerts.service';
 import { GitlabService } from 'src/app/services/gitlab.service';
 
 @Component({
-  selector: 'app-last-modif-analyse',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './last-modif-analyse.component.html',
+    selector: 'app-last-modif-analyse',
+    imports: [CommonModule],
+    templateUrl: './last-modif-analyse.component.html'
 })
 
 //composan qui affiche une préview de la dernière modification d'analyes qui a été réintégrée

@@ -1,9 +1,10 @@
+@use "sass:meta";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @import "normalize.css";
-@import "./components/loader";
+@include meta.load-css("components/loader");
 
 * {
   box-sizing: border-box;

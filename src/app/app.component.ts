@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { CodeGuidelineListComponent } from './components/office365/code-guideline-list/code-guideline-list.component';
-import { ConnectionRequiredComponent } from './components/common/connection-required/connection-required.component';
-import { NgIf } from '@angular/common';
 import { NavbarComponent } from './components/common/navbar/navbar.component';
 import { AlertsComponent } from './components/common/alerts/alerts.component';
 import { RouterOutlet } from '@angular/router';
@@ -11,15 +9,7 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: [],
   host: { class: 'app' },
-  standalone: true,
-  imports: [
-    NavbarComponent,
-    NgIf,
-    ConnectionRequiredComponent,
-    CodeGuidelineListComponent,
-    AlertsComponent,
-    RouterOutlet,
-  ],
+  imports: [NavbarComponent, AlertsComponent, RouterOutlet],
 })
 export class AppComponent {
   title = 'Charte de programmation - Outil de recherche';
