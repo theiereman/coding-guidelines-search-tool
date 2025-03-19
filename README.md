@@ -81,7 +81,7 @@ export const environment = {
 Finalement, pour commencer le débug de l'application, il faut exécuter la commande suivante depuis le répertoire racine du projet :
 
 ```bash
-npm run start
+npm run dev
 ```
 
 Cette commande va lancer le serveur de développement et il faudra ouvrir un navigateur et aller sur l'adresse http://localhost:4200/.
