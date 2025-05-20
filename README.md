@@ -37,6 +37,14 @@ La connexion à Gitlab est gérée par OAuth2 PKCS selon la [documentation Gitla
 
 Le déploiement se fait sur Firebase (compte personnel) de manière automatisée avec des Github Actions. Les scripts de déploiement sont dans le répertoire `.github`. Un script additionnel est utilisé pour générer le fichier `environment.ts` à partir des variables d'environnement définies dans Github. Ce fichier se trouve dans le répertoire `/scripts`.
 
+Pour déployer une nouvelle version sur Firebase, il suffit de pousser les modifications sur la branche `main` puis créer un nouveau tag avec une version supérieure à la précédente en suivant le format `vX.Y.Z` (major / minor / patch).
+
+```bash
+git push origin main
+git tag vX.Y.Z
+git push origin vX.Y.Z
+```
+
 ## Installation en local
 
 ### Installation d'une instance personnelle Gitlab
