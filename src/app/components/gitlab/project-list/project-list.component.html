@@ -56,10 +56,7 @@
     >
       Aucun résultat trouvé
     </p>
-    <div
-      *ngIf="!loadingIssuesList"
-      class="grid grid-cols-1 gap-3 sm:grid-cols-2"
-    >
+    <div *ngIf="!loadingIssuesList" class="grid grid-cols-1 gap-3">
       <app-project-issue-card
         [ngClass]="{
           '!border-blue-500': selectedProject?.iid === issue?.iid,
@@ -78,7 +75,7 @@
       <summary class="cursor-pointer bg-gray-200 p-2 text-gray-700">
         Issues récentes {{ numberOfRecentIssueSelected() }}
       </summary>
-      <div class="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2">
+      <div class="grid grid-cols-1 gap-3 p-3">
         <app-project-issue-card
           [ngClass]="{
             '!border-blue-500': selectedProject?.iid === issue?.iid,

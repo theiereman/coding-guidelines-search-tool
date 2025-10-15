@@ -16,22 +16,22 @@ import { GitlabAuthService } from 'src/app/services/gitlab-auth.service';
 import { IGitlabUser } from 'src/app/interfaces/gitlab/igitlab-user';
 
 @Component({
-    selector: 'app-project-list',
-    imports: [
-        ReactiveFormsModule,
-        NgIf,
-        NgFor,
-        NgClass,
-        ProjectIssueCardComponent,
-    ],
-    templateUrl: './project-list.component.html',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ProjectListComponent),
-            multi: true,
-        },
-    ]
+  selector: 'app-project-list',
+  imports: [
+    ReactiveFormsModule,
+    NgIf,
+    NgFor,
+    NgClass,
+    ProjectIssueCardComponent,
+  ],
+  templateUrl: './project-list.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ProjectListComponent),
+      multi: true,
+    },
+  ],
 })
 
 //liste des projets de suivi général
